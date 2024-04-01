@@ -121,9 +121,7 @@ public class SomeMethod {
             lore = pair.getRight();
         }
 
-        System.out.println(pokemon);
         StoragePosition ps = pokemon.getPosition();
-        System.out.println(ps);
         Function<String, String> fun = s -> s.replace("{box}", String.valueOf(ps.box))
                 .replace("{order}", String.valueOf(ps.order));
         itemMeta.setDisplayName(papi(player, fun.apply(name)));

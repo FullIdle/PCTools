@@ -44,7 +44,6 @@ public class ConfirmGui extends ListenerInvHolder {
             e.setCancelled(true);
             if (!e.getCurrentItem().getType().equals(Material.STAINED_GLASS_PANE)) return;
             if (e.getSlot() == 21) {
-                pcGui.setNeedUpdate(true);
                 pokemon.getStorage().set(pokemon.getPosition(),null);
             }
             this.openUpGui = true;
@@ -53,7 +52,10 @@ public class ConfirmGui extends ListenerInvHolder {
         onClose(e-> {
             if (this.openUpGui){
                 this.openUpGui = false;
-                Bukkit.getScheduler().runTask(Cache.plugin, () -> e.getPlayer().openInventory(this.pcGui.getInventory()));
+                Bukkit.getScheduler().runTask(Cache.plugin, () -> {
+                    pcGui.setNeedUpdate(true);
+                    e.getPlayer().openInventory(this.pcGui.getInventory());
+                });
             }
         });
     }

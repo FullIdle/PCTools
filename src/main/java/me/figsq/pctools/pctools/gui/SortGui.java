@@ -76,6 +76,7 @@ public class SortGui extends ListenerInvHolder {
                 this.openUpGui = false;
                 return;
             }
+            this.pcGui.setNeedUpdate(true);
             Bukkit.getScheduler().runTask(Cache.plugin,()->e.getPlayer().openInventory(this.pcGui.getInventory()));
         });
     }

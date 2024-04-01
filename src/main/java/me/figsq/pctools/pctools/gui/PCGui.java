@@ -43,7 +43,7 @@ public class PCGui extends ListenerInvHolder {
     private final PCStorage pcStorage;
     private PCBox nowBox;
     private final Map<ItemStack, Pokemon> pokemonCache = new ItemComparedMap<>();
-    private ItemStack changing = null;
+    private ItemStack cacheCursor = null;
     private final ConfirmGui confirmGui = new ConfirmGui(this);
     private final SortGui sortGui = new SortGui(this);
     @Setter
@@ -59,11 +59,10 @@ public class PCGui extends ListenerInvHolder {
         initPoke(page);
 
         onOpen(e -> {
-            if (changing != null) {
-                e.getPlayer().setItemOnCursor(changing);
-                changing = null;
+            if (cacheCursor != null) {
+                e.getPlayer().setItemOnCursor(cacheCursor);
+                cacheCursor = null;
             }
-
             //sort button
             {
                 if (e.getPlayer().hasPermission("pctools.function.sort") && this.inventory.getItem(53).getDurability() != 1) {
@@ -81,7 +80,6 @@ public class PCGui extends ListenerInvHolder {
                     initPackPoke();
                     changeBox(this.nowBox.boxNumber, (Player) e.getPlayer(), true);
                 });
-                return;
             }
         });
         onClose(e -> {
@@ -278,7 +276,8 @@ public class PCGui extends ListenerInvHolder {
         initPackPoke();
         changeBox(page, this.owner, false);
     }
-    private void initPackPoke(){
+
+    private void initPackPoke() {
         Pokemon[] all = partyStorage.getAll();
         for (int i = 0; i < all.length; i++) {
             Pokemon pokemon = all[i];
@@ -302,12 +301,11 @@ public class PCGui extends ListenerInvHolder {
                 pokemonCache.put(photo, pokemon);
             }
 
-            if (triggeredPlayer != null && triggeredPlayer.getItemOnCursor().isSimilar(photo)) {
-                triggeredPlayer.setItemOnCursor(triggeredPlayer.getItemOnCursor());
-                continue;
+            if (Objects.equals(SomeMethod.getFormatItemUUID(triggeredPlayer.getItemOnCursor()),
+                    SomeMethod.getFormatItemUUID(photo))) {
+                photo = null;
             }
-            this.inventory.setItem(Cache.invPcSlot.get(i),
-                    photo);
+            this.inventory.setItem(Cache.invPcSlot.get(i), photo);
         }
         //title
         if (!updateTitle) {
@@ -316,7 +314,7 @@ public class PCGui extends ListenerInvHolder {
         String title = SomeMethod.papi(owner, Cache.pCGuiTitle
                 .replace("{box}", String.valueOf(this.nowBox.boxNumber + 1)));
         SomeMethod.setInvTitle(triggeredPlayer, title);
-        this.changing = triggeredPlayer.getItemOnCursor();
+        this.cacheCursor = triggeredPlayer.getItemOnCursor();
         this.owner.openInventory(this.inventory);
     }
 
