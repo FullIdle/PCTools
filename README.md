@@ -14,7 +14,7 @@
 ![img2.png](img/img2.png)
 
 ## 配置
-### [Config.yml](URL)
+### [Config.yml](src/main/resources/config.yml)
 ## 指令
 ### open
 #### 介绍
