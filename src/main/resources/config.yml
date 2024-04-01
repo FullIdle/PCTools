@@ -1,0 +1,156 @@
+##默认最大页数30更具你是否有改动pixelmonmod的pc页数配置来改自己最大页数即可,所以这是我不想搞变量的理由
+title: "&3PCTools[{box}/30] —— %player_name%"
+##取消mod原版pc
+cancelPC: true
+##背包精灵可空
+packCanEmpty: false
+
+## 变量格式%pctools_[box]_[order]_[arg]_[可选参数]%
+## box = pc页码[从0开始算]
+## order = 第几个[0-29]
+##
+## 插件传入的变量: {box} {order}
+##
+## ->arg<-
+#growth 体型
+#helditem 携带物品
+#status 状态
+#from 形态
+#nature 性格
+#gender 性别
+#hastag 带有标签 可选参数: spec tag[https://pixelmonmod.com/wiki/Pokemon_spec]
+#uuid 唯一id
+#moveset 技能 可选参数: [1-4]
+#originalname 原始名[直接用枚举的来做名字] 可能会有所问题
+#localizedname 宝可梦本地名 #简称 译名 (如果你将语言文件汉化了则是中文)
+#nickname 宝可梦设置名
+#ability 特性
+#islegendary 是否是神兽
+#isegg 是否是蛋
+#isultrabeast 是否是究极兽
+#ivstotal 总个体值
+#ivs 个体值 可选参数: [hp:hp,sp:speed,at:Attack,df:Defence,sd:SpecialDefence,sa:SpecialAttack,]
+#evstotal 总努力值
+#evs 努力值 同上
+#level 等级
+#shiny 是否闪光
+#inranch 是否在牧场内
+#caughtball 捕获的球
+#eggsteps 现周期走了多少步 [默认256时减少一个周期/或许可以再配置中修改那步数可能就不一样了]
+#eggcycles 剩余多少周期孵化
+#basetotal 总种族值
+#basestats 种族值 可选参数: 同ivs
+#stats 能力值 可选参数: 同ivs
+#statstotal 总能力值
+#position 所在位置 可选参数: box , order[页/位]
+#types 属性
+#egggroup 蛋组
+##
+item:
+  ##指定精灵用指定配置
+  #如果你汉化了可以用中文，当然，还是可以用英文的
+  #当然页可以不配置,你不需要的话给他留空就好了
+  special:
+    Abomasnow:
+      name: '我懒得写'
+      lore:
+        - '我也懒得写'
+        - '          ——GSQ_Lin(原插件作者Mc9y账号)'
+    Chandelure:
+      name: '我懒得写'
+      lore:
+        - '我也懒得写'
+        - '          ——FullIdle(插件作者之一)'
+  normal:
+    name: "&e&l%pctools_{box}_{order}_localizedname%"
+    lore:
+      - "&b▣ 基本信息"
+      - "&3属性: &7%pctools_{box}_{order}_types% &f| &3蛋组: &7%pctools_{box}_{order}_egggroup%"
+      - "&3性格: &7%pctools_{box}_{order}_nature% &f| &3特性: &7%pctools_{box}_{order}_ability%"
+      - "&3性别: &7%pctools_{box}_{order}_gender% &f| &3道具: &7%pctools_{box}_{order}_helditem%"
+      - "&3闪光: &7%pctools_{box}_{order}_shiny% &f| &3形态: &7%pctools_{box}_{order}_from%"
+      - "&3体型: &7%pctools_{box}_{order}_growth% &f| &3球种: &7%pctools_{box}_{order}_caughtball%"
+      - "&b▣ 种族信息&7 (总和：%pctools_{box}_{order}_basetotal%)"
+      - "&3血量: &7%pctools_{box}_{order}_basestats_hp% &f| &3攻击: &7%pctools_{box}_{order}_basestats_at% &f| &3防御: &7%pctools_{box}_{order}_basestats_df%"
+      - "&3特攻: &7%pctools_{box}_{order}_basestats_sa% &f| &3特防: &7%pctools_{box}_{order}_basestats_sd% &f| &3速度: &7%pctools_{box}_{order}_basestats_sp%"
+      - "&b▣ 个体信息&7 (%pctools_{box}_{order}_ivstotal%/186)"
+      - "&3血量: &7%pctools_{box}_{order}_ivs_hp% &f| &3攻击: &7%pctools_{box}_{order}_ivs_at% &f| &3防御: &7%pctools_{box}_{order}_ivs_df%"
+      - "&3特攻: &7%pctools_{box}_{order}_ivs_sa% &f| &3特防: &7%pctools_{box}_{order}_ivs_sd% &f| &3速度: &7%pctools_{box}_{order}_ivs_sp%"
+      - "&b▣ 努力信息&7 (%pctools_{box}_{order}_evstotal%/510)"
+      - "&3血量: &7%pctools_{box}_{order}_evs_hp% &f| &3攻击: &7%pctools_{box}_{order}_evs_at% &f| &3防御: &7%pctools_{box}_{order}_evs_df%"
+      - "&3特攻: &7%pctools_{box}_{order}_evs_sa% &f| &3特防: &7%pctools_{box}_{order}_evs_sd% &f| &3速度: &7%pctools_{box}_{order}_evs_sp%"
+      - "&b▣ 能力信息&7 (总和：%pctools_{box}_{order}_statstotal%)"
+      - "&3血量: &7%pctools_{box}_{order}_stats_hp% &f| &3攻击: &7%pctools_{box}_{order}_stats_at% &f| &3防御: &7%pctools_{box}_{order}_stats_df%"
+      - "&3特攻: &7%pctools_{box}_{order}_stats_sa% &f| &3特防: &7%pctools_{box}_{order}_stats_sd% &f| &3速度: &7%pctools_{box}_{order}_stats_sp%"
+      - "&b▣ 技能信息"
+      - "&3技能: &7%pctools_{box}_{order}_moveset_0% &f| &7%pctools_{box}_{order}_moveset_1% &f| &7%pctools_{box}_{order}_moveset_2% &f| &7%pctools_{box}_{order}_moveset_3% "
+      - "&b▣ 位置信息"
+      - "&3页: {box}&f| &3位置:{order}"
+  egg:
+    name: "§6蛋"
+    lore:
+      - "&b▣ 基本信息"
+      - "&3剩余孵化周期: &7%pctools_{box}_{order}_eggcycles%"
+      - "&3现周期甚于多少步: &7%pctools_{box}_{order}_eggsteps%"
+      - "&b▣ 位置信息"
+      - "&3页: {box}&f| &3位置:{order}"
+      - ""
+      - "&c温馨提示: 默认256步减少一个周期,周期归零则精灵出世!"
+  legend:
+    name: "&5&l%pctools_{box}_{order}_localizedname%"
+    lore:
+      - "&b▣ 基本信息"
+      - "&3属性: &7%pctools_{box}_{order}_types% &f| &3蛋组: &7%pctools_{box}_{order}_egggroup%"
+      - "&3性格: &7%pctools_{box}_{order}_nature% &f| &3特性: &7%pctools_{box}_{order}_ability%"
+      - "&3性别: &7%pctools_{box}_{order}_gender% &f| &3道具: &7%pctools_{box}_{order}_helditem%"
+      - "&3闪光: &7%pctools_{box}_{order}_shiny% &f| &3形态: &7%pctools_{box}_{order}_from%"
+      - "&3体型: &7%pctools_{box}_{order}_growth% &f| &3球种: &7%pctools_{box}_{order}_caughtball%"
+      - "&b▣ 种族信息&7 (总和：%pctools_{box}_{order}_basetotal%)"
+      - "&3血量: &7%pctools_{box}_{order}_basestats_hp% &f| &3攻击: &7%pctools_{box}_{order}_basestats_at% &f| &3防御: &7%pctools_{box}_{order}_basestats_df%"
+      - "&3特攻: &7%pctools_{box}_{order}_basestats_sa% &f| &3特防: &7%pctools_{box}_{order}_basestats_sd% &f| &3速度: &7%pctools_{box}_{order}_basestats_sp%"
+      - "&b▣ 个体信息&7 (%pctools_{box}_{order}_ivsstats%/186)"
+      - "&3血量: &7%pctools_{box}_{order}_ivs_hp% &f| &3攻击: &7%pctools_{box}_{order}_ivs_at% &f| &3防御: &7%pctools_{box}_{order}_ivs_df%"
+      - "&3特攻: &7%pctools_{box}_{order}_ivs_sa% &f| &3特防: &7%pctools_{box}_{order}_ivs_sd% &f| &3速度: &7%pctools_{box}_{order}_ivs_sp%"
+      - "&b▣ 努力信息&7 (%pctools_{box}_{order}_evstotal%/510)"
+      - "&3血量: &7%pctools_{box}_{order}_evs_hp% &f| &3攻击: &7%pctools_{box}_{order}_evs_at% &f| &3防御: &7%pctools_{box}_{order}_evs_df%"
+      - "&3特攻: &7%pctools_{box}_{order}_evs_sa% &f| &3特防: &7%pctools_{box}_{order}_evs_sd% &f| &3速度: &7%pctools_{box}_{order}_evs_sp%"
+      - "&b▣ 能力信息&7 (总和：%pctools_{box}_{order}_statstotal%)"
+      - "&3血量: &7%pctools_{box}_{order}_stats_hp% &f| &3攻击: &7%pctools_{box}_{order}_stats_at% &f| &3防御: &7%pctools_{box}_{order}_stats_df%"
+      - "&3特攻: &7%pctools_{box}_{order}_stats_sa% &f| &3特防: &7%pctools_{box}_{order}_stats_sd% &f| &3速度: &7%pctools_{box}_{order}_stats_sp%"
+      - "&b▣ 技能信息"
+      - "&3技能: &7%pctools_{box}_{order}_moveset_0% &f| &7%pctools_{box}_{order}_moveset_1% &f| &7%pctools_{box}_{order}_moveset_2% &f| &7%pctools_{box}_{order}_moveset_3% "
+      - "&b▣ 位置信息"
+      - "&3页: {box}&f| &3位置:{order}"
+  uBeast:
+    name: "&3&l%pctools_{box}_{order}_localizedname%"
+    lore:
+      - "&b▣ 基本信息"
+      - "&3属性: &7%pctools_{box}_{order}_types% &f| &3蛋组: &7%pctools_{box}_{order}_egggroup%"
+      - "&3性格: &7%pctools_{box}_{order}_nature% &f| &3特性: &7%pctools_{box}_{order}_ability%"
+      - "&3性别: &7%pctools_{box}_{order}_gender% &f| &3道具: &7%pctools_{box}_{order}_helditem%"
+      - "&3闪光: &7%pctools_{box}_{order}_shiny% &f| &3形态: &7%pctools_{box}_{order}_from%"
+      - "&3体型: &7%pctools_{box}_{order}_growth% &f| &3球种: &7%pctools_{box}_{order}_caughtball%"
+      - "&b▣ 种族信息&7 (总和：%pctools_{box}_{order}_basetotal%)"
+      - "&3血量: &7%pctools_{box}_{order}_basestats_hp% &f| &3攻击: &7%pctools_{box}_{order}_basestats_at% &f| &3防御: &7%pctools_{box}_{order}_basestats_df%"
+      - "&3特攻: &7%pctools_{box}_{order}_basestats_sa% &f| &3特防: &7%pctools_{box}_{order}_basestats_sd% &f| &3速度: &7%pctools_{box}_{order}_basestats_sp%"
+      - "&b▣ 个体信息&7 (%pctools_{box}_{order}_ivsstats%/186)"
+      - "&3血量: &7%pctools_{box}_{order}_ivs_hp% &f| &3攻击: &7%pctools_{box}_{order}_ivs_at% &f| &3防御: &7%pctools_{box}_{order}_ivs_df%"
+      - "&3特攻: &7%pctools_{box}_{order}_ivs_sa% &f| &3特防: &7%pctools_{box}_{order}_ivs_sd% &f| &3速度: &7%pctools_{box}_{order}_ivs_sp%"
+      - "&b▣ 努力信息&7 (%pctools_{box}_{order}_evstotal%/510)"
+      - "&3血量: &7%pctools_{box}_{order}_evs_hp% &f| &3攻击: &7%pctools_{box}_{order}_evs_at% &f| &3防御: &7%pctools_{box}_{order}_evs_df%"
+      - "&3特攻: &7%pctools_{box}_{order}_evs_sa% &f| &3特防: &7%pctools_{box}_{order}_evs_sd% &f| &3速度: &7%pctools_{box}_{order}_evs_sp%"
+      - "&b▣ 能力信息&7 (总和：%pctools_{box}_{order}_statstotal%)"
+      - "&3血量: &7%pctools_{box}_{order}_stats_hp% &f| &3攻击: &7%pctools_{box}_{order}_stats_at% &f| &3防御: &7%pctools_{box}_{order}_stats_df%"
+      - "&3特攻: &7%pctools_{box}_{order}_stats_sa% &f| &3特防: &7%pctools_{box}_{order}_stats_sd% &f| &3速度: &7%pctools_{box}_{order}_stats_sp%"
+      - "&b▣ 技能信息"
+      - "&3技能: &7%pctools_{box}_{order}_moveset_0% &f| &7%pctools_{box}_{order}_moveset_1% &f| &7%pctools_{box}_{order}_moveset_2% &f| &7%pctools_{box}_{order}_moveset_3% "
+      - "&b▣ 位置信息"
+      - "&3页: {box}&f| &3位置:{order}"
+msg:
+  playerDoesNotExist: "&c该玩家不存在或不在线!"
+  nonNumeric: "&c非数字!"
+  reloadSuccessful: "&a重载成功!"
+  help:
+    - "pctools"
+    - "- open [page] [player/可选]  打开指定[玩家/可选]的指定页PC"
+    - "- reload 重载"
