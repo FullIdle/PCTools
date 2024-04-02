@@ -7,10 +7,11 @@
 <br>还原PC中宝可梦移动的逻辑让玩家用的更加舒适
 
 ## 效果图
+![移动演示](img/翻页演示.gif)
 ![img.png](img/img.png)
-
+![移动演示](img/移动演示.gif)
 ![img1.png](img/img1.png)
-
+![移动演示](img/排序演示.gif)
 ![img2.png](img/img2.png)
 
 ## 配置
