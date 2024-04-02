@@ -1,23 +1,23 @@
 package me.figsq.pctools.pctools;
 
 import com.google.common.collect.Lists;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.pixelmonmod.pixelmon.Pixelmon;
 import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
-import com.pixelmonmod.pixelmon.api.storage.PCStorage;
 import com.pixelmonmod.pixelmon.api.storage.StoragePosition;
 import com.pixelmonmod.pixelmon.battles.attacks.Attack;
-import com.pixelmonmod.pixelmon.entities.pixelmon.stats.*;
-import com.pixelmonmod.pixelmon.items.ItemHeld;
+import com.pixelmonmod.pixelmon.entities.pixelmon.stats.BaseStats;
+import com.pixelmonmod.pixelmon.entities.pixelmon.stats.IStatStore;
+import com.pixelmonmod.pixelmon.entities.pixelmon.stats.Stats;
+import com.pixelmonmod.pixelmon.entities.pixelmon.stats.StatsType;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import me.figsq.pctools.pctools.api.util.Cache;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.craftbukkit.v1_12_R1.CraftOfflinePlayer;
 import org.bukkit.craftbukkit.v1_12_R1.entity.CraftEntity;
-import org.bukkit.craftbukkit.v1_12_R1.inventory.CraftItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -81,7 +81,7 @@ public class Papi extends PlaceholderExpansion {
                         .replace(" ", "");
             }
             case "egggroup": {
-                return poke.getSpecies().getBaseStats().eggGroups.toString()
+                return Arrays.toString(poke.getSpecies().getBaseStats().eggGroups)
                         .replace("Monster", "怪兽")
                         .replace("Humanlike", "人型")
                         .replace("Water1", "水中1")
@@ -103,9 +103,10 @@ public class Papi extends PlaceholderExpansion {
             }
             case "position": {
                 String o = split[3];
+                StoragePosition position = poke.getPosition();
                 return o.equalsIgnoreCase("box") ?
-                        String.valueOf(poke.getPosition().box) : o.equalsIgnoreCase("order") ?
-                        String.valueOf(poke.getPosition().order) : "未知属性";
+                        String.valueOf(position.box) : o.equalsIgnoreCase("order") ?
+                        String.valueOf(position.order) : "未知属性";
             }
             case "statstotal": {
                 Stats stats = poke.getStats();
@@ -140,8 +141,6 @@ public class Papi extends PlaceholderExpansion {
                 return localizedName.equals("item..name") ? "无" : localizedName;
             case "status":
                 return poke.getStatus().type.getLocalizedName();
-            case "from":
-                return poke.getFormEnum().getLocalizedName();
             case "nature":
                 return poke.getNature().getLocalizedName();
             case "gender":
@@ -161,7 +160,7 @@ public class Papi extends PlaceholderExpansion {
                 return poke.getLocalizedName();
             case "nickname":
                 String nickname = poke.getNickname();
-                return nickname == null?poke.getSpecies().name:nickname;
+                return nickname == null ? poke.getSpecies().name : nickname;
             case "ability":
                 return poke.getAbility().getLocalizedName();
             case "islegendary":
@@ -177,11 +176,32 @@ public class Papi extends PlaceholderExpansion {
             case "level":
                 return String.valueOf(poke.getLevel());
             case "shiny":
-                return String.valueOf(poke.isShiny());
+                return poke.isShiny() ? "是" : "否";
             case "inranch":
                 return String.valueOf(poke.isInRanch());
             case "caughtball":
                 return poke.getCaughtBall().getLocalizedName();
+            case "form": {
+                String s = split[3];
+                return s.equalsIgnoreCase("number") ? String.valueOf(poke.getForm()) :
+                        s.equalsIgnoreCase("localizedname") ? poke.getFormEnum().getLocalizedName() :
+                                "未知参数";
+            }
+            case "nbt": {
+                JsonElement json = Cache.gson.fromJson(poke.writeToNBT(new NBTTagCompound()).toString(), JsonObject.class);
+                String path = split[3];
+                String[] keys = path.split("\\.");
+                for (String key : keys) {
+                    if (json == null||json.isJsonNull()) return "无数据";
+                    if (json.isJsonArray()){
+                        json = ((JsonArray) json).get(Integer.parseInt(key));
+                        continue;
+                    }
+                    json = ((JsonObject) json).get(key);
+                    if (json == null||json.isJsonNull()) return "无数据";
+                }
+                return json.getAsString();
+            }
             default:
                 return "未知属性";
         }
