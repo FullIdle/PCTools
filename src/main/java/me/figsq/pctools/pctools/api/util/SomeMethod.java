@@ -122,8 +122,8 @@ public class SomeMethod {
         }
 
         StoragePosition ps = pokemon.getPosition();
-        Function<String, String> fun = s -> s.replace("{box}", String.valueOf(ps.box))
-                .replace("{order}", String.valueOf(ps.order));
+        Function<String, String> fun = s -> s.replace("{box}", String.valueOf(ps.box-Cache.papiIndexOffset))
+                .replace("{order}", String.valueOf(ps.order-Cache.papiIndexOffset));
         itemMeta.setDisplayName(papi(player, fun.apply(name)));
         itemMeta.setLore(papi(player, lore, fun));
         copy.setItemMeta(itemMeta);

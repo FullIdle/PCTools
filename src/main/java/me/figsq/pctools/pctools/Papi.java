@@ -23,28 +23,29 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
 import java.util.Collection;
+import static me.figsq.pctools.pctools.api.util.Cache.*;
 
 public class Papi extends PlaceholderExpansion {
     @Override
     public @NotNull String getIdentifier() {
-        return Cache.plugin.getDescription().getName().toLowerCase();
+        return plugin.getDescription().getName().toLowerCase();
     }
 
     @Override
     public @NotNull String getAuthor() {
-        return Arrays.toString(Cache.plugin.getDescription().getAuthors().toArray());
+        return Arrays.toString(plugin.getDescription().getAuthors().toArray());
     }
 
     @Override
     public @NotNull String getVersion() {
-        return Cache.plugin.getDescription().getVersion();
+        return plugin.getDescription().getVersion();
     }
 
     @Override
     public @Nullable String onRequest(OfflinePlayer player, @NotNull String params) {
         String[] split = params.split("_");
-        int box = (int) Double.parseDouble(split[0]);
-        int order = (int) Double.parseDouble(split[1]);
+        int box = (int) (Double.parseDouble(split[0])+papiIndexOffset);
+        int order = (int) (Double.parseDouble(split[1])+papiIndexOffset);
         String other = split[2].toLowerCase();
         Pokemon poke = Pixelmon.storageManager.getPokemon(
                 (EntityPlayerMP) ((Object) ((CraftEntity) player).getHandle()),
@@ -105,8 +106,8 @@ public class Papi extends PlaceholderExpansion {
                 String o = split[3];
                 StoragePosition position = poke.getPosition();
                 return o.equalsIgnoreCase("box") ?
-                        String.valueOf(position.box) : o.equalsIgnoreCase("order") ?
-                        String.valueOf(position.order) : "未知属性";
+                        String.valueOf(((int) (position.box - papiIndexOffset))) : o.equalsIgnoreCase("order") ?
+                        String.valueOf(((int) (position.order - papiIndexOffset))) : "未知属性";
             }
             case "statstotal": {
                 Stats stats = poke.getStats();
@@ -188,7 +189,7 @@ public class Papi extends PlaceholderExpansion {
                                 "未知参数";
             }
             case "nbt": {
-                JsonElement json = Cache.gson.fromJson(poke.writeToNBT(new NBTTagCompound()).toString(), JsonObject.class);
+                JsonElement json = gson.fromJson(poke.writeToNBT(new NBTTagCompound()).toString(), JsonObject.class);
                 String path = split[3];
                 String[] keys = path.split("\\.");
                 for (String key : keys) {

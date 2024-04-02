@@ -1,13 +1,11 @@
 package me.figsq.pctools.pctools.gui;
 
 import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
-import com.pixelmonmod.pixelmon.api.storage.PokemonStorage;
 import lombok.Getter;
 import me.figsq.pctools.pctools.api.util.Cache;
 import me.fullidle.ficore.ficore.common.api.ineventory.ListenerInvHolder;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -15,7 +13,6 @@ import org.bukkit.inventory.meta.ItemMeta;
 @Getter
 public class ConfirmGui extends ListenerInvHolder {
     private final Inventory inventory = Bukkit.createInventory(this,3*9,"§c放生宝可梦-确定?");
-    private boolean openUpGui = false;
     private ItemStack pokeItem;
     private Pokemon pokemon;
     private final PCGui pcGui;
@@ -42,22 +39,18 @@ public class ConfirmGui extends ListenerInvHolder {
 
         onClick(e->{
             e.setCancelled(true);
-            if (!e.getCurrentItem().getType().equals(Material.STAINED_GLASS_PANE)) return;
+            ItemStack item = e.getCurrentItem();
+            if (item == null) return;
+            if (!item.getType().equals(Material.STAINED_GLASS_PANE)) return;
             if (e.getSlot() == 21) {
                 pokemon.getStorage().set(pokemon.getPosition(),null);
             }
-            this.openUpGui = true;
-            e.getWhoClicked().openInventory(pcGui.getInventory());
+            e.getWhoClicked().openInventory(this.pcGui.getInventory());
         });
-        onClose(e-> {
-            if (this.openUpGui){
-                this.openUpGui = false;
-                Bukkit.getScheduler().runTask(Cache.plugin, () -> {
-                    pcGui.setNeedUpdate(true);
-                    e.getPlayer().openInventory(this.pcGui.getInventory());
-                });
-            }
-        });
+        onClose(e-> Bukkit.getScheduler().runTask(Cache.plugin, () -> {
+            pcGui.setNeedUpdate(true);
+            e.getPlayer().openInventory(this.pcGui.getInventory());
+        }));
     }
 
     public void setPokeItem(ItemStack pokeItem, Pokemon pokemon) {

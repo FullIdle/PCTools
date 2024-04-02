@@ -29,6 +29,7 @@ public class Cache {
     public static List<String> uBeastLore;
     public static String[] helpMsg;
     public static boolean packCanEmpty;
+    public static Double papiIndexOffset;
     public static Map<EnumSpecies, Pair<String,List<String>>> specialNAL = new HashMap<>();
 
     public static void init(){
@@ -37,6 +38,7 @@ public class Cache {
 
         FileConfiguration config = plugin.getConfig();
         pCGuiTitle = config.getString("title");
+        papiIndexOffset = config.getDouble("papiIndexOffset");
 
         //name lore
         normalName = config.getString("item.normal.name");

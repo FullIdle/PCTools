@@ -17,7 +17,6 @@ import java.util.Collections;
 public class SortGui extends ListenerInvHolder {
     private final Inventory inventory = Bukkit.createInventory(this,9,"§3排序");
     private final PCGui pcGui;
-    private boolean openUpGui = false;
 
     public SortGui(PCGui pcGui){
         this.pcGui = pcGui;
@@ -55,7 +54,7 @@ public class SortGui extends ListenerInvHolder {
         onClick(e->{
             e.setCancelled(true);
             int slot = e.getSlot();
-            if (e.getCurrentItem() == null&&
+            if (e.getCurrentItem() == null||
                     e.getCurrentItem().getType().equals(Material.AIR)) return;
             if (slot == 0){
                 TidyPcUtil.randomSort(this.pcGui.getNowBox());
@@ -67,15 +66,10 @@ public class SortGui extends ListenerInvHolder {
                 TidyPcUtil.specialSort(this.pcGui.getNowBox());
             }
             this.pcGui.setNeedUpdate(true);
-            this.openUpGui = true;
             e.getWhoClicked().openInventory(this.pcGui.getInventory());
         });
 
         onClose(e->{
-            if (this.openUpGui) {
-                this.openUpGui = false;
-                return;
-            }
             this.pcGui.setNeedUpdate(true);
             Bukkit.getScheduler().runTask(Cache.plugin,()->e.getPlayer().openInventory(this.pcGui.getInventory()));
         });

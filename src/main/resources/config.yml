@@ -4,7 +4,11 @@ title: "&3PCTools[{box}/30] —— %player_name%"
 cancelPC: true
 ##背包精灵可空
 packCanEmpty: false
-
+##变量索引偏移//可恶的左道逼得
+##0则不偏移,比如下方变量的[order]默认是0开始算第一个宝可梦,如果进行-1偏移,则1是第一个宝可梦
+##以上是偏移传入的
+##返回的值如果是有关位置的都会进行偏移
+papiIndexOffset: 0
 ## 变量格式%pctools_[box]_[order]_[arg]_[可选参数]%
 ## box = pc页码[从0开始算]
 ## order = 第几个[0-29]
