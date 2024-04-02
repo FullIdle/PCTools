@@ -17,10 +17,14 @@ import me.figsq.pctools.pctools.api.util.Cache;
 import me.figsq.pctools.pctools.api.util.SomeMethod;
 import me.fullidle.ficore.ficore.common.api.ineventory.ListenerInvHolder;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.server.v1_12_R1.ChatMessage;
+import net.minecraft.server.v1_12_R1.EntityPlayer;
+import net.minecraft.server.v1_12_R1.PacketPlayOutOpenWindow;
 import net.minecraft.server.v1_12_R1.Tuple;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.craftbukkit.v1_12_R1.entity.CraftEntity;
+import org.bukkit.craftbukkit.v1_12_R1.entity.CraftPlayer;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
@@ -106,7 +110,6 @@ public class PCGui extends ListenerInvHolder {
                     e.setCancelled(true);
                     return;
                 }
-                ;
                 ItemStack item = entry.getValue();
                 if (!swapPoke(
                         this.pokemonCache.get(item),
@@ -311,11 +314,16 @@ public class PCGui extends ListenerInvHolder {
         if (!updateTitle) {
             return;
         }
-        String title = SomeMethod.papi(owner, Cache.pCGuiTitle
-                .replace("{box}", String.valueOf(this.nowBox.boxNumber + 1)));
-        SomeMethod.setInvTitle(triggeredPlayer, title);
-        this.cacheCursor = triggeredPlayer.getItemOnCursor();
-        this.owner.openInventory(this.inventory);
+        EntityPlayer ep = ((CraftPlayer) triggeredPlayer.getPlayer()).getHandle();
+        ChatMessage title = new ChatMessage(SomeMethod.papi(owner, Cache.pCGuiTitle
+                .replace("{box}", String.valueOf(this.nowBox.boxNumber + 1))));
+        PacketPlayOutOpenWindow play = new PacketPlayOutOpenWindow(
+                ep.activeContainer.windowId,
+                "minecraft:chest",
+                title,
+                this.inventory.getSize());
+        ep.playerConnection.sendPacket(play);
+        ep.updateInventory(ep.activeContainer);
     }
 
     /**

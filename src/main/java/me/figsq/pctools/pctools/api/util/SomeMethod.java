@@ -6,21 +6,17 @@ import com.pixelmonmod.pixelmon.api.storage.PokemonStorage;
 import com.pixelmonmod.pixelmon.api.storage.StoragePosition;
 import com.pixelmonmod.pixelmon.items.ItemPixelmonSprite;
 import com.pixelmonmod.pixelmon.storage.PlayerPartyStorage;
-import lombok.SneakyThrows;
 import me.clip.placeholderapi.PlaceholderAPI;
 import net.minecraft.server.v1_12_R1.EntityPlayer;
-import net.minecraft.server.v1_12_R1.IInventory;
 import net.minecraft.server.v1_12_R1.NBTTagCompound;
 import net.minecraft.server.v1_12_R1.Tuple;
 import org.apache.commons.lang3.tuple.Pair;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.craftbukkit.v1_12_R1.inventory.CraftInventory;
 import org.bukkit.craftbukkit.v1_12_R1.inventory.CraftItemStack;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -28,18 +24,6 @@ import java.util.UUID;
 import java.util.function.Function;
 
 public class SomeMethod {
-    public static Class<IInventory> minecraftInvCls;
-
-    static {
-        try {
-            minecraftInvCls = (Class<IInventory>) Class
-                    .forName("org.bukkit.craftbukkit.v1_12_R1.inventory.CraftInventoryCustom$MinecraftInventory");
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-
     /**
      * 字符串变量处理及颜色代码处理
      *
@@ -68,15 +52,6 @@ public class SomeMethod {
         return temp;
     }
 
-    @SneakyThrows
-    public static void setInvTitle(Player player, String title) {
-        CraftInventory inv = (CraftInventory) player.getOpenInventory().getTopInventory();
-        IInventory myInv = inv.getInventory();
-        Field field = minecraftInvCls.getDeclaredField("title");
-        field.setAccessible(true);
-        field.set(myInv,title);
-    }
-
     public static ItemStack getFormatPokePhoto(Pokemon pokemon) {
         if (pokemon == null) {
             return null;
@@ -89,8 +64,8 @@ public class SomeMethod {
                 .getBukkitEntity().getPlayer();
         ItemStack copy = CraftItemStack.asBukkitCopy(photo);
         ItemMeta itemMeta = copy.getItemMeta();
-        String name = null;
-        List<String> lore = null;
+        String name;
+        List<String> lore;
         TidyPcUtil.SpecialType type = TidyPcUtil.SpecialType.getType(pokemon);
         Pair<String, List<String>> pair = Cache.specialNAL.get(pokemon.getSpecies());
         if (pair == null){
