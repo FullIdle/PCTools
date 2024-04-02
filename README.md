@@ -1,4 +1,6 @@
 # PCTools
+[MC9Y](https://bbs.mc9y.net/resources/913/)
+
 ## 介绍
 一个可以代替原版PixelmonMod的PC界面的插件
 <br>用Minecraft原版容器进行显示
