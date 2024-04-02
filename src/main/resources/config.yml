@@ -16,6 +16,9 @@ papiIndexOffset: 0
 ## 插件传入的变量: {box} {order}
 ##
 ## ->arg<-
+#catchrate 捕获率
+#weight 体重
+#malepercent 性别比
 #growth 体型
 #helditem 携带物品
 #status 状态

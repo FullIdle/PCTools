@@ -55,6 +55,15 @@ public class Papi extends PlaceholderExpansion {
         }
 
         switch (other) {
+            case "catchrate":{
+                return String.valueOf(poke.getBaseStats().getCatchRate());
+            }
+            case "weight":{
+                return String.valueOf(poke.getBaseStats().getWeight());
+            }
+            case "malepercent":{
+                return String.valueOf(((int) poke.getBaseStats().getMalePercent()));
+            }
             case "types": {
                 return poke.getSpecies().getBaseStats().types.toString()
                         .replace("Normal", "普")
