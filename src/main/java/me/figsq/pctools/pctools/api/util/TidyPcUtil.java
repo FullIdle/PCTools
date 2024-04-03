@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
 import com.pixelmonmod.pixelmon.api.storage.PCBox;
 import com.pixelmonmod.pixelmon.enums.EnumSpecies;
+import me.figsq.pctools.pctools.api.enums.SpecialType;
 
 import java.util.*;
 
@@ -54,21 +55,6 @@ public class TidyPcUtil{
         Collections.shuffle(pokemons);
         for (int i = 0; i < pokemons.size(); i++) {
             box.set(i,pokemons.get(i));
-        }
-    }
-
-    public enum SpecialType{
-        LEGEND,UBEAST,NORMAL,EGG;
-
-        /**
-         * 获取宝可梦的类型
-         * @return
-         */
-        public static SpecialType getType(Pokemon pokemon) {
-            return pokemon.isLegendary()?
-                    LEGEND:pokemon.isEgg()?
-                    EGG:pokemon.getSpecies().isUltraBeast()?
-                    UBEAST:NORMAL;
         }
     }
 }

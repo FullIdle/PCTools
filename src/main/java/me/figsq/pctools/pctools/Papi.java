@@ -12,9 +12,11 @@ import com.pixelmonmod.pixelmon.entities.pixelmon.stats.BaseStats;
 import com.pixelmonmod.pixelmon.entities.pixelmon.stats.IStatStore;
 import com.pixelmonmod.pixelmon.entities.pixelmon.stats.Stats;
 import com.pixelmonmod.pixelmon.entities.pixelmon.stats.StatsType;
+import lombok.SneakyThrows;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import me.figsq.pctools.pctools.api.util.Cache;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.nbt.JsonToNBT;
 import net.minecraft.nbt.NBTTagCompound;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.craftbukkit.v1_12_R1.entity.CraftEntity;
@@ -41,20 +43,37 @@ public class Papi extends PlaceholderExpansion {
         return plugin.getDescription().getVersion();
     }
 
-    @Override
+    @SneakyThrows
+    @Override /*%pctools_{pokemon}_types%*/
     public @Nullable String onRequest(OfflinePlayer player, @NotNull String params) {
-        String[] split = params.split("_");
-        int box = (int) (Double.parseDouble(split[0])+papiIndexOffset);
-        int order = (int) (Double.parseDouble(split[1])+papiIndexOffset);
-        String other = split[2].toLowerCase();
-        Pokemon poke = Pixelmon.storageManager.getPokemon(
-                (EntityPlayerMP) ((Object) ((CraftEntity) player).getHandle()),
-                new StoragePosition(box, order));
+        Pokemon poke = null;
+        String[] split = null;
+        if (params.charAt(0) == '{'){
+            int end = params.lastIndexOf('}') + 1;
+            if (end != 0){
+                String json = params.substring(0, end);
+                NBTTagCompound nbt = JsonToNBT.func_180713_a(json);
+                poke = Pixelmon.pokemonFactory.create(nbt);
+                String[] ss = params.substring(end+1).split("_");
+                split = new String[2 + ss.length];
+                System.arraycopy(ss,0,split,2,ss.length);
+            }
+        }else{
+            split = params.split("_");
+            int box = (int) (Double.parseDouble(split[0])+papiIndexOffset);
+            int order = (int) (Double.parseDouble(split[1])+papiIndexOffset);
+            poke = Pixelmon.storageManager.getPokemon(
+                    (EntityPlayerMP) ((Object) ((CraftEntity) player).getHandle()),
+                    new StoragePosition(box, order));
+        }
         if (poke == null) {
             return "空槽";
         }
-
-        switch (other) {
+        if (split == null) {
+            return "格式错误";
+        }
+        String arg = split[2].toLowerCase();
+        switch (arg) {
             case "catchrate":{
                 return String.valueOf(poke.getBaseStats().getCatchRate());
             }

@@ -1,6 +1,7 @@
 package me.figsq.pctools.pctools;
 
 import com.pixelmonmod.pixelmon.Pixelmon;
+import me.figsq.pctools.pctools.api.enums.Permissions;
 import me.figsq.pctools.pctools.api.util.Cache;
 import me.figsq.pctools.pctools.gui.PCGui;
 import org.bukkit.Material;
@@ -25,7 +26,7 @@ public class PlayerListener implements Listener {
         if (Cache.cancelPC) {
             e.setCancelled(true);
 
-            String permission = CMD.Permissions.OPEN.getPermission();
+            String permission = Permissions.OPEN.getPermission();
             Player p = e.getPlayer();
             if (!p.hasPermission(permission)){
                 p.sendMessage("§cYou lack §3"+permission+"§c permissions");

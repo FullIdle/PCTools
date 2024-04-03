@@ -7,6 +7,7 @@ import com.pixelmonmod.pixelmon.api.storage.StoragePosition;
 import com.pixelmonmod.pixelmon.items.ItemPixelmonSprite;
 import com.pixelmonmod.pixelmon.storage.PlayerPartyStorage;
 import me.clip.placeholderapi.PlaceholderAPI;
+import me.figsq.pctools.pctools.api.enums.SpecialType;
 import net.minecraft.server.v1_12_R1.EntityPlayer;
 import net.minecraft.server.v1_12_R1.NBTTagCompound;
 import net.minecraft.server.v1_12_R1.Tuple;
@@ -66,9 +67,9 @@ public class SomeMethod {
         ItemMeta itemMeta = copy.getItemMeta();
         String name;
         List<String> lore;
-        TidyPcUtil.SpecialType type = TidyPcUtil.SpecialType.getType(pokemon);
         Pair<String, List<String>> pair = Cache.specialNAL.get(pokemon.getSpecies());
         if (pair == null){
+            SpecialType type = SpecialType.getType(pokemon);
             switch (type){
                 case EGG:{
                     name = Cache.eggName;

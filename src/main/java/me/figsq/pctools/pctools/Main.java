@@ -1,6 +1,10 @@
 package me.figsq.pctools.pctools;
 
+import com.pixelmonmod.pixelmon.Pixelmon;
+import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
+import me.clip.placeholderapi.PlaceholderAPI;
 import me.figsq.pctools.pctools.api.util.Cache;
+import net.minecraft.nbt.NBTTagCompound;
 import org.bukkit.Bukkit;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.entity.Player;

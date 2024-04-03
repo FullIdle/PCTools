@@ -19,5 +19,7 @@ permissions:
     default: op
   pctools.cmd.reload:
     default: op
+  pctools.cmd.search:
+    default: op
   pctools.function.sort:
     default: op

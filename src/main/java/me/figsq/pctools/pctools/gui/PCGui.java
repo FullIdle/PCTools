@@ -40,7 +40,9 @@ import java.util.Objects;
 
 @Getter
 public class PCGui extends ListenerInvHolder {
-    private ResultGui resultGui;
+    @Setter
+    private PCResultGui pcResultGui;
+    private boolean needReturnGui = true;
     private final Inventory inventory;
     private final Player owner;
     private final PlayerPartyStorage partyStorage;
@@ -63,6 +65,7 @@ public class PCGui extends ListenerInvHolder {
         initPoke(page);
 
         onOpen(e -> {
+            this.needReturnGui = true;
             if (cacheCursor != null) {
                 e.getPlayer().setItemOnCursor(cacheCursor);
                 cacheCursor = null;
@@ -94,9 +97,9 @@ public class PCGui extends ListenerInvHolder {
             ClientSetLastOpenBox box = new ClientSetLastOpenBox(mp, this.nowBox.boxNumber);
             Pixelmon.network.sendTo(box, mp);
 
-/*            if (resultGui != null)
-                Bukkit.getScheduler().runTask(Cache.plugin,()->resultGui.getInventory());
-            resultGui = null;*/
+            if (this.pcResultGui != null&&this.needReturnGui)
+                Bukkit.getScheduler().runTask(Cache.plugin,
+                        ()->closePlayer.openInventory(pcResultGui.getInventory()));
         });
         onDrag(e -> {
             if (needUpdate) {
@@ -159,6 +162,7 @@ public class PCGui extends ListenerInvHolder {
                 return;
             }
             if (currentItem != null && currentItem.getDurability() == 1) {
+                this.needReturnGui = false;
                 whoClicked.openInventory(this.sortGui.getInventory());
                 return;
             }
@@ -170,6 +174,7 @@ public class PCGui extends ListenerInvHolder {
             //左键删除
             if (currentItem != null && click.isRightClick() && clickPcAPack) {
                 this.confirmGui.setPokeItem(currentItem, pokemonCache.get(currentItem));
+                this.needReturnGui = false;
                 whoClicked.openInventory(confirmGui.getInventory());
                 return;
             }

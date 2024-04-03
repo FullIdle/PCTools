@@ -2,12 +2,22 @@ package me.figsq.pctools.pctools.api.util;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
 import com.pixelmonmod.pixelmon.config.PixelmonConfig;
+import com.pixelmonmod.pixelmon.entities.pixelmon.abilities.AbilityBase;
+import com.pixelmonmod.pixelmon.entities.pixelmon.stats.Gender;
+import com.pixelmonmod.pixelmon.enums.EnumNature;
 import com.pixelmonmod.pixelmon.enums.EnumSpecies;
+import com.pixelmonmod.pixelmon.enums.EnumType;
+import com.pixelmonmod.pixelmon.items.ItemHeld;
 import me.figsq.pctools.pctools.Main;
+import me.figsq.pctools.pctools.api.ISearchProperty;
+import net.minecraft.server.v1_12_R1.ItemStack;
 import org.apache.commons.lang3.tuple.Pair;
+import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.craftbukkit.v1_12_R1.inventory.CraftItemStack;
 
 import java.util.*;
 
@@ -30,9 +40,10 @@ public class Cache {
     public static String[] helpMsg;
     public static boolean packCanEmpty;
     public static Double papiIndexOffset;
-    public static Map<EnumSpecies, Pair<String,List<String>>> specialNAL = new HashMap<>();
+    public static Map<EnumSpecies, Pair<String, List<String>>> specialNAL = new HashMap<>();
+    public static Map<String, ISearchProperty> searchProperties = new HashMap<>();
 
-    public static void init(){
+    public static void init() {
         //clean
         specialNAL.clear();
 
@@ -50,8 +61,7 @@ public class Cache {
         legendLore = config.getStringList("item.legend.lore");
         uBeastLore = config.getStringList("item.uBeast.lore");
         //special name lore
-        ConfigurationSection specialConfig = config.getConfigurationSection("item.special");
-        for (String key : specialConfig.getKeys(false)) {
+        for (String key : config.getConfigurationSection("item.special").getKeys(false)) {
             Optional<EnumSpecies> optional = EnumSpecies.getFromName(key);
             if (!optional.isPresent()) {
                 continue;
@@ -59,29 +69,156 @@ public class Cache {
             EnumSpecies species = optional.get();
             specialNAL.put(
                     species,
-                    Pair.of(specialConfig.getString(key+".name"),
-                            specialConfig.getStringList(key+".lore"))
+                    Pair.of(config.getString("item.special." + key + ".name"),
+                            config.getStringList("item.special." + key + ".lore"))
             );
         }
 
 
-        helpMsg = SomeMethod.papi(null,config.getStringList("msg.help").toArray(new String[0]),null);
+        helpMsg = SomeMethod.papi(null, config.getStringList("msg.help").toArray(new String[0]), null);
         cancelPC = config.getBoolean("cancelPC");
         packCanEmpty = config.getBoolean("packCanEmpty");
     }
 
     static {
         for (int i = 0; i < 6; i++) {
-            invBackpackSlot.add(((i+1)*9)-2);
+            invBackpackSlot.add(((i + 1) * 9) - 2);
         }
         for (int i = 0; i < PixelmonConfig.computerBoxes; i++) {
-            int x = (i+1) % 6;
+            int x = (i + 1) % 6;
             int row = (i + 1) / 6;
             if (x > 0) {
-                invPcSlot.add((row * 9)+(x-1));
+                invPcSlot.add((row * 9) + (x - 1));
                 continue;
             }
-            invPcSlot.add(((row-1)*9)+5);
+            invPcSlot.add(((row - 1) * 9) + 5);
         }
+
+        //searchProperty
+        //名
+        searchProperties.put("name", new ISearchProperty() {
+            @Override
+            public String getName() {
+                return "name";
+            }
+
+            @Override
+            public boolean hasProperty(Pokemon poke, String arg) {
+                return poke.getLocalizedName().equalsIgnoreCase(arg)
+                        || poke.getSpecies().name.equalsIgnoreCase(arg);
+            }
+        });
+        //性别
+        searchProperties.put("gender", new ISearchProperty() {
+            @Override
+            public String getName() {
+                return "gender";
+            }
+
+            @Override
+            public boolean hasProperty(Pokemon poke, String arg) {
+                Gender gender = poke.getGender();
+                return gender.name().equalsIgnoreCase(arg) ||
+                        gender.getLocalizedName().equalsIgnoreCase(arg);
+            }
+        });
+        //属性
+        searchProperties.put("type1", new ISearchProperty() {
+            @Override
+            public String getName() {
+                return "type1";
+            }
+
+            @Override
+            public boolean hasProperty(Pokemon poke, String arg) {
+                EnumType type1 = poke.getBaseStats().getType1();
+                return type1.name().equalsIgnoreCase(arg) ||
+                        type1.getLocalizedName().equalsIgnoreCase(arg);
+            }
+        });
+        searchProperties.put("type2", new ISearchProperty() {
+            @Override
+            public String getName() {
+                return "type2";
+            }
+
+            @Override
+            public boolean hasProperty(Pokemon poke, String arg) {
+                EnumType type2 = poke.getBaseStats().getType2();
+                return type2.name().equalsIgnoreCase(arg) ||
+                        type2.getLocalizedName().equalsIgnoreCase(arg);
+            }
+        });
+        //特性
+        searchProperties.put("ability", new ISearchProperty() {
+            @Override
+            public String getName() {
+                return "ability";
+            }
+
+            @Override
+            public boolean hasProperty(Pokemon poke, String arg) {
+                AbilityBase ability = poke.getAbility();
+                return poke.getAbilityName().equalsIgnoreCase(arg) ||
+                        ability.getLocalizedName().equalsIgnoreCase(arg);
+            }
+        });
+        //性格
+        searchProperties.put("nature", new ISearchProperty() {
+            @Override
+            public String getName() {
+                return "nature";
+            }
+
+            @Override
+            public boolean hasProperty(Pokemon poke, String arg) {
+                EnumNature nature = poke.getNature();
+                return nature.name().equalsIgnoreCase(arg) ||
+                        nature.getLocalizedName().equalsIgnoreCase(arg);
+            }
+        });
+        //持有物品
+        searchProperties.put("helditem", new ISearchProperty() {
+            @Override
+            public String getName() {
+                return "helditem";
+            }
+
+            @Override
+            public boolean hasProperty(Pokemon poke, String arg) {
+                if (poke.getHeldItem() == null ||
+                        CraftItemStack.asBukkitCopy((ItemStack) ((Object) poke.getHeldItem()))
+                                .getType().equals(Material.AIR)) {
+                    return false;
+                }
+                ItemHeld held = poke.getHeldItemAsItemHeld();
+                return held.getLocalizedName().equalsIgnoreCase(arg) ||
+                        held.getHeldItemType().name().equalsIgnoreCase(arg);
+            }
+        });
+        //闪光
+        searchProperties.put("shiny", new ISearchProperty() {
+            @Override
+            public String getName() {
+                return "shiny";
+            }
+
+            @Override
+            public boolean hasProperty(Pokemon poke, String arg) {
+                return poke.isShiny() == Boolean.parseBoolean(arg);
+            }
+        });
+        //自定义名
+        searchProperties.put("nickname", new ISearchProperty() {
+            @Override
+            public String getName() {
+                return "nickname";
+            }
+
+            @Override
+            public boolean hasProperty(Pokemon poke, String arg) {
+                return poke.getNickname().equalsIgnoreCase(arg);
+            }
+        });
     }
 }
