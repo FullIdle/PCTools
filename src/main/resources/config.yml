@@ -26,6 +26,7 @@ papiIndexOffset: 0
 #status 状态
 #form 形态 可选参数 [number,localizedname]
 #nature 性格
+#mintnature 薄荷性格
 #gender 性别
 #hastag 带有标签 可选参数: spec tag[https://pixelmonmod.com/wiki/Pokemon_spec]
 #uuid 唯一id
@@ -39,6 +40,7 @@ papiIndexOffset: 0
 #isultrabeast 是否是究极兽
 #ivstotal 总个体值
 #ivs 个体值 可选参数: [hp:hp,sp:speed,at:Attack,df:Defence,sd:SpecialDefence,sa:SpecialAttack,]
+#hypertrained 是否用皇冠特训过 可选参数: 同上
 #evstotal 总努力值
 #evs 努力值 同上
 #level 等级
