@@ -103,7 +103,6 @@ public class CMD implements TabExecutor {
                     Map<ISearchProperty,String> map = new HashMap<>();
                     for (int i = 1; i < args.length; i++) {
                         String s = args[i];
-                        System.out.println(s);
                         if (!s.contains(":")) {
                             sender.sendMessage("无效参数: "+s);
                             return false;

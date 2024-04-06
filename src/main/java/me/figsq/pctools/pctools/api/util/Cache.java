@@ -42,10 +42,14 @@ public class Cache {
     public static Double papiIndexOffset;
     public static Map<EnumSpecies, Pair<String, List<String>>> specialNAL = new HashMap<>();
     public static Map<String, ISearchProperty> searchProperties = new HashMap<>();
+    public static Map<String,String> globalPapiReplace = new LinkedHashMap<>();
+    public static Map<String, ConfigurationSection> argsPapiReplace = new LinkedHashMap<>();
 
     public static void init() {
         //clean
         specialNAL.clear();
+        globalPapiReplace.clear();
+        argsPapiReplace.clear();
 
         FileConfiguration config = plugin.getConfig();
         pCGuiTitle = config.getString("title");
@@ -78,6 +82,17 @@ public class Cache {
         helpMsg = SomeMethod.papi(null, config.getStringList("msg.help").toArray(new String[0]), null);
         cancelPC = config.getBoolean("cancelPC");
         packCanEmpty = config.getBoolean("packCanEmpty");
+        //papiReplace
+        {
+            ConfigurationSection global = config.getConfigurationSection("papiReplace.global");
+            for (String key : global.getKeys(false)) {
+                globalPapiReplace.put(key,global.getString(key));
+            }
+            ConfigurationSection args = config.getConfigurationSection("papiReplace.args");
+            for (String key : args.getKeys(false)) {
+                argsPapiReplace.put(key,args.getConfigurationSection(key));
+            }
+        }
     }
 
     static {

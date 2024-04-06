@@ -31,6 +31,17 @@
 pctools.cmd.open: 打开pc的权限 [默认拥有]
 pctools.cmd.openother: 打开他人pc的权限 [默认op]
 ```
+### search
+#### 介绍
+搜索指定参数精灵
+#### 用法
+```
+/pctools search (多种参数|TAB补全)
+```
+#### 权限节点
+```yaml
+pctools.cmd.search: 搜搜权限 [默认op]
+```
 ### help/reload/其他 [不做解释]
 #### 权限节点
 ```yaml
@@ -47,4 +58,5 @@ pctools.cmd.sort: 排序权限(没有该权限则pc界面没有排序按钮) [�
 - [x] 替换原版PC
 - [x] 自定义背包是否保留最后一只精灵
 - [x] 排序功能(排序指定页[详细游戏自测])
-- [ ] 搜索功能
+- [x] 搜索功能
+- [x] 变量结果自定义替换

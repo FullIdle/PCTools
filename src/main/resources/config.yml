@@ -192,3 +192,81 @@ msg:
     - "pctools"
     - "- open [page] [player/可选]  打开指定[玩家/可选]的指定页PC"
     - "- reload 重载"
+
+##变量结果内容包含替换
+#比如返回的是[XXX]而你配置了XXX结果改成AAA整完整结果为[AAA]
+papiReplace:
+##指定参数变量结果内容包含替换
+  args:
+    ##写法
+    #不要加可选参数
+    #[args]:
+    #   原结果内包含的内容: 要替换的结果
+    #   原结果内包含的内容1: 要替换的结果1
+    hypertrained:
+      true: "已特训"
+      false: '未特训'
+    types:
+      Normal: 普
+      Fire: 火
+      Fighting: 格
+      Water: 水
+      Flying: 飞
+      Grass: 草
+      Poison: 毒
+      Electric: 电
+      Ground: 地
+      Psychic: 超
+      Rock: 岩
+      Ice: 冰
+      Bug: 虫
+      Dragon: 龙
+      Ghost: 幽
+      Dark: 暗
+      Steel: 钢
+      Fairy: 妖
+      Stellar: 星
+      '[': ' '
+      ']': ' '
+      ',': ''
+      ' ': ''
+    egggroup:
+      Monster: 怪兽
+      Humanlike: 人型
+      Water1: 水中1
+      Water3: 水中3
+      Bug: 虫
+      Mineral: 矿物
+      Flying: 飞行
+      Amorphous: 不定形
+      Field: 陆上
+      Water2: 水中2
+      Fairy: 妖精
+      Ditto: 百变怪
+      Grass: 植物
+      Dragon: 龙
+      Undiscovered: 未发现
+      '[': ' '
+      ']': ' '
+      ',': '、'
+    helditem:
+      NONE: '无'
+    moveset:
+      NONE: '无'
+    shiny:
+      true: '是'
+      false: '否'
+    hastag_unbreedable:
+      true: '已绝育'
+      false: '未绝育'
+    hastag:
+      true: '是'
+      false: '否'
+##最终结果替换(主要用于那些特殊的变量)
+  global:
+##格式
+#   原包含内容: 替换为
+    'NO DATA': "无数据"
+    'UNKNOWN PARAMETERS': "未知参数"
+    'POKE IS EMPTY': "精灵为空"
+    'WRONG FORMAT': "格式错误"
