@@ -132,9 +132,10 @@ public class PCGui extends ListenerInvHolder {
 
             int slot = e.getSlot();
             ClickType click = e.getClick();
-            boolean clickPcAPack = Cache.invBackpackSlot.contains(slot) || Cache.invPcSlot.contains(slot);
+            boolean clickPc = Cache.invBackpackSlot.contains(slot);
+            boolean clickPack = Cache.invPcSlot.contains(slot);
             if (e.getClickedInventory() instanceof PlayerInventory
-                    || !clickPcAPack) {
+                    || !(clickPc || clickPack)) {
                 e.setCancelled(true);
             }
             Player whoClicked = (Player) e.getWhoClicked();
@@ -183,7 +184,13 @@ public class PCGui extends ListenerInvHolder {
                 return;
             }
             //左键删除
-            if (currentItem != null && click.isRightClick() && clickPcAPack) {
+            if (currentItem != null && click.isRightClick() && (clickPack || clickPc)) {
+                //判断是否是背包种最后一只
+                if (clickPack&&SomeMethod.getStoragePokeSlot(partyStorage) == 1){
+                    e.setCancelled(true);
+                    return;
+                }
+
                 this.confirmGui.setPokeItem(currentItem, pokemonCache.get(currentItem));
                 this.needReturnGui = false;
                 whoClicked.openInventory(confirmGui.getInventory());
@@ -358,9 +365,7 @@ public class PCGui extends ListenerInvHolder {
 
         if (!Cache.packCanEmpty && ciPoke == null) {
             if (cuStorage instanceof PlayerPartyStorage && ciStorage instanceof PCBox) {
-                ArrayList<Pokemon> list = Lists.newArrayList(cuStorage.getAll());
-                list.removeIf(Objects::isNull);
-                if (list.size() == 1) {
+                if (SomeMethod.getStoragePokeSlot(cuStorage) == 1) {
                     return false;
                 }
             }

@@ -1,5 +1,6 @@
 package me.figsq.pctools.pctools.api.util;
 
+import com.google.common.collect.Lists;
 import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
 import com.pixelmonmod.pixelmon.api.storage.PCBox;
 import com.pixelmonmod.pixelmon.api.storage.PokemonStorage;
@@ -18,10 +19,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.function.Function;
 
 public class SomeMethod {
@@ -121,5 +119,14 @@ public class SomeMethod {
         if (Cache.invPcSlot.contains(clickSlot))
             return new Tuple<>(pcBox, new StoragePosition(pcBox.boxNumber, Cache.invPcSlot.indexOf(clickSlot)));
         return null;
+    }
+
+    /**
+     * 获取存储内有多少只精灵
+     */
+    public static Integer getStoragePokeSlot(PokemonStorage storage){
+        ArrayList<Pokemon> list = Lists.newArrayList(storage.getAll());
+        list.removeIf(Objects::isNull);
+        return list.size();
     }
 }
