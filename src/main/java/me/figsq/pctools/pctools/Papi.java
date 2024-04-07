@@ -6,14 +6,17 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.pixelmonmod.pixelmon.Pixelmon;
 import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
+import com.pixelmonmod.pixelmon.api.storage.PCStorage;
 import com.pixelmonmod.pixelmon.api.storage.StoragePosition;
 import com.pixelmonmod.pixelmon.battles.attacks.Attack;
 import com.pixelmonmod.pixelmon.entities.pixelmon.stats.BaseStats;
 import com.pixelmonmod.pixelmon.entities.pixelmon.stats.IStatStore;
 import com.pixelmonmod.pixelmon.entities.pixelmon.stats.Stats;
 import com.pixelmonmod.pixelmon.entities.pixelmon.stats.StatsType;
+import com.pixelmonmod.pixelmon.enums.EnumSpecies;
 import com.pixelmonmod.pixelmon.items.ItemHeld;
 import com.pixelmonmod.pixelmon.items.heldItems.NoItem;
+import com.pixelmonmod.pixelmon.storage.PlayerPartyStorage;
 import lombok.SneakyThrows;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import me.figsq.pctools.pctools.api.util.Cache;
@@ -26,10 +29,7 @@ import org.bukkit.craftbukkit.v1_12_R1.entity.CraftEntity;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static me.figsq.pctools.pctools.api.util.Cache.*;
 
@@ -53,47 +53,54 @@ public class Papi extends PlaceholderExpansion {
     @Override
     public @Nullable String onRequest(OfflinePlayer player, @NotNull String params) {
         Pokemon poke = null;
-        String[] split = null;
-        if (params.charAt(0) == '{') {
-            int end = params.lastIndexOf('}') + 1;
-            if (end != 0) {
-                String json = params.substring(0, end);
-                NBTTagCompound nbt = JsonToNBT.func_180713_a(json);
-                poke = Pixelmon.pokemonFactory.create(nbt);
-                String[] ss = params.substring(end + 1).split("_");
-                split = new String[2 + ss.length];
-                System.arraycopy(ss, 0, split, 2, ss.length);
+        ArrayList<String> args = Lists.newArrayList(params.split("_"));
+
+        String pokeO = args.get(0);
+        if (pokeO.startsWith("{") && pokeO.endsWith("}")) {
+            if (pokeO.length() != 2) {
+                poke = Pixelmon.pokemonFactory.create(JsonToNBT.func_180713_a(pokeO));
+                //删一
             }
-        } else {
-            split = params.split("_");
-            int box = (int) (Double.parseDouble(split[0]) + papiIndexOffset);
-            int order = (int) (Double.parseDouble(split[1]) + papiIndexOffset);
+        } else if (pokeO.startsWith("pokedex:")) {
+            poke = Pixelmon.pokemonFactory.create(
+                    EnumSpecies.getFromDex(Integer.parseInt(pokeO.substring(8))));
+        } else if (pokeO.startsWith("species:")) {
+            poke = Pixelmon.pokemonFactory.create(
+                    EnumSpecies.getFromNameAnyCase(pokeO.substring(8)));
+        } else{
+            int box = (int) (Double.parseDouble(pokeO) + papiIndexOffset);
+            int order = (int) (Double.parseDouble(args.get(1)) + papiIndexOffset);
             poke = Pixelmon.storageManager.getPokemon(
                     (EntityPlayerMP) ((Object) ((CraftEntity) player).getHandle()),
                     new StoragePosition(box, order));
+            //删两
+            args.remove(0);
         }
-        String request = parsePoke(poke, split);
+        args.remove(0);
+        return papiReplace(parsePoke(player,poke, args),args);
+    }
 
-        if (split != null){
-            a:
-            for (Map.Entry<String, ConfigurationSection> entry : argsPapiReplace.entrySet()) {
-                String old = entry.getKey();
-                if (old.contains("_")) {
-                    String[] ss = old.split("_");
-                    for (int i = 0; i < ss.length; i++) {
-                        if (!ss[i].equalsIgnoreCase(split[2 + i])) continue a;
-                    }
-                    ConfigurationSection value = entry.getValue();
-                    for (String key : value.getKeys(false)) {
-                        request = request.replace(key,value.getString(key));
-                    }
-                    continue;
+    public static String papiReplace(String request,ArrayList<String> args){
+        a:
+        for (Map.Entry<String, ConfigurationSection> entry : argsPapiReplace.entrySet()) {
+            String old = entry.getKey();
+            if (old.contains("_")) {
+                String[] ss = old.split("_");
+                System.out.println(ss.length+"||"+args.size());
+                if (ss.length > args.size()) continue;
+                for (int i = 0; i < ss.length; i++) {
+                    if (!ss[i].equalsIgnoreCase(args.get(i))) continue a;
                 }
-                if (split[2].equalsIgnoreCase(old)) {
-                    ConfigurationSection value = entry.getValue();
-                    for (String key : value.getKeys(false)) {
-                        request = request.replace(key,value.getString(key));
-                    }
+                ConfigurationSection value = entry.getValue();
+                for (String key : value.getKeys(false)) {
+                    request = request.replace(key, value.getString(key));
+                }
+                continue;
+            }
+            if (args.get(0).equalsIgnoreCase(old)) {
+                ConfigurationSection value = entry.getValue();
+                for (String key : value.getKeys(false)) {
+                    request = request.replace(key, value.getString(key));
                 }
             }
         }
@@ -107,17 +114,45 @@ public class Papi extends PlaceholderExpansion {
     }
 
     @SneakyThrows
-    public static String parsePoke(Pokemon poke, String[] args) {
-        if (poke == null) {
-            return "POKE IS EMPTY";
-        }
-        if (args == null) {
+    public static String parsePoke(OfflinePlayer player,Pokemon poke, List<String> args) {
+        if (args.isEmpty()) {
             return "WRONG FORMAT";
         }
-        String arg = args[2].toLowerCase();
+        String arg = args.get(0).toLowerCase();
+        if (poke == null) {
+            //无宝可梦变量
+            if (arg.equalsIgnoreCase("pokeslot")||
+                    arg.equalsIgnoreCase("pcslot")||
+                    arg.equalsIgnoreCase("partyslot")
+            ) {
+                PCStorage pc = Pixelmon.storageManager.getPCForPlayer(player.getUniqueId());
+                PlayerPartyStorage party = Pixelmon.storageManager.getParty(player.getUniqueId());
+                ArrayList<Pokemon> list = null;
+                switch (arg){
+                    case "pokeslot":{
+                        list = Lists.newArrayList(pc.getAll());
+                        list.addAll(Arrays.asList(party.getAll()));
+                        break;
+                    }
+                    case "pcslot":{
+                        list = Lists.newArrayList(pc.getAll());
+                        break;
+                    }
+                    case "partyslot":{
+                        list = Lists.newArrayList(party.getAll());
+                        break;
+                    }
+                }
+                list.removeIf(Objects::isNull);
+                return String.valueOf(list.size());
+            }
+            //无宝可梦变量
+            return "POKE IS EMPTY";
+        }
+
         switch (arg) {
             case "hypertrained": {
-                StatsType type = StatsType.getStatsEffect(args[3]);
+                StatsType type = StatsType.getStatsEffect(args.get(1));
                 if (type == null) return "UNKNOWN PARAMETERS";
                 return String.valueOf(poke.getIVs().isHyperTrained(type));
             }
@@ -140,7 +175,7 @@ public class Papi extends PlaceholderExpansion {
                 return Arrays.toString(poke.getSpecies().getBaseStats().eggGroups);
             }
             case "position": {
-                String o = args[3];
+                String o = args.get(1);
                 StoragePosition position = poke.getPosition();
                 return o.equalsIgnoreCase("box") ?
                         String.valueOf(((int) (position.box - papiIndexOffset))) : o.equalsIgnoreCase("order") ?
@@ -158,9 +193,9 @@ public class Papi extends PlaceholderExpansion {
                 )));
             }
             case "stats":
-                return stats(args[3], poke.getStats());
+                return stats(args.get(1), poke.getStats());
             case "basestats":
-                return stats(args[3], poke.getBaseStats());
+                return stats(args.get(1), poke.getBaseStats());
             case "basetotal": {
                 return String.valueOf(addUp(poke.getBaseStats().stats.values()));
             }
@@ -187,11 +222,11 @@ public class Papi extends PlaceholderExpansion {
             case "gender":
                 return poke.getGender().getLocalizedName();
             case "hastag":
-                return String.valueOf(poke.hasSpecFlag(args[3].toLowerCase()));
+                return String.valueOf(poke.hasSpecFlag(args.get(1).toLowerCase()));
             case "uuid":
                 return poke.getUUID().toString();
             case "moveset": {
-                int i = Integer.parseInt(args[3]);
+                int i = Integer.parseInt(args.get(1));
                 Attack attack = poke.getMoveset().attacks[i];
                 return attack == null ? "NONE" : attack.getMove().getLocalizedName();
             }
@@ -211,9 +246,9 @@ public class Papi extends PlaceholderExpansion {
             case "isultrabeast":
                 return String.valueOf(poke.getSpecies().isUltraBeast());
             case "ivs":
-                return stats(args[3], poke.getStats().ivs);
+                return stats(args.get(1), poke.getStats().ivs);
             case "evs":
-                return stats(args[3], poke.getStats().evs);
+                return stats(args.get(1), poke.getStats().evs);
             case "level":
                 return String.valueOf(poke.getLevel());
             case "shiny":
@@ -223,14 +258,14 @@ public class Papi extends PlaceholderExpansion {
             case "caughtball":
                 return poke.getCaughtBall().getLocalizedName();
             case "form": {
-                String s = args[3];
+                String s = args.get(1);
                 return s.equalsIgnoreCase("number") ? String.valueOf(poke.getForm()) :
                         s.equalsIgnoreCase("localizedname") ? poke.getFormEnum().getLocalizedName() :
                                 "UNKNOWN PARAMETERS";
             }
             case "nbt": {
                 JsonElement json = gson.fromJson(poke.writeToNBT(new NBTTagCompound()).toString(), JsonObject.class);
-                String path = args[3];
+                String path = args.get(1);
                 String[] keys = path.split("\\.");
                 for (String key : keys) {
                     if (json == null || json.isJsonNull()) return "NO DATA";
