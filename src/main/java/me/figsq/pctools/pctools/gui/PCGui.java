@@ -97,9 +97,9 @@ public class PCGui extends ListenerInvHolder {
             ClientSetLastOpenBox box = new ClientSetLastOpenBox(mp, this.nowBox.boxNumber);
             Pixelmon.network.sendTo(box, mp);
 
-            if (this.pcResultGui != null&&this.needReturnGui)
+            if (this.pcResultGui != null && this.needReturnGui)
                 Bukkit.getScheduler().runTask(Cache.plugin,
-                        ()->closePlayer.openInventory(pcResultGui.getInventory()));
+                        () -> closePlayer.openInventory(pcResultGui.getInventory()));
         });
         onDrag(e -> {
             if (needUpdate) {
@@ -171,6 +171,17 @@ public class PCGui extends ListenerInvHolder {
                 return;
             }
 
+            Pokemon pokemon = pokemonCache.get(cursor);
+            Pokemon ciPoke = this.pokemonCache.get(currentItem);
+            Tuple<PokemonStorage, StoragePosition> tuple = SomeMethod.computeStorageAndPosition(slot, this.partyStorage, this.nowBox);
+            PokemonStorage ciStorage = tuple.a();
+            //特殊情况[在牧场中]
+            if (pokemon != null && pokemon.isInRanch()||
+                    ciPoke != null && ciPoke.isInRanch()
+            ) {
+                e.setCancelled(true);
+                return;
+            }
             //左键删除
             if (currentItem != null && click.isRightClick() && clickPcAPack) {
                 this.confirmGui.setPokeItem(currentItem, pokemonCache.get(currentItem));
@@ -178,13 +189,7 @@ public class PCGui extends ListenerInvHolder {
                 whoClicked.openInventory(confirmGui.getInventory());
                 return;
             }
-
-            //shift
-            Pokemon pokemon = pokemonCache.get(cursor);
-            Pokemon ciPoke = this.pokemonCache.get(currentItem);
-            Tuple<PokemonStorage, StoragePosition> tuple = SomeMethod.computeStorageAndPosition(slot, this.partyStorage, this.nowBox);
-            PokemonStorage ciStorage = tuple.a();
-
+            //shift行为
             if (shift) {
                 e.setCancelled(true);
                 PokemonStorage storage;
