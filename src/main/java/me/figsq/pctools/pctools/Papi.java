@@ -86,7 +86,6 @@ public class Papi extends PlaceholderExpansion {
             String old = entry.getKey();
             if (old.contains("_")) {
                 String[] ss = old.split("_");
-                System.out.println(ss.length+"||"+args.size());
                 if (ss.length > args.size()) continue;
                 for (int i = 0; i < ss.length; i++) {
                     if (!ss[i].equalsIgnoreCase(args.get(i))) continue a;
