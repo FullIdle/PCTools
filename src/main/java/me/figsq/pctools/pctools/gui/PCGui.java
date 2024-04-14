@@ -185,19 +185,17 @@ public class PCGui extends ListenerInvHolder {
                 return;
             }
             //左键删除
-            Cache.plugin.getLogger().info("Test1");
             if (currentItem != null && click.isRightClick() && (clickPack || clickPc)) {
-                Cache.plugin.getLogger().info("Test2");
                 //判断是否是背包种最后一只
                 int i = SomeMethod.getStoragePokeSlot(partyStorage);
                 if (clickPack&&i == 1){
-                    Cache.plugin.getLogger().info("Test2");
                     e.setCancelled(true);
                     return;
                 }
 
                 this.confirmGui.setPokeItem(currentItem, pokemonCache.get(currentItem));
                 this.needReturnGui = false;
+                Cache.plugin.getLogger().info("§a我他妈cnm左道"+i);
                 whoClicked.openInventory(confirmGui.getInventory());
                 return;
             }
