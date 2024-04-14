@@ -127,6 +127,8 @@ public class SomeMethod {
     public static Integer getStoragePokeSlot(PokemonStorage storage){
         ArrayList<Pokemon> list = Lists.newArrayList(storage.getAll());
         list.removeIf(Objects::isNull);
-        return list.size();
+        int i = list.size();
+        java.lang.System.out.println("test:"+i);
+        return i;
     }
 }
