@@ -133,8 +133,8 @@ public class PCGui extends ListenerInvHolder {
 
             int slot = e.getSlot();
             ClickType click = e.getClick();
-            boolean clickPc = Cache.invBackpackSlot.contains(slot);
-            boolean clickPack = Cache.invPcSlot.contains(slot);
+            boolean clickPc = Cache.invPcSlot.contains(slot);
+            boolean clickPack =Cache.invBackpackSlot.contains(slot);
             if (e.getClickedInventory() instanceof PlayerInventory
                     || !(clickPc || clickPack)) {
                 e.setCancelled(true);
@@ -188,14 +188,13 @@ public class PCGui extends ListenerInvHolder {
             if (currentItem != null && click.isRightClick() && (clickPack || clickPc)) {
                 //判断是否是背包种最后一只
                 int i = SomeMethod.getStoragePokeSlot(partyStorage);
-                if (clickPack&&i == 1){
+                if (clickPack&&i == 1&&!Cache.packCanEmpty){
                     e.setCancelled(true);
                     return;
                 }
 
                 this.confirmGui.setPokeItem(currentItem, pokemonCache.get(currentItem));
                 this.needReturnGui = false;
-                Cache.plugin.getLogger().info("§a我他妈cnm左道"+i);
                 whoClicked.openInventory(confirmGui.getInventory());
                 return;
             }
