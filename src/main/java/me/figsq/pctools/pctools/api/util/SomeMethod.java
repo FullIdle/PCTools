@@ -128,7 +128,6 @@ public class SomeMethod {
         ArrayList<Pokemon> list = Lists.newArrayList(storage.getAll());
         list.removeIf(Objects::isNull);
         int i = list.size();
-        java.lang.System.out.println("test:"+i);
         return i;
     }
 }

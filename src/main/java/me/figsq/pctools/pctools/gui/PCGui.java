@@ -33,6 +33,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.ItemMeta;
+import java.lang.System;
 
 import java.util.ArrayList;
 import java.util.Map;
@@ -184,9 +185,13 @@ public class PCGui extends ListenerInvHolder {
                 return;
             }
             //左键删除
+            Cache.plugin.getLogger().info("Test1");
             if (currentItem != null && click.isRightClick() && (clickPack || clickPc)) {
+                Cache.plugin.getLogger().info("Test2");
                 //判断是否是背包种最后一只
-                if (clickPack&&SomeMethod.getStoragePokeSlot(partyStorage) == 1){
+                int i = SomeMethod.getStoragePokeSlot(partyStorage);
+                if (clickPack&&i == 1){
+                    Cache.plugin.getLogger().info("Test2");
                     e.setCancelled(true);
                     return;
                 }
