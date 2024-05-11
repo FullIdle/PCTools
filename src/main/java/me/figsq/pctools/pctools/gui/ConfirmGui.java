@@ -3,7 +3,7 @@ package me.figsq.pctools.pctools.gui;
 import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
 import lombok.Getter;
 import me.figsq.pctools.pctools.api.util.Cache;
-import me.fullidle.ficore.ficore.common.api.ineventory.ListenerInvHolder;
+import me.figsq.pctools.pctools.api.util.SomeMethod;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.inventory.Inventory;
@@ -11,15 +11,16 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 @Getter
-public class ConfirmGui extends ListenerInvHolder {
+public class ConfirmGui extends AbstractPreviousInv {
     private final Inventory inventory = Bukkit.createInventory(this,3*9,"§c放生宝可梦-确定?");
-    private ItemStack pokeItem;
-    private Pokemon pokemon;
-    private final PCGui pcGui;
+    private final Pokemon pokemon;
 
-    public ConfirmGui(PCGui pcGui){
-        this.pcGui = pcGui;
-
+    public ConfirmGui(Pokemon pokemon){
+        {
+            this.pokemon = pokemon;
+            ItemStack photo = SomeMethod.getFormatPokePhoto(pokemon);
+            this.inventory.setItem(4,photo);
+        }
         {
             //confirm
             ItemStack itemStack = new ItemStack(Material.STAINED_GLASS_PANE, 1, (short) 14);
@@ -45,17 +46,9 @@ public class ConfirmGui extends ListenerInvHolder {
             if (e.getSlot() == 21) {
                 pokemon.getStorage().set(pokemon.getPosition(),null);
             }
-            e.getWhoClicked().openInventory(this.pcGui.getInventory());
+            e.getWhoClicked().closeInventory();
         });
-        onClose(e-> Bukkit.getScheduler().runTask(Cache.plugin, () -> {
-            pcGui.setNeedUpdate(true);
-            e.getPlayer().openInventory(this.pcGui.getInventory());
-        }));
-    }
-
-    public void setPokeItem(ItemStack pokeItem, Pokemon pokemon) {
-        this.inventory.setItem(4,pokeItem);
-        this.pokeItem = pokeItem;
-        this.pokemon = pokemon;
+        onClose(e-> Bukkit.getScheduler().runTask(Cache.plugin, () ->
+                e.getPlayer().openInventory(new PCPageGui(((PCPageGui) this.getPreviousInv().getHolder()).getBox()).getInventory())));
     }
 }

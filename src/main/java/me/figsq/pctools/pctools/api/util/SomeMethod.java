@@ -1,6 +1,5 @@
 package me.figsq.pctools.pctools.api.util;
 
-import com.google.common.collect.Lists;
 import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
 import com.pixelmonmod.pixelmon.api.storage.PCBox;
 import com.pixelmonmod.pixelmon.api.storage.PokemonStorage;
@@ -105,6 +104,8 @@ public class SomeMethod {
     }
 
     public static UUID getFormatItemUUID(ItemStack itemStack) {
+        if (itemStack == null) return null;
+
         net.minecraft.server.v1_12_R1.ItemStack copy = CraftItemStack.asNMSCopy(itemStack);
         NBTTagCompound nbt = copy.getTag() == null ? new NBTTagCompound() : copy.getTag();
         if (nbt.hasKey("pctoolsUUID")) {
@@ -119,14 +120,5 @@ public class SomeMethod {
         if (Cache.invPcSlot.contains(clickSlot))
             return new Tuple<>(pcBox, new StoragePosition(pcBox.boxNumber, Cache.invPcSlot.indexOf(clickSlot)));
         return null;
-    }
-
-    /**
-     * 获取存储内有多少只精灵
-     */
-    public static Integer getStoragePokeSlot(PokemonStorage storage){
-        ArrayList<Pokemon> list = Lists.newArrayList(storage.getAll());
-        list.removeIf(Objects::isNull);
-        return list.size();
     }
 }

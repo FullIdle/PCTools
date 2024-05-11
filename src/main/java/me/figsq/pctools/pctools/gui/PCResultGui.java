@@ -1,11 +1,11 @@
 package me.figsq.pctools.pctools.gui;
 
+import com.pixelmonmod.pixelmon.Pixelmon;
 import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
 import com.pixelmonmod.pixelmon.storage.PlayerPartyStorage;
 import lombok.Getter;
 import me.figsq.pctools.pctools.api.ItemComparedMap;
 import me.figsq.pctools.pctools.api.util.SomeMethod;
-import me.fullidle.ficore.ficore.common.api.ineventory.ListenerInvHolder;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -14,17 +14,15 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 @Getter
-public class PCResultGui extends ListenerInvHolder {
+public class PCResultGui extends AbstractPreviousInv {
     private final Inventory inventory;
 
     public final List<List<ItemStack>> allPage = new ArrayList<>();
     private final Map<ItemStack, Pokemon> cache = new ItemComparedMap<>();
-    private PCGui temporaryPCGui;
     private int nowPage;
 
     public PCResultGui(List<Pokemon> pokemons) {
@@ -57,13 +55,9 @@ public class PCResultGui extends ListenerInvHolder {
         }
         if (allPage.isEmpty()) allPage.add(new ArrayList<>());
 
-        changePage(0);
+        this.nowPage = 0;
 
-        onOpen(e -> {
-            if (temporaryPCGui != null) {
-                changePage(this.nowPage);
-            }
-        });
+        onOpen(e -> changePage(this.nowPage));
 
         onClick(e -> {
             e.setCancelled(true);
@@ -88,14 +82,10 @@ public class PCResultGui extends ListenerInvHolder {
             Player whoClicked = (Player) e.getWhoClicked();
             Pokemon pokemon = cache.get(item);
             int box = pokemon.getPosition().box;
-            if (temporaryPCGui == null) {
-                temporaryPCGui = new PCGui(whoClicked, box);
-                temporaryPCGui.setPcResultGui(this);
-                whoClicked.openInventory(temporaryPCGui.getInventory());
-                return;
-            }
-            temporaryPCGui.changeBox(box, whoClicked, true);
-            whoClicked.openInventory(temporaryPCGui.getInventory());
+            PCPageGui gui = new PCPageGui(Pixelmon.storageManager.getPCForPlayer(whoClicked.getUniqueId()).getBox(box));
+            gui.setPreviousInv(this.getPreviousInv());
+            whoClicked.closeInventory();
+            whoClicked.openInventory(gui.getInventory());
         });
     }
 

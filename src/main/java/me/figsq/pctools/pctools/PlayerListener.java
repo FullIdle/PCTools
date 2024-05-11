@@ -1,9 +1,10 @@
 package me.figsq.pctools.pctools;
 
 import com.pixelmonmod.pixelmon.Pixelmon;
+import com.pixelmonmod.pixelmon.api.storage.PCStorage;
 import me.figsq.pctools.pctools.api.enums.Permissions;
 import me.figsq.pctools.pctools.api.util.Cache;
-import me.figsq.pctools.pctools.gui.PCGui;
+import me.figsq.pctools.pctools.gui.PCPageGui;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -33,7 +34,8 @@ public class PlayerListener implements Listener {
                 return;
             }
 
-            PCGui pcGui = new PCGui(p, Pixelmon.storageManager.getPCForPlayer(p.getUniqueId()).getLastBox());
+            PCStorage pc = Pixelmon.storageManager.getPCForPlayer(p.getUniqueId());
+            PCPageGui pcGui = new PCPageGui(pc.getBox(pc.getLastBox()));
             Inventory inv = pcGui.getInventory();
             p.openInventory(inv);
         }

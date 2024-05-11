@@ -3,7 +3,6 @@ package me.figsq.pctools.pctools.gui;
 import lombok.Getter;
 import me.figsq.pctools.pctools.api.util.Cache;
 import me.figsq.pctools.pctools.api.util.TidyPcUtil;
-import me.fullidle.ficore.ficore.common.api.ineventory.ListenerInvHolder;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.inventory.Inventory;
@@ -14,12 +13,10 @@ import java.util.Arrays;
 import java.util.Collections;
 
 @Getter
-public class SortGui extends ListenerInvHolder {
+public class SortGui extends AbstractPreviousInv {
     private final Inventory inventory = Bukkit.createInventory(this,9,"§3排序");
-    private final PCGui pcGui;
 
-    public SortGui(PCGui pcGui){
-        this.pcGui = pcGui;
+    public SortGui(){
         {
             //随机排序
             ItemStack itemStack = new ItemStack(Material.getMaterial("PIXELMON_GS_BALL"));
@@ -56,22 +53,24 @@ public class SortGui extends ListenerInvHolder {
             int slot = e.getSlot();
             if (e.getCurrentItem() == null||
                     e.getCurrentItem().getType().equals(Material.AIR)) return;
+            PCPageGui gui = (PCPageGui) this.getPreviousInv().getHolder();
             if (slot == 0){
-                TidyPcUtil.randomSort(this.pcGui.getNowBox());
+                TidyPcUtil.randomSort(gui.getBox());
             }
             if (slot == 1){
-                TidyPcUtil.speciesSort(this.pcGui.getNowBox());
+                TidyPcUtil.speciesSort(gui.getBox());
             }
             if (slot == 2){
-                TidyPcUtil.specialSort(this.pcGui.getNowBox());
+                TidyPcUtil.specialSort(gui.getBox());
             }
-            this.pcGui.setNeedUpdate(true);
-            e.getWhoClicked().openInventory(this.pcGui.getInventory());
+
+            e.getWhoClicked().closeInventory();
         });
 
         onClose(e->{
-            this.pcGui.setNeedUpdate(true);
-            Bukkit.getScheduler().runTask(Cache.plugin,()->e.getPlayer().openInventory(this.pcGui.getInventory()));
+            if (this.getPreviousInv() == null) return;
+            Bukkit.getScheduler().runTask(Cache.plugin,()->
+                    e.getPlayer().openInventory(new PCPageGui(((PCPageGui) this.getPreviousInv().getHolder()).getBox()).getInventory()));
         });
     }
 }

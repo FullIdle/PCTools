@@ -5,9 +5,9 @@ import com.pixelmonmod.pixelmon.Pixelmon;
 import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
 import me.figsq.pctools.pctools.api.ISearchProperty;
 import me.figsq.pctools.pctools.api.enums.Permissions;
-import me.figsq.pctools.pctools.gui.PCGui;
 import me.figsq.pctools.pctools.api.util.Cache;
 import me.figsq.pctools.pctools.api.util.SomeMethod;
+import me.figsq.pctools.pctools.gui.PCPageGui;
 import me.figsq.pctools.pctools.gui.PCResultGui;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
@@ -84,7 +84,7 @@ public class CMD implements TabExecutor {
                             return false;
                         }
                     }
-                    PCGui pcGui = new PCGui((other == null ? player : other),page-1);
+                    PCPageGui pcGui = new PCPageGui(Pixelmon.storageManager.getPCForPlayer((other == null ? player : other).getUniqueId()).getBox(page-1));
                     Inventory inv = pcGui.getInventory();
                     player.closeInventory();
                     player.openInventory(inv);
