@@ -151,7 +151,7 @@ public class Papi extends PlaceholderExpansion {
 
         switch (arg) {
             case "hypertrained": {
-                StatsType type = StatsType.getStatsEffect(args.get(1));
+                StatsType type = StatsType.getStatsEffect(getStatsType(args.get(1).toLowerCase()).name());
                 if (type == null) return "UNKNOWN PARAMETERS";
                 return String.valueOf(poke.getIVs().isHyperTrained(type));
             }
@@ -299,14 +299,19 @@ public class Papi extends PlaceholderExpansion {
             case "hp":
                 return StatsType.HP;
             case "sp":
+            case "speed":
                 return StatsType.Speed;
             case "at":
+            case "attack":
                 return StatsType.Attack;
             case "df":
+            case "defence":
                 return StatsType.Defence;
             case "sd":
+            case "specialdefence":
                 return StatsType.SpecialDefence;
             case "sa":
+            case "specialattack":
                 return StatsType.SpecialAttack;
             default:
                 return null;
