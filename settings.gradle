@@ -1,2 +1,5 @@
 rootProject.name = 'PCTools'
+include 'common'
+include 'v16'
+include 'v12'
 

@@ -10,7 +10,6 @@ import com.pixelmonmod.pixelmon.enums.EnumNature;
 import com.pixelmonmod.pixelmon.enums.EnumSpecies;
 import com.pixelmonmod.pixelmon.enums.EnumType;
 import com.pixelmonmod.pixelmon.items.ItemHeld;
-import me.figsq.pctools.pctools.Main;
 import me.figsq.pctools.pctools.api.ISearchProperty;
 import net.minecraft.server.v1_12_R1.ItemStack;
 import org.apache.commons.lang3.tuple.Pair;
@@ -18,13 +17,14 @@ import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.craftbukkit.v1_12_R1.inventory.CraftItemStack;
+import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.*;
 
 public class Cache {
     //cache
     public static String pCGuiTitle;
-    public static Main plugin;
+    public static JavaPlugin plugin;
     public static final ArrayList<Integer> invBackpackSlot = new ArrayList<>();
     public static final ArrayList<Integer> invPcSlot = new ArrayList<>();
     public static final Gson gson = new GsonBuilder().setPrettyPrinting().create();

@@ -1,8 +1,8 @@
 package me.figsq.pctools.pctools;
 
 import com.google.common.collect.Lists;
-import com.pixelmonmod.pixelmon.Pixelmon;
 import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
+import com.pixelmonmod.pixelmon.api.storage.StorageProxy;
 import me.figsq.pctools.pctools.api.ISearchProperty;
 import me.figsq.pctools.pctools.api.enums.Permissions;
 import me.figsq.pctools.pctools.api.util.Cache;
@@ -16,7 +16,10 @@ import org.bukkit.command.TabExecutor;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 public class CMD implements TabExecutor {
@@ -58,7 +61,7 @@ public class CMD implements TabExecutor {
                     int page;
                     try {
                         page = args.length >= 2 ? Integer.parseInt(args[1]) :
-                                Pixelmon.storageManager.getPCForPlayer(player.getUniqueId()).getLastBox()+1;
+                                StorageProxy.getPCForPlayer(player.getUniqueId()).getLastBox()+1;
                         if (page < 1) {
                             sender.sendMessage(SomeMethod.papi(null,"§cNoPage "+page+" !!!"));
                             return false;
@@ -84,7 +87,7 @@ public class CMD implements TabExecutor {
                             return false;
                         }
                     }
-                    PCPageGui pcGui = new PCPageGui(Pixelmon.storageManager.getPCForPlayer((other == null ? player : other).getUniqueId()).getBox(page-1));
+                    PCPageGui pcGui = new PCPageGui(StorageProxy.getPCForPlayer((other == null ? player : other).getUniqueId()).getBox(page-1));
                     Inventory inv = pcGui.getInventory();
                     player.closeInventory();
                     player.openInventory(inv);
@@ -124,7 +127,7 @@ public class CMD implements TabExecutor {
                     }
 
                     List<Pokemon> pokemons = Lists.newArrayList(
-                            Pixelmon.storageManager.getPCForPlayer(player.getUniqueId()).getAll());
+                            StorageProxy.getPCForPlayer(player.getUniqueId()).getAll());
                     pokemons.removeIf(pokemon -> {
                         if (pokemon == null)return true;
                         for (Map.Entry<ISearchProperty, String> entry : map.entrySet()) {

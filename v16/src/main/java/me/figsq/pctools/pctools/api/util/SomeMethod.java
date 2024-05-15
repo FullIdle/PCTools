@@ -2,23 +2,26 @@ package me.figsq.pctools.pctools.api.util;
 
 import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
 import com.pixelmonmod.pixelmon.api.storage.PCBox;
+import com.pixelmonmod.pixelmon.api.storage.PlayerPartyStorage;
 import com.pixelmonmod.pixelmon.api.storage.PokemonStorage;
 import com.pixelmonmod.pixelmon.api.storage.StoragePosition;
-import com.pixelmonmod.pixelmon.items.ItemPixelmonSprite;
-import com.pixelmonmod.pixelmon.storage.PlayerPartyStorage;
+import com.pixelmonmod.pixelmon.api.util.helpers.SpriteItemHelper;
 import me.clip.placeholderapi.PlaceholderAPI;
 import me.figsq.pctools.pctools.api.enums.SpecialType;
-import net.minecraft.server.v1_12_R1.EntityPlayer;
-import net.minecraft.server.v1_12_R1.NBTTagCompound;
-import net.minecraft.server.v1_12_R1.Tuple;
-import org.apache.commons.lang3.tuple.Pair;
+import net.minecraft.server.v1_16_R3.EntityPlayer;
+import net.minecraft.server.v1_16_R3.NBTTagCompound;
+import net.minecraft.util.Tuple;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.craftbukkit.v1_12_R1.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.libs.org.apache.commons.lang3.tuple.Pair;
+import org.bukkit.craftbukkit.v1_16_R3.inventory.CraftItemStack;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.UUID;
 import java.util.function.Function;
 
 public class SomeMethod {
@@ -54,7 +57,7 @@ public class SomeMethod {
         if (pokemon == null) {
             return null;
         }
-        net.minecraft.server.v1_12_R1.ItemStack photo = (net.minecraft.server.v1_12_R1.ItemStack) ((Object) ItemPixelmonSprite.getPhoto(pokemon));
+        net.minecraft.server.v1_16_R3.ItemStack photo = (net.minecraft.server.v1_16_R3.ItemStack) ((Object) SpriteItemHelper.getPhoto(pokemon));
         NBTTagCompound tag = photo.getTag() == null ? new NBTTagCompound() : photo.getTag();
         tag.setString("pctoolsUUID", pokemon.getUUID().toString());
         photo.setTag(tag);
@@ -106,7 +109,7 @@ public class SomeMethod {
     public static UUID getFormatItemUUID(ItemStack itemStack) {
         if (itemStack == null) return null;
 
-        net.minecraft.server.v1_12_R1.ItemStack copy = CraftItemStack.asNMSCopy(itemStack);
+        net.minecraft.server.v1_16_R3.ItemStack copy = CraftItemStack.asNMSCopy(itemStack);
         NBTTagCompound nbt = copy.getTag() == null ? new NBTTagCompound() : copy.getTag();
         if (nbt.hasKey("pctoolsUUID")) {
             return UUID.fromString(nbt.getString("pctoolsUUID"));

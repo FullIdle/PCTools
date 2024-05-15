@@ -260,10 +260,11 @@ public class PCPageGui extends AbstractPreviousInv {
         Pokemon pokemon = StorageHelper.find(SomeMethod.getFormatItemUUID(cursor), box.pc, party);
         if (pokemon != null) {
             boolean b = pokemon.getStorage() instanceof PlayerPartyStorage;
-            int order = pokemon.getPosition().order;
-            if (b || order == page) {
+            StoragePosition position = pokemon.getPosition();
+            int box = position.box;
+            if (b || box == page) {
                 ArrayList<Integer> list = b ? Cache.invBackpackSlot : Cache.invPcSlot;
-                gui.getInventory().setItem(list.get(order), null);
+                gui.getInventory().setItem(list.get(position.order), null);
             }
         }
         player.closeInventory();

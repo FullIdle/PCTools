@@ -1,0 +1,291 @@
+##默认最大页数30更具你是否有改动pixelmonmod的pc页数配置来改自己最大页数即可,所以这是我不想搞变量的理由
+title: "&3PCTools[{box}/30] —— %player_name%"
+##取消mod原版pc
+cancelPC: true
+##背包精灵可空
+packCanEmpty: false
+##变量索引偏移//可恶的左道逼得
+##0则不偏移,比如下方变量的[order]默认是0开始算第一个宝可梦,如果进行-1偏移,则1是第一个宝可梦
+##以上是偏移传入的
+##返回的值如果是有关位置的都会进行偏移
+papiIndexOffset: 0
+## ->无宝可梦变量[不需要指定精灵的变量]<-———————[以及该变量类型可用参数]—————————————
+## 只能用一下参数无法使用普通变量的参数
+## 无宝可梦变量格式%pctools_{}_[arg]%
+## 实例%pctools_{}_pokeslot%[花括号不要去掉这是使用该变量类型的唯一途径]
+## pokeslot 玩家背包包括pc所有精灵数量
+## pcslot pc精灵数量
+## partyslot 背包精灵数量
+##
+## 以下是需要有宝可梦的变量
+##
+## ->[普通变量][通常腐竹可以使用的]<-————————————————————————————————————————————
+## 一般格式%pctools_[boxs]_[order]_[arg]_[可选参数]%
+## 本插件页面会自己传入的变量: {box} {order}
+## box = pc页码[从0开始算]
+## order = 第几个[0-29]
+## ->[插件变量][给其他插件开发使用的变量]<-——————————————————————————————————————
+## 插件变量格式%pctools_{pokemon}_[arg]_[可选参数]%
+## 插件使用本变量插件做依赖的时候需要将{pokemon}这段直接替换成nbt
+## 一个插件实例: https://github.com/FullIdle/PokeHatchTip
+## ->[编号型变量]<-———————————————————————————————————————————————————————————
+## 编号型变量格式%pctools_{pokedex}_[arg]_[可选变量]%
+## {pokedex}连带符号改成宝可梦的在图鉴中的编号即可->重点,
+## 这样的变量大部分属性和各种值都是随机的并不是玩家背包中的某个精灵
+## ->[种类型变量]<-——————————————————————————————————————————————————————————
+## 种类型变量格式%pctools_{speciesName}_[arg]_[可选变量]%
+## {speciesName}连带符号一起改成宝可梦的名字(建议英文)
+## 这样的变量大部分属性和各种值都是随机的并不是玩家背包中的某个精灵
+## ->变量可用参数[无宝可梦变量不可用]<-——————————————————————————————————————————
+#catchrate 捕获率
+#weight 体重
+#malepercent 性别比
+#growth 体型
+#helditem 携带物品
+#status 状态
+#form 形态 可选参数 [number,localizedname]
+#nature 性格
+#mintnature 薄荷性格
+#gender 性别
+#hastag 带有标签 可选参数: spec tag[https://pixelmonmod.com/wiki/Pokemon_spec]
+#uuid 唯一id
+#moveset 技能 可选参数: [1-4]
+#originalname 原始名[直接用枚举的来做名字] 可能会有所问题
+#localizedname 宝可梦本地名 #简称 译名 (如果你将语言文件汉化了则是中文)
+#nickname 宝可梦设置名
+#ability 特性
+#islegendary 是否是神兽
+#isegg 是否是蛋
+#isultrabeast 是否是究极兽
+#ivstotal 总个体值
+#ivs 个体值 可选参数: [hp:hp,sp:speed,at:Attack,df:Defence,sd:SpecialDefence,sa:SpecialAttack,]
+#hypertrained 是否用皇冠特训过 可选参数: 同上
+#evstotal 总努力值
+#evs 努力值 同上
+#level 等级
+#shiny 是否闪光
+#inranch 是否在牧场内
+#caughtball 捕获的球
+#eggsteps 现周期走了多少步 [默认256时减少一个周期/或许可以再配置中修改那步数可能就不一样了]
+#eggcycles 剩余多少周期孵化
+#basetotal 总种族值
+#basestats 种族值 可选参数: 同ivs
+#stats 能力值 可选参数: 同ivs
+#statstotal 总能力值
+#position 所在位置 可选参数: box , order[页/位]
+#types 属性
+#egggroup 蛋组
+#nbt 可选参数: (根据以下数据写参数[比如Moveset下第一个MoveID则变量为%pctools_[box]_[order]_nbt_Moveset.1.MoveID%]){
+#  "EVSpeed": "0s",
+#  "IVAttack": "3b",
+#  "Growth": "4b",
+#  "originalTrainerUUIDMost": "4963198055895217120L",
+#  "Moveset": [
+#    {
+#      "MoveID": "148s",
+#      "MovePP": "30b"
+#    },
+#    {
+#      "MoveID": "347s",
+#      "MovePP": "20b"
+#    },
+#    {
+#      "MoveID": "47s",
+#      "MovePP": "10b"
+#    },
+#    {
+#      "MoveID": "40s",
+#      "MovePP": "15b"
+#    }
+#  ],
+#  "PersistentData": {},
+#  "Gender": "0b",
+#  "EVSpecialDefence": "0s",
+#  "GigantamaxFactor": "0b",
+#  "StatsSpecialDefence": "54s",
+#  "Name": "Machoke",
+#  "isInRanch": "0b",
+#  "Friendship": "70s",
+#  "StatsDefence": "64s",
+#  "IVDefence": "21b",
+#  "EVAttack": "0s",
+#  "StatsSpecialAttack": "46s",
+#  "IVSpDef": "31b",
+#  "CaughtBall": "0b",
+#  "IVHP": "9b",
+#  "AbilitySlot": "1b",
+#  "EVHP": "0s",
+#  "ndex": "67s",
+#  "ribbon_display": "NONE",
+#  "ribbons": [],
+#  "originalTrainerUUIDLeast": "-8910019180293995708L",
+#  "Nature": "20b",
+#  "StatsHP": "109s",
+#  "UUIDLeast": "-4735575644530736532L",
+#  "Health": 109,
+#  "HeldItemStack": {
+#    "id": "pixelmon:rabuta_berry",
+#    "Count": "1b",
+#    "Damage": "0s"
+#  },
+#  "originalTrainer": "FullIdle",
+#  "SpecFlags": [],
+#  "DoesLevel": "1b",
+#  "DynamaxLevel": 0,
+#  "Variant": "-1b",
+#  "StatsSpeed": "46s",
+#  "EVSpecialAttack": "0s",
+#  "IsShiny": "0b",
+#  "StatsAttack": "80s",
+#  "UUIDMost": "805722651481427248L",
+#  "IVSpeed": "21b",
+#  "Level": 37,
+#  "IVSpAtt": "2b",
+#  "EVDefence": "0s",
+#  "NBT_VERSION": "1b",
+#  "EXP": 0,
+#  "RelrnMoves": []
+#}
+##
+item:
+  ##指定精灵用指定配置
+  #如果你汉化了可以用中文，当然，还是可以用英文的
+  #当然页可以不配置,你不需要的话给他留空就好了
+  special:
+    Abomasnow:
+      name: '我懒得写'
+      lore:
+        - '我也懒得写'
+        - '          ——GSQ_Lin(原插件作者Mc9y账号)'
+    Chandelure:
+      name: '我懒得写'
+      lore:
+        - '我也懒得写'
+        - '          ——FullIdle(插件作者之一)'
+  normal: &normal
+    name: "&e&l%pctools_{box}_{order}_localizedname%"
+    lore:
+      - "&b▣ 基本信息"
+      - "&3属性: &7%pctools_{box}_{order}_types% &f| &3蛋组: &7%pctools_{box}_{order}_egggroup%"
+      - "&3性格: &7%pctools_{box}_{order}_nature% &f| &3特性: &7%pctools_{box}_{order}_ability%"
+      - "&3性别: &7%pctools_{box}_{order}_gender% &f| &3道具: &7%pctools_{box}_{order}_helditem%"
+      - "&3闪光: &7%pctools_{box}_{order}_shiny% &f| &3形态: &7%pctools_{box}_{order}_form_localizedname%"
+      - "&3体型: &7%pctools_{box}_{order}_growth% &f| &3球种: &7%pctools_{box}_{order}_caughtball%"
+      - "&b▣ 种族信息&7 (总和：%pctools_{box}_{order}_basetotal%)"
+      - "&3血量: &7%pctools_{box}_{order}_basestats_hp% &f| &3攻击: &7%pctools_{box}_{order}_basestats_at% &f| &3防御: &7%pctools_{box}_{order}_basestats_df%"
+      - "&3特攻: &7%pctools_{box}_{order}_basestats_sa% &f| &3特防: &7%pctools_{box}_{order}_basestats_sd% &f| &3速度: &7%pctools_{box}_{order}_basestats_sp%"
+      - "&b▣ 个体信息&7 (%pctools_{box}_{order}_ivstotal%/186)"
+      - "&3血量: &7%pctools_{box}_{order}_ivs_hp% &f| &3攻击: &7%pctools_{box}_{order}_ivs_at% &f| &3防御: &7%pctools_{box}_{order}_ivs_df%"
+      - "&3特攻: &7%pctools_{box}_{order}_ivs_sa% &f| &3特防: &7%pctools_{box}_{order}_ivs_sd% &f| &3速度: &7%pctools_{box}_{order}_ivs_sp%"
+      - "&b▣ 努力信息&7 (%pctools_{box}_{order}_evstotal%/510)"
+      - "&3血量: &7%pctools_{box}_{order}_evs_hp% &f| &3攻击: &7%pctools_{box}_{order}_evs_at% &f| &3防御: &7%pctools_{box}_{order}_evs_df%"
+      - "&3特攻: &7%pctools_{box}_{order}_evs_sa% &f| &3特防: &7%pctools_{box}_{order}_evs_sd% &f| &3速度: &7%pctools_{box}_{order}_evs_sp%"
+      - "&b▣ 能力信息&7 (总和：%pctools_{box}_{order}_statstotal%)"
+      - "&3血量: &7%pctools_{box}_{order}_stats_hp% &f| &3攻击: &7%pctools_{box}_{order}_stats_at% &f| &3防御: &7%pctools_{box}_{order}_stats_df%"
+      - "&3特攻: &7%pctools_{box}_{order}_stats_sa% &f| &3特防: &7%pctools_{box}_{order}_stats_sd% &f| &3速度: &7%pctools_{box}_{order}_stats_sp%"
+      - "&b▣ 技能信息"
+      - "&3技能: &7%pctools_{box}_{order}_moveset_0% &f| &7%pctools_{box}_{order}_moveset_1% &f| &7%pctools_{box}_{order}_moveset_2% &f| &7%pctools_{box}_{order}_moveset_3% "
+      - "&b▣ 位置信息"
+      - "&3页: {box}&f| &3位置:{order}"
+  egg:
+    name: "§6蛋"
+    lore:
+      - "&b▣ 基本信息"
+      - "&3剩余孵化周期: &7%pctools_{box}_{order}_eggcycles%"
+      - "&3现周期甚于多少步: &7%pctools_{box}_{order}_eggsteps%"
+      - "&b▣ 位置信息"
+      - "&3页: {box}&f| &3位置:{order}"
+      - ""
+      - "&c温馨提示: 默认256步减少一个周期,周期归零则精灵出世!"
+  legend:
+    name: "&5&l%pctools_{box}_{order}_localizedname%"
+    <<: *normal
+  uBeast:
+    name: "&3&l%pctools_{box}_{order}_localizedname%"
+    <<: *normal
+msg:
+  playerDoesNotExist: "&c该玩家不存在或不在线!"
+  nonNumeric: "&c非数字!"
+  reloadSuccessful: "&a重载成功!"
+  help:
+    - "pctools"
+    - "- open [page] [player/可选]  打开指定[玩家/可选]的指定页PC"
+    - "- reload 重载"
+
+##变量结果内容包含替换
+#比如返回的是[XXX]而你配置了XXX结果改成AAA整完整结果为[AAA]
+papiReplace:
+##指定参数变量结果内容包含替换
+  args:
+    ##写法
+    #不要加可选参数
+    #[args]:
+    #   原结果内包含的内容: 要替换的结果
+    #   原结果内包含的内容1: 要替换的结果1
+    hypertrained:
+      true: "已特训"
+      false: '未特训'
+    types:
+      Normal: 普
+      Fire: 火
+      Fighting: 格
+      Water: 水
+      Flying: 飞
+      Grass: 草
+      Poison: 毒
+      Electric: 电
+      Ground: 地
+      Psychic: 超
+      Rock: 岩
+      Ice: 冰
+      Bug: 虫
+      Dragon: 龙
+      Ghost: 幽
+      Dark: 暗
+      Steel: 钢
+      Fairy: 妖
+      Stellar: 星
+      '[': ' '
+      ']': ' '
+      ',': ''
+      ' ': ''
+    egggroup:
+      Monster: 怪兽
+      Humanlike: 人型
+      Water1: 水中1
+      Water3: 水中3
+      Bug: 虫
+      Mineral: 矿物
+      Flying: 飞行
+      Amorphous: 不定形
+      Field: 陆上
+      Water2: 水中2
+      Fairy: 妖精
+      Ditto: 百变怪
+      Grass: 植物
+      Dragon: 龙
+      Undiscovered: 未发现
+      '[': ' '
+      ']': ' '
+      ',': '、'
+    helditem:
+      NONE: '无'
+    moveset:
+      NONE: '无'
+    shiny:
+      true: '是'
+      false: '否'
+    hastag_unbreedable:
+      true: '已绝育'
+      false: '未绝育'
+    hastag:
+      true: '是'
+      false: '否'
+##最终结果替换(主要用于那些特殊的变量)
+  global:
+##格式
+#   原包含内容: 替换为
+    'NO DATA': "无数据"
+    'UNKNOWN PARAMETERS': "未知参数"
+    'POKE IS EMPTY': "精灵为空"
+    'WRONG FORMAT': "格式错误"

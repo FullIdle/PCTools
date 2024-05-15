@@ -1,0 +1,24 @@
+name: ${rootProject.name}
+main: ${rootProject.group}
+version: ${rootProject.version}
+authors:
+  - FullIdle
+  - GSQ_Lin
+depend:
+  - FICore
+  - PlaceholderAPI
+commands:
+  pctools:
+    description: main cmd
+
+permissions:
+  pctools.cmd.open:
+    default: true
+  pctools.cmd.openother:
+    default: op
+  pctools.cmd.reload:
+    default: op
+  pctools.cmd.search:
+    default: op
+  pctools.function.sort:
+    default: op
