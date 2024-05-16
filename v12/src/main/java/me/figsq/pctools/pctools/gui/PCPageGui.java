@@ -123,7 +123,7 @@ public class PCPageGui extends AbstractPreviousInv {
             ========================================================
             宝可梦有关
             点击的不是pc也不是pack的位置且点击的不是背包*/
-            if (e.getClickedInventory() instanceof PlayerInventory || !pc_pack_list.contains(clickSlot)) {
+            if (e.getClickedInventory() instanceof PlayerInventory || !pc_pack_list.contains(clickSlot) || clickType.isKeyboardClick()) {
                 e.setCancelled(true);
                 return;
             }
