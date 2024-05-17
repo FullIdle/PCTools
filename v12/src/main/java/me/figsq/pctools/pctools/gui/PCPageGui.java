@@ -39,7 +39,7 @@ public class PCPageGui extends AbstractPreviousInv {
         this.box = box;
         this.inventory = Bukkit.createInventory(this, 54,
                 SomeMethod.papi(Bukkit.getOfflinePlayer(this.box.pc.playerUUID),
-                        Cache.plugin.getConfig().getString("pc_page_gui_title").
+                        Cache.plugin.getConfig().getString("msg.pc_page_gui_title").
                                 replace("{box}", String.valueOf(box.boxNumber + 1))));
         party = Pixelmon.storageManager.getParty(this.box.pc.playerUUID);
         //初始化界面
