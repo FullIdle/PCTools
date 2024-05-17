@@ -1,5 +1,3 @@
-##默认最大页数30更具你是否有改动pixelmonmod的pc页数配置来改自己最大页数即可,所以这是我不想搞变量的理由
-title: "&3PCTools[{box}/30] —— %player_name%"
 ##取消mod原版pc
 cancelPC: true
 ##背包精灵可空
@@ -211,6 +209,23 @@ msg:
     - "pctools"
     - "- open [page] [player/可选]  打开指定[玩家/可选]的指定页PC"
     - "- reload 重载"
+  confirm_gui_title: '&c放生宝可梦-确定?'
+  confirm_gui_confirm_button: '&a确定'
+  confirm_gui_cancel_button: '&c取消'
+
+  pc_page_gui_title: '&3PCTools[{box}/30] —— %player_name%'
+  pc_page_gui_sort_button: '&6排序'
+  pc_page_gui_previous_button: '&3上一页'
+  pc_page_gui_next_button: '&3上一页'
+
+  search_gui_title: '&3Search'
+  search_gui_previous_button: '&3上一页'
+  search_gui_next_button: '&3上一页'
+
+  sort_gui_title: '&3排序'
+  sort_gui_random_order_button: '&c随机排序'
+  sort_gui_category_sorting_button: '&6种类排序'
+  sort_gui_quality_sorting_button: '&5品质顺序'
 
 ##变量结果内容包含替换
 #比如返回的是[XXX]而你配置了XXX结果改成AAA整完整结果为[AAA]

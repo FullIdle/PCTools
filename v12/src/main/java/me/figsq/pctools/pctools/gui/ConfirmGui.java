@@ -12,7 +12,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 @Getter
 public class ConfirmGui extends AbstractPreviousInv {
-    private final Inventory inventory = Bukkit.createInventory(this,3*9,"§c放生宝可梦-确定?");
+    private final Inventory inventory = Bukkit.createInventory(this,3*9,SomeMethod.papi(null, Cache.plugin.getConfig().getString("msg.confirm_gui_title")));
     private final Pokemon pokemon;
 
     public ConfirmGui(Pokemon pokemon){
@@ -25,7 +25,7 @@ public class ConfirmGui extends AbstractPreviousInv {
             //confirm
             ItemStack itemStack = new ItemStack(Material.STAINED_GLASS_PANE, 1, (short) 14);
             ItemMeta itemMeta = itemStack.getItemMeta();
-            itemMeta.setDisplayName("§c§l确认");
+            itemMeta.setDisplayName(SomeMethod.papi(null, Cache.plugin.getConfig().getString("msg.confirm_gui_confirm_button")));
             itemStack.setItemMeta(itemMeta);
             this.inventory.setItem(21,itemStack);
         }
@@ -33,7 +33,7 @@ public class ConfirmGui extends AbstractPreviousInv {
             //cancel
             ItemStack itemStack = new ItemStack(Material.STAINED_GLASS_PANE, 1, (short) 5);
             ItemMeta itemMeta = itemStack.getItemMeta();
-            itemMeta.setDisplayName("§a§l取消");
+            itemMeta.setDisplayName(SomeMethod.papi(null, Cache.plugin.getConfig().getString("msg.confirm_gui_cancel_button")));
             itemStack.setItemMeta(itemMeta);
             this.inventory.setItem(23,itemStack);
         }

@@ -39,7 +39,8 @@ public class PCPageGui extends AbstractPreviousInv {
         this.box = box;
         this.inventory = Bukkit.createInventory(this, 54,
                 SomeMethod.papi(Bukkit.getOfflinePlayer(this.box.pc.playerUUID),
-                        Cache.pCGuiTitle.replace("{box}", String.valueOf(box.boxNumber + 1))));
+                        Cache.plugin.getConfig().getString("pc_page_gui_title").
+                                replace("{box}", String.valueOf(box.boxNumber + 1))));
         party = Pixelmon.storageManager.getParty(this.box.pc.playerUUID);
         //初始化界面
         initFrame();
@@ -54,7 +55,7 @@ public class PCPageGui extends AbstractPreviousInv {
                 //设置排序按钮
                 ItemStack itemStack = new ItemStack(Material.STAINED_GLASS_PANE, 1, (short) 1);
                 ItemMeta itemMeta = itemStack.getItemMeta();
-                itemMeta.setDisplayName("§6排序");
+                itemMeta.setDisplayName(SomeMethod.papi(null, Cache.plugin.getConfig().getString("msg.pc_page_gui_sort_button")));
                 itemStack.setItemMeta(itemMeta);
                 this.inventory.setItem(53, itemStack);
             }
@@ -294,7 +295,7 @@ public class PCPageGui extends AbstractPreviousInv {
             //上
             ItemStack itemStack = new ItemStack(Material.STAINED_GLASS_PANE, 1, (short) 2);
             ItemMeta itemMeta = itemStack.getItemMeta();
-            itemMeta.setDisplayName("§3PREVIOUS");
+            itemMeta.setDisplayName(SomeMethod.papi(null, Cache.plugin.getConfig().getString("msg.pc_page_gui_previous_button")));
             itemStack.setItemMeta(itemMeta);
             this.inventory.setItem(45, itemStack);
         }
@@ -302,7 +303,7 @@ public class PCPageGui extends AbstractPreviousInv {
             //下
             ItemStack itemStack = new ItemStack(Material.STAINED_GLASS_PANE, 1, (short) 2);
             ItemMeta itemMeta = itemStack.getItemMeta();
-            itemMeta.setDisplayName("§3NEXT");
+            itemMeta.setDisplayName(SomeMethod.papi(null, Cache.plugin.getConfig().getString("msg.pc_page_gui_next_button")));
             itemStack.setItemMeta(itemMeta);
             this.inventory.setItem(50, itemStack);
         }

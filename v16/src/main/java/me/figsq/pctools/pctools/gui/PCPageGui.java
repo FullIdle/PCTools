@@ -1,13 +1,10 @@
 package me.figsq.pctools.pctools.gui;
 
 import com.google.common.collect.Lists;
-import com.pixelmonmod.pixelmon.Pixelmon;
 import com.pixelmonmod.pixelmon.api.config.PixelmonConfigProxy;
 import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
 import com.pixelmonmod.pixelmon.api.storage.*;
 import com.pixelmonmod.pixelmon.api.util.helpers.NetworkHelper;
-import com.pixelmonmod.pixelmon.battles.BattleRegistry;
-import com.pixelmonmod.pixelmon.comm.ChatHandler;
 import com.pixelmonmod.pixelmon.comm.packetHandlers.clientStorage.newStorage.pc.ClientSetLastOpenBoxPacket;
 import lombok.Getter;
 import me.figsq.pctools.pctools.api.util.Cache;
@@ -39,7 +36,8 @@ public class PCPageGui extends AbstractPreviousInv {
         this.box = box;
         this.inventory = Bukkit.createInventory(this, 54,
                 SomeMethod.papi(Bukkit.getOfflinePlayer(this.box.pc.playerUUID),
-                        Cache.pCGuiTitle.replace("{box}", String.valueOf(box.boxNumber + 1))));
+                        Cache.plugin.getConfig().getString("pc_page_gui_title").
+                                replace("{box}", String.valueOf(box.boxNumber + 1))));
         party = StorageProxy.getParty(this.box.pc.playerUUID);
         //初始化界面
         initFrame();
@@ -54,7 +52,7 @@ public class PCPageGui extends AbstractPreviousInv {
                 //设置排序按钮
                 ItemStack itemStack = new ItemStack(Material.WHITE_STAINED_GLASS_PANE);
                 ItemMeta itemMeta = itemStack.getItemMeta();
-                itemMeta.setDisplayName("§6排序");
+                itemMeta.setDisplayName(SomeMethod.papi(null, Cache.plugin.getConfig().getString("msg.pc_page_gui_sort_button")));
                 itemStack.setItemMeta(itemMeta);
                 this.inventory.setItem(53, itemStack);
             }
@@ -295,7 +293,7 @@ public class PCPageGui extends AbstractPreviousInv {
             //上
             ItemStack itemStack = new ItemStack(Material.PURPLE_STAINED_GLASS_PANE);
             ItemMeta itemMeta = itemStack.getItemMeta();
-            itemMeta.setDisplayName("§3PREVIOUS");
+            itemMeta.setDisplayName(SomeMethod.papi(null, Cache.plugin.getConfig().getString("msg.pc_page_gui_previous_button")));
             itemStack.setItemMeta(itemMeta);
             this.inventory.setItem(45, itemStack);
         }
@@ -303,7 +301,7 @@ public class PCPageGui extends AbstractPreviousInv {
             //下
             ItemStack itemStack = new ItemStack(Material.PURPLE_STAINED_GLASS_PANE);
             ItemMeta itemMeta = itemStack.getItemMeta();
-            itemMeta.setDisplayName("§3NEXT");
+            itemMeta.setDisplayName(SomeMethod.papi(null, Cache.plugin.getConfig().getString("msg.pc_page_gui_next_button")));
             itemStack.setItemMeta(itemMeta);
             this.inventory.setItem(50, itemStack);
         }
