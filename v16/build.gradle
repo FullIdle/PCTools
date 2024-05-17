@@ -21,7 +21,7 @@ dependencies {
 
 shadowJar{
     mergeServiceFiles()
-    archiveBaseName.set(this.rootProject.name)
+    archiveBaseName.set(this.rootProject.name+"-"+this.project.name)
     archiveVersion.set(this.version as String)
     manifest{
         attributes 'Main-Class':this.group
