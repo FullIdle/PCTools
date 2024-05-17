@@ -1,10 +1,12 @@
+apply plugin: 'com.github.johnrengelman.shadow'
+
 version = rootProject.version
 
 repositories {
     mavenCentral()
     mavenLocal()
-    maven {url 'https://raw.github.com/FullIdle/maven-repository/main/'}
-    maven {url 'https://repo.extendedclip.com/content/repositories/placeholderapi/'}
+    maven { url 'https://raw.github.com/FullIdle/maven-repository/main/' }
+    maven { url 'https://repo.extendedclip.com/content/repositories/placeholderapi/' }
 }
 
 dependencies {
@@ -14,5 +16,14 @@ dependencies {
     compileOnly 'me.forge.forgedev:ForgeDev:1.16.5'
     compileOnly 'com.pixelmonmod.pixelmon:Pixelmon:1.16.5-9.1.9'
 
-    compileOnly project(path:':common')
+    implementation project(path: ':common')
+}
+
+shadowJar{
+    mergeServiceFiles()
+    archiveBaseName.set(this.rootProject.name)
+    archiveVersion.set(this.version as String)
+    manifest{
+        attributes 'Main-Class':this.group
+    }
 }
