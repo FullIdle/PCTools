@@ -13,4 +13,6 @@ dependencies {
 
     compileOnly 'me.forge.forgedev:ForgeDev:1.12.2'
     compileOnly 'com.pixelmonmod.pixelmon:Pixelmon:1.12.2-8.4.3'
+
+    compileOnly project(path:':common')
 }
