@@ -85,8 +85,6 @@ public class PCPageGui extends AbstractPreviousInv {
         //点击处理
         this.onClick(e -> {
             int clickSlot = e.getSlot();
-            ArrayList<Integer> pc_pack_list = (ArrayList<Integer>) Cache.invPcSlot.clone();
-            pc_pack_list.addAll(Cache.invBackpackSlot);
             Inventory inv = e.getInventory();
             ClickType clickType = e.getClick();
             boolean shiftClick = clickType.isShiftClick();
@@ -97,14 +95,14 @@ public class PCPageGui extends AbstractPreviousInv {
                 //上一页
                 int page = box.boxNumber - (shiftClick ? 5 : 1);
                 e.setCancelled(true);
-                changePage(whoClicked, page < 0 ? PixelmonConfig.computerBoxes + page : page);
+                changePage(whoClicked, page < 0 ? PixelmonConfig.computerBoxes + page : page, cursorItem);
                 return;
             }
             if (clickSlot == 50) {
                 //下一页
                 int page = box.boxNumber + (shiftClick ? 5 : 1);
                 e.setCancelled(true);
-                changePage(whoClicked, page >= PixelmonConfig.computerBoxes ? page - PixelmonConfig.computerBoxes : page);
+                changePage(whoClicked, page >= PixelmonConfig.computerBoxes ? page - PixelmonConfig.computerBoxes : page, cursorItem);
                 return;
             }
             if (clickSlot == 53) {
@@ -124,7 +122,10 @@ public class PCPageGui extends AbstractPreviousInv {
             ========================================================
             宝可梦有关
             点击的不是pc也不是pack的位置且点击的不是背包*/
-            if (e.getClickedInventory() instanceof PlayerInventory || !pc_pack_list.contains(clickSlot) || clickType.isKeyboardClick()) {
+            if ((!Cache.invPcSlot.contains(clickSlot) &&
+                    !Cache.invBackpackSlot.contains(clickSlot)) ||
+                    e.getRawSlot() >= this.inventory.getSize() ||
+                    clickType.isKeyboardClick()) {
                 e.setCancelled(true);
                 return;
             }
@@ -134,9 +135,8 @@ public class PCPageGui extends AbstractPreviousInv {
             UUID cursorPokeUuid = SomeMethod.getFormatItemUUID(cursorItem);
             Pokemon cursorPoke = StorageHelper.find(cursorPokeUuid, box.pc, party);
             Tuple<PokemonStorage, StoragePosition> cursorInfo = cursorPoke == null ? null : new Tuple<>(cursorPoke.getStorage(), cursorPoke.getPosition());
-
             //一些特殊判断
-            if (currentPoke != null && currentPoke.isInRanch()){
+            if (currentPoke != null && currentPoke.isInRanch()) {
                 e.setCancelled(true);
                 return;
             }
@@ -241,7 +241,7 @@ public class PCPageGui extends AbstractPreviousInv {
             if (putIntoPoke.getStorage() instanceof PlayerPartyStorage) {
                 ArrayList<Pokemon> list = Lists.newArrayList(putIntoPoke.getStorage().getAll());
                 list.removeIf(Objects::isNull);
-                if (list.size() < 2) {
+                if (list.size() < 2 && !(currentInfo.a() instanceof PlayerPartyStorage)) {
                     return;
                 }
             }
@@ -255,9 +255,9 @@ public class PCPageGui extends AbstractPreviousInv {
         inv.setItem(target_list.get(currentInfo.b().order), SomeMethod.getFormatPokePhoto(putIntoPoke));
     }
 
-    private void changePage(HumanEntity player, int page) {
+    private void changePage(HumanEntity player, int page, ItemStack cursor) {
+        player.closeInventory();
         PCPageGui gui = new PCPageGui(box.pc.getBox(page));
-        ItemStack cursor = player.getItemOnCursor();
         Pokemon pokemon = StorageHelper.find(SomeMethod.getFormatItemUUID(cursor), box.pc, party);
         if (pokemon != null) {
             boolean b = pokemon.getStorage() instanceof PlayerPartyStorage;
@@ -268,7 +268,6 @@ public class PCPageGui extends AbstractPreviousInv {
                 gui.getInventory().setItem(list.get(position.order), null);
             }
         }
-        player.closeInventory();
         player.openInventory(gui.getInventory());
         player.setItemOnCursor(SomeMethod.getFormatPokePhoto(pokemon));
     }

@@ -102,11 +102,8 @@ public class Cache {
         for (int i = 0; i < PixelmonConfig.computerBoxes; i++) {
             int x = (i + 1) % 6;
             int row = (i + 1) / 6;
-            if (x > 0) {
-                invPcSlot.add((row * 9) + (x - 1));
-                continue;
-            }
-            invPcSlot.add(((row - 1) * 9) + 5);
+            int v = x > 0?(row * 9) + (x - 1):((row - 1) * 9) + 5;
+            invPcSlot.add(v);
         }
 
         //searchProperty
