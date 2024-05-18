@@ -220,7 +220,7 @@ msg:
 
   search_gui_title: '&3Search'
   search_gui_previous_button: '&3上一页'
-  search_gui_next_button: '&3上一页'
+  search_gui_next_button: '&3下一页'
 
   sort_gui_title: '&3排序'
   sort_gui_random_order_button: '&c随机排序'
