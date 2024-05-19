@@ -12,6 +12,7 @@
             <option value="$PROJECT_DIR$/common" />
             <option value="$PROJECT_DIR$/v12" />
             <option value="$PROJECT_DIR$/v16" />
+            <option value="$PROJECT_DIR$/v20" />
           </set>
         </option>
       </GradleProjectSettings>
