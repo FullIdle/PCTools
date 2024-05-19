@@ -11,6 +11,7 @@ import com.pixelmonmod.pixelmon.api.pokemon.species.Pokedex;
 import com.pixelmonmod.pixelmon.api.pokemon.species.Species;
 import com.pixelmonmod.pixelmon.api.pokemon.species.gender.Gender;
 import com.pixelmonmod.pixelmon.api.registries.PixelmonSpecies;
+import com.pixelmonmod.pixelmon.api.storage.PCBox;
 import com.pixelmonmod.pixelmon.items.HeldItem;
 import me.figsq.pctools.pctools.api.ISearchProperty;
 import net.minecraft.server.v1_16_R3.ItemStack;
@@ -101,7 +102,7 @@ public class Cache {
         for (int i = 0; i < 6; i++) {
             invBackpackSlot.add(((i + 1) * 9) - 2);
         }
-        for (int i = 0; i < PixelmonConfigProxy.getStorage().getComputerBoxes(); i++) {
+        for (int i = 0; i < PCBox.POKEMON_PER_BOX; i++) {
             int x = (i + 1) % 6;
             int row = (i + 1) / 6;
             if (x > 0) {

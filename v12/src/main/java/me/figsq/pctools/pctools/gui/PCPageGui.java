@@ -283,10 +283,9 @@ public class PCPageGui extends AbstractPreviousInv {
             ArrayList<Integer> list = (ArrayList<Integer>) Cache.invPcSlot.clone();
             list.addAll(Cache.invBackpackSlot);
             for (int i = 0; i < inventory.getSize(); i++) {
-                if (list.contains(i)) {
-                    continue;
+                if (!list.contains(i)) {
+                    this.inventory.setItem(i, itemStack);
                 }
-                this.inventory.setItem(i, itemStack);
             }
         }
         //上下页按钮控制

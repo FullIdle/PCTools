@@ -3,6 +3,7 @@ package me.figsq.pctools.pctools.api.util;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
+import com.pixelmonmod.pixelmon.api.storage.PCBox;
 import com.pixelmonmod.pixelmon.config.PixelmonConfig;
 import com.pixelmonmod.pixelmon.entities.pixelmon.abilities.AbilityBase;
 import com.pixelmonmod.pixelmon.entities.pixelmon.stats.Gender;
@@ -99,7 +100,7 @@ public class Cache {
         for (int i = 0; i < 6; i++) {
             invBackpackSlot.add(((i + 1) * 9) - 2);
         }
-        for (int i = 0; i < PixelmonConfig.computerBoxes; i++) {
+        for (int i = 0; i < PCBox.POKEMON_PER_BOX; i++) {
             int x = (i + 1) % 6;
             int row = (i + 1) / 6;
             int v = x > 0?(row * 9) + (x - 1):((row - 1) * 9) + 5;
