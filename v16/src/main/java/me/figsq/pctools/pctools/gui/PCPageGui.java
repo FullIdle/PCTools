@@ -17,7 +17,6 @@ import org.bukkit.entity.HumanEntity;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.ArrayList;
@@ -76,7 +75,9 @@ public class PCPageGui extends AbstractPreviousInv {
             Tuple<PokemonStorage, StoragePosition> currentInfo = SomeMethod.computeStorageAndPosition(next, party, box);
             Pokemon cursorPoke = StorageHelper.find(SomeMethod.getFormatItemUUID(cursor), party, box.pc);
             Tuple<PokemonStorage, StoragePosition> cursorInfo = new Tuple<>(cursorPoke.getStorage(), cursorPoke.getPosition());
-            putInto(cursorInfo, currentInfo, cursorPoke, whoClicked, e.getInventory(), next);
+            if (!putInto(cursorInfo, currentInfo, cursorPoke, whoClicked, e.getInventory(), next)) {
+                e.setCancelled(true);
+            }
         });
 
         //点击处理
@@ -233,15 +234,16 @@ public class PCPageGui extends AbstractPreviousInv {
 
     /**
      * 将点击者贯标上的宝可梦放入一个位置
+     * 返回值证明是否可移动
      */
-    private static void putInto(Tuple<PokemonStorage, StoragePosition> cursorInfo, Tuple<PokemonStorage, StoragePosition> currentInfo, Pokemon putIntoPoke, HumanEntity whoClicked, Inventory inv, int clickSlot) {
+    private static boolean putInto(Tuple<PokemonStorage, StoragePosition> cursorInfo, Tuple<PokemonStorage, StoragePosition> currentInfo, Pokemon putIntoPoke, HumanEntity whoClicked, Inventory inv, int clickSlot) {
         //判断要放的精灵是否是背包且是唯一一只的情况下,并更具配置来确定是否拦截
         if (!Cache.packCanEmpty) {
             if (putIntoPoke.getStorage() instanceof PlayerPartyStorage) {
                 ArrayList<Pokemon> list = Lists.newArrayList(putIntoPoke.getStorage().getAll());
                 list.removeIf(Objects::isNull);
                 if (list.size() < 2 && !(currentInfo.func_76341_a() instanceof PlayerPartyStorage)) {
-                    return;
+                    return false;
                 }
             }
         }
@@ -252,6 +254,7 @@ public class PCPageGui extends AbstractPreviousInv {
         whoClicked.setItemOnCursor(null);
         ArrayList<Integer> target_list = currentInfo.func_76341_a() instanceof PlayerPartyStorage ? Cache.invBackpackSlot : Cache.invPcSlot;
         inv.setItem(target_list.get(currentInfo.func_76340_b().order), SomeMethod.getFormatPokePhoto(putIntoPoke));
+        return true;
     }
 
     private void changePage(HumanEntity player, int page, ItemStack cursor) {
