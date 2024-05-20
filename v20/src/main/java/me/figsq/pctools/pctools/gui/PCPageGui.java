@@ -206,13 +206,12 @@ public class PCPageGui extends AbstractPreviousInv {
                 //鼠标上有宝可梦或者点击的地方没有宝可梦都直接返回
                 if (cursorPoke != null || currentPoke == null) return;
                 ConfirmGui confirmGui = new ConfirmGui(currentPoke);
-                confirmGui.setPreviousInv(this.getInventory());
                 Inventory temp = this.getPreviousInv();
                 this.setPreviousInv(null);
                 whoClicked.closeInventory();
-                whoClicked.openInventory(confirmGui.getInventory());
                 this.setPreviousInv(temp);
-                return;
+                confirmGui.setPreviousInv(this.inventory);
+                whoClicked.openInventory(confirmGui.getInventory());
             }
         });
 
@@ -256,8 +255,11 @@ public class PCPageGui extends AbstractPreviousInv {
     }
 
     private void changePage(HumanEntity player, int page, ItemStack cursor) {
+        Inventory temp = this.getPreviousInv();
+        this.setPreviousInv(null);
         player.closeInventory();
         PCPageGui gui = new PCPageGui(box.pc.getBox(page));
+        gui.setPreviousInv(temp);
         Pokemon pokemon = StorageHelper.find(SomeMethod.getFormatItemUUID(cursor), box.pc, party);
         if (pokemon != null) {
             boolean b = pokemon.getStorage() instanceof PlayerPartyStorage;

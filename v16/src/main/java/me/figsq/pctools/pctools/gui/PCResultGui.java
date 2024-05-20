@@ -12,6 +12,7 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.ArrayList;
@@ -64,7 +65,8 @@ public class PCResultGui extends AbstractPreviousInv {
             e.setCancelled(true);
             int slot = e.getSlot();
             ItemStack item = e.getCurrentItem();
-            if (item == null || item.getType().equals(Material.AIR)) return;
+            if (e.getClickedInventory() instanceof PlayerInventory ||
+                    item == null || item.getType().equals(Material.AIR)) return;
             if (slot == 47) {
                 if (this.nowPage == 0) {
                     return;
@@ -84,7 +86,7 @@ public class PCResultGui extends AbstractPreviousInv {
             Pokemon pokemon = cache.get(item);
             int box = pokemon.getPosition().box;
             PCPageGui gui = new PCPageGui(StorageProxy.getPCForPlayer(whoClicked.getUniqueId()).getBox(box));
-            gui.setPreviousInv(this.getPreviousInv());
+            gui.setPreviousInv(this.inventory);
             whoClicked.closeInventory();
             whoClicked.openInventory(gui.getInventory());
         });

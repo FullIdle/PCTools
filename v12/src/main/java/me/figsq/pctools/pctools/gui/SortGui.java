@@ -59,10 +59,12 @@ public class SortGui extends AbstractPreviousInv {
             e.getWhoClicked().closeInventory();
         });
 
-        onClose(e->{
-            if (this.getPreviousInv() == null) return;
-            Bukkit.getScheduler().runTask(Cache.plugin,()->
-                    e.getPlayer().openInventory(new PCPageGui(((PCPageGui) this.getPreviousInv().getHolder()).getBox()).getInventory()));
+        onClose(e -> {
+            PCPageGui previousGui = (PCPageGui) this.getPreviousInv().getHolder();
+            PCPageGui pcPageGui = new PCPageGui(previousGui.getBox());
+            pcPageGui.setPreviousInv(previousGui.getPreviousInv());
+            Bukkit.getScheduler().runTask(Cache.plugin, () ->
+                    e.getPlayer().openInventory(pcPageGui.getInventory()));
         });
     }
 }
