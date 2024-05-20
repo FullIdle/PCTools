@@ -1,7 +1,9 @@
 package me.figsq.pctools.pctools.api.util;
 
+import com.google.common.collect.Lists;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.pixelmonmod.pixelmon.Pixelmon;
 import com.pixelmonmod.pixelmon.api.config.PixelmonConfigProxy;
 import com.pixelmonmod.pixelmon.api.pokemon.Element;
 import com.pixelmonmod.pixelmon.api.pokemon.Nature;
@@ -12,6 +14,11 @@ import com.pixelmonmod.pixelmon.api.pokemon.species.Species;
 import com.pixelmonmod.pixelmon.api.pokemon.species.gender.Gender;
 import com.pixelmonmod.pixelmon.api.registries.PixelmonSpecies;
 import com.pixelmonmod.pixelmon.api.storage.PCBox;
+import com.pixelmonmod.pixelmon.api.storage.PCStorage;
+import com.pixelmonmod.pixelmon.api.storage.PlayerPartyStorage;
+import com.pixelmonmod.pixelmon.api.storage.StorageProxy;
+import com.pixelmonmod.pixelmon.api.util.ITranslatable;
+import com.pixelmonmod.pixelmon.enums.heldItems.EnumHeldItems;
 import com.pixelmonmod.pixelmon.items.HeldItem;
 import me.figsq.pctools.pctools.api.ISearchProperty;
 import net.minecraft.server.v1_16_R3.ItemStack;
@@ -20,9 +27,11 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.craftbukkit.libs.org.apache.commons.lang3.tuple.Pair;
 import org.bukkit.craftbukkit.v1_16_R3.inventory.CraftItemStack;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class Cache {
     //cache
@@ -45,7 +54,7 @@ public class Cache {
     public static Double papiIndexOffset;
     public static Map<Species, Pair<String, List<String>>> specialNAL = new HashMap<>();
     public static Map<String, ISearchProperty> searchProperties = new HashMap<>();
-    public static Map<String,String> globalPapiReplace = new LinkedHashMap<>();
+    public static Map<String, String> globalPapiReplace = new LinkedHashMap<>();
     public static Map<String, ConfigurationSection> argsPapiReplace = new LinkedHashMap<>();
 
     public static void init() {
@@ -89,11 +98,11 @@ public class Cache {
         {
             ConfigurationSection global = config.getConfigurationSection("papiReplace.global");
             for (String key : global.getKeys(false)) {
-                globalPapiReplace.put(key,global.getString(key));
+                globalPapiReplace.put(key, global.getString(key));
             }
             ConfigurationSection args = config.getConfigurationSection("papiReplace.args");
             for (String key : args.getKeys(false)) {
-                argsPapiReplace.put(key,args.getConfigurationSection(key));
+                argsPapiReplace.put(key, args.getConfigurationSection(key));
             }
         }
     }
@@ -125,6 +134,21 @@ public class Cache {
                 return poke.getLocalizedName().equalsIgnoreCase(arg)
                         || Pokedex.FULL_POKEDEX.get(poke.getSpecies().getDex()).getName().equalsIgnoreCase(arg);
             }
+
+            @Override
+            public List<String> onTabComplete(Player player, String value) {
+                UUID uniqueId = player.getUniqueId();
+                PlayerPartyStorage party = StorageProxy.getParty(uniqueId);
+                PCStorage pc = StorageProxy.getPCForPlayer(uniqueId);
+                ArrayList<Pokemon> pokemons = Lists.newArrayList(pc.getAll());
+                Collections.addAll(pokemons, party.getAll());
+                pokemons.removeIf(Objects::isNull);
+                List<String> collect = pokemons.stream().map(ITranslatable::getLocalizedName).collect(Collectors.toList());
+                if (value.isEmpty()) {
+                    return collect;
+                }
+                return collect.stream().filter(s -> s.startsWith(value)).collect(Collectors.toList());
+            }
         });
         //性别
         searchProperties.put("gender", new ISearchProperty() {
@@ -138,6 +162,15 @@ public class Cache {
                 Gender gender = poke.getGender();
                 return gender.name().equalsIgnoreCase(arg) ||
                         gender.getLocalizedName().equalsIgnoreCase(arg);
+            }
+
+            @Override
+            public List<String> onTabComplete(Player player, String value) {
+                List<String> collect = Arrays.stream(Gender.values()).map(ITranslatable::getLocalizedName).collect(Collectors.toList());
+                if (value.isEmpty()) {
+                    return collect;
+                }
+                return collect.stream().filter(s -> s.startsWith(value)).collect(Collectors.toList());
             }
         });
         //属性
@@ -153,6 +186,13 @@ public class Cache {
                 if (element == null) return false;
                 return poke.getForm().hasType(element);
             }
+
+            @Override
+            public List<String> onTabComplete(Player player, String value) {
+                List<String> collect = Element.getAllTypes().stream().map(Element::getLocalizedName).collect(Collectors.toList());
+                if (value.isEmpty()) return collect;
+                return collect.stream().filter(s -> s.startsWith(value)).collect(Collectors.toList());
+            }
         });
         searchProperties.put("type2", new ISearchProperty() {
             @Override
@@ -165,6 +205,13 @@ public class Cache {
                 Element element = Element.parseOrNull(arg);
                 if (element == null) return false;
                 return poke.getForm().hasType(element);
+            }
+
+            @Override
+            public List<String> onTabComplete(Player player, String value) {
+                List<String> collect = Element.getAllTypes().stream().map(Element::getLocalizedName).collect(Collectors.toList());
+                if (value.isEmpty()) return collect;
+                return collect.stream().filter(s -> s.startsWith(value)).collect(Collectors.toList());
             }
         });
         //特性
@@ -180,6 +227,11 @@ public class Cache {
                 return poke.getAbilityName().equalsIgnoreCase(arg) ||
                         ability.getLocalizedName().equalsIgnoreCase(arg);
             }
+
+            @Override
+            public List<String> onTabComplete(Player player, String value) {
+                return Collections.emptyList();
+            }
         });
         //性格
         searchProperties.put("nature", new ISearchProperty() {
@@ -193,6 +245,13 @@ public class Cache {
                 Nature nature = poke.getNature();
                 return nature.name().equalsIgnoreCase(arg) ||
                         nature.getLocalizedName().equalsIgnoreCase(arg);
+            }
+
+            @Override
+            public List<String> onTabComplete(Player player, String value) {
+                List<String> collect = Arrays.stream(Nature.values()).map(ITranslatable::getLocalizedName).collect(Collectors.toList());
+                if (value.isEmpty()) return collect;
+                return collect.stream().filter(s -> s.startsWith(value)).collect(Collectors.toList());
             }
         });
         //持有物品
@@ -213,6 +272,13 @@ public class Cache {
                 return held.getLocalizedName().equalsIgnoreCase(arg) ||
                         held.getHeldItemType().name().equalsIgnoreCase(arg);
             }
+
+            @Override
+            public List<String> onTabComplete(Player player, String value) {
+                List<String> collect = Arrays.stream(EnumHeldItems.values()).map(EnumHeldItems::name).collect(Collectors.toList());
+                if (value.isEmpty()) return collect;
+                return collect.stream().filter(s -> s.startsWith(value)).collect(Collectors.toList());
+            }
         });
         //闪光
         searchProperties.put("shiny", new ISearchProperty() {
@@ -225,6 +291,11 @@ public class Cache {
             public boolean hasProperty(Pokemon poke, String arg) {
                 return poke.isShiny() == Boolean.parseBoolean(arg);
             }
+
+            @Override
+            public List<String> onTabComplete(Player player, String value) {
+                return Arrays.asList("false", "true");
+            }
         });
         //自定义名
         searchProperties.put("nickname", new ISearchProperty() {
@@ -236,6 +307,11 @@ public class Cache {
             @Override
             public boolean hasProperty(Pokemon poke, String arg) {
                 return poke.getNickname().equalsIgnoreCase(arg);
+            }
+
+            @Override
+            public List<String> onTabComplete(Player player, String value) {
+                return Collections.emptyList();
             }
         });
     }

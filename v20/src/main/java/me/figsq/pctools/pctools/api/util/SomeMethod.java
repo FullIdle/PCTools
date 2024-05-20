@@ -7,6 +7,7 @@ import com.pixelmonmod.pixelmon.api.storage.PokemonStorage;
 import com.pixelmonmod.pixelmon.api.storage.StoragePosition;
 import com.pixelmonmod.pixelmon.api.util.helpers.SpriteItemHelper;
 import me.clip.placeholderapi.PlaceholderAPI;
+import me.figsq.pctools.pctools.api.ISearchProperty;
 import me.figsq.pctools.pctools.api.enums.SpecialType;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.Tuple;
@@ -121,5 +122,12 @@ public class SomeMethod {
         if (Cache.invPcSlot.contains(clickSlot))
             return new Tuple<>(pcBox, new StoragePosition(pcBox.boxNumber, Cache.invPcSlot.indexOf(clickSlot)));
         return null;
+    }
+
+    /**
+     * 注册/添加搜索条目
+     */
+    public static void addSearchProperty(String searchProperty_name, ISearchProperty searchProperty){
+        Cache.searchProperties.put(searchProperty_name,searchProperty);
     }
 }
