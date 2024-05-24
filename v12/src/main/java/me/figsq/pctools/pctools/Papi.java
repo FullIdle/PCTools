@@ -174,6 +174,9 @@ public class Papi extends PlaceholderExpansion {
             case "types": {
                 return poke.getSpecies().getBaseStats().types.toString();
             }
+            case "formtypes":{
+                return poke.getBaseStats().forms.get(args.get(1)).types.toString();
+            }
             case "egggroup": {
                 return Arrays.toString(poke.getSpecies().getBaseStats().eggGroups);
             }
@@ -199,6 +202,9 @@ public class Papi extends PlaceholderExpansion {
                 return stats(args.get(1), poke.getStats());
             case "basestats":
                 return stats(args.get(1), poke.getBaseStats());
+            case "formstats":{
+                return stats(args.get(2),poke.getBaseStats().forms.get(Integer.parseInt(args.get(1))));
+            }
             case "basetotal": {
                 return String.valueOf(addUp(poke.getBaseStats().stats.values()));
             }
@@ -242,6 +248,8 @@ public class Papi extends PlaceholderExpansion {
                 return nickname == null ? poke.getSpecies().name : nickname;
             case "ability":
                 return poke.getAbility().getLocalizedName();
+            case "formability":
+                return Arrays.toString(poke.getBaseStats().forms.get(args.get(1)).getAbilitiesArray());
             case "islegendary":
                 return String.valueOf(poke.isLegendary());
             case "isegg":

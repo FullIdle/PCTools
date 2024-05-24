@@ -27,11 +27,11 @@ papiIndexOffset: 0
 ## 插件使用本变量插件做依赖的时候需要将{pokemon}这段直接替换成nbt
 ## 一个插件实例: https://github.com/FullIdle/PokeHatchTip
 ## ->[编号型变量]<-———————————————————————————————————————————————————————————
-## 编号型变量格式%pctools_{pokedex}_[arg]_[可选变量]%
-## {pokedex}连带符号改成宝可梦的在图鉴中的编号即可->重点,
+## 编号型变量格式%pctools_pokedex:{dex_id}_[arg]_[可选变量]%
+## {dex_id}连带符号改成宝可梦的在图鉴中的编号即可->重点,
 ## 这样的变量大部分属性和各种值都是随机的并不是玩家背包中的某个精灵
 ## ->[种类型变量]<-——————————————————————————————————————————————————————————
-## 种类型变量格式%pctools_{speciesName}_[arg]_[可选变量]%
+## 种类型变量格式%pctools_species:{speciesName}_[arg]_[可选变量]%
 ## {speciesName}连带符号一起改成宝可梦的名字(建议英文)
 ## 这样的变量大部分属性和各种值都是随机的并不是玩家背包中的某个精灵
 ## ->变量可用参数[无宝可梦变量不可用]<-——————————————————————————————————————————
@@ -52,6 +52,7 @@ papiIndexOffset: 0
 #localizedname 宝可梦本地名 #简称 译名 (如果你将语言文件汉化了则是中文)
 #nickname 宝可梦设置名
 #ability 特性
+#formability 形态特性 可用参数: 同formtypes
 #islegendary 是否是神兽
 #isegg 是否是蛋
 #isultrabeast 是否是究极兽
@@ -68,10 +69,12 @@ papiIndexOffset: 0
 #eggcycles 剩余多少周期孵化
 #basetotal 总种族值
 #basestats 种族值 可选参数: 同ivs
+#formstats 形态种族值 可选参数: {args1}_{args2} args1: 同formtypes args2: 同ivs
 #stats 能力值 可选参数: 同ivs
 #statstotal 总能力值
 #position 所在位置 可选参数: box , order[页/位]
 #types 属性
+#formtypes 指向形态属性 可用参数: 更具形态的id选择[!宝可梦模组中的stats文件!][12是数字16/20是名字]
 #egggroup 蛋组
 #nbt 可选参数: (根据以下数据写参数[比如Moveset下第一个MoveID则变量为%pctools_[box]_[order]_nbt_Moveset.1.MoveID%]){
 #  "EVSpeed": "0s",

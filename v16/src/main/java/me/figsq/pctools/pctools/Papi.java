@@ -17,6 +17,7 @@ import com.pixelmonmod.pixelmon.api.storage.PCStorage;
 import com.pixelmonmod.pixelmon.api.storage.PlayerPartyStorage;
 import com.pixelmonmod.pixelmon.api.storage.StoragePosition;
 import com.pixelmonmod.pixelmon.api.storage.StorageProxy;
+import com.pixelmonmod.pixelmon.api.util.ITranslatable;
 import com.pixelmonmod.pixelmon.battles.attacks.Attack;
 import com.pixelmonmod.pixelmon.items.HeldItem;
 import com.pixelmonmod.pixelmon.items.heldItems.NoItem;
@@ -32,6 +33,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static me.figsq.pctools.pctools.api.util.Cache.*;
 
@@ -180,6 +182,13 @@ public class Papi extends PlaceholderExpansion{
                 }
                 return list.toString();
             }
+            case "formtypes":{
+                return poke.getSpecies().getForms(s->s.getName().equalsIgnoreCase(args.get(1)))
+                        .get(0).getTypes()
+                        .stream().map(Element::getLocalizedName).
+                        collect(Collectors.toCollection(ArrayList::new))
+                        .toString();
+            }
             case "egggroup": {
                 ArrayList<String> list = new ArrayList<>();
                 for (EggGroup eggGroup : poke.getForm().getEggGroups()) {
@@ -209,6 +218,10 @@ public class Papi extends PlaceholderExpansion{
                 return stats(args.get(1), poke.getStats());
             case "basestats":
                 return stats(args.get(1), poke.getForm());
+            case "formstats":{
+                return stats(args.get(2),poke.getSpecies()
+                        .getForms(s->s.getName().equalsIgnoreCase(args.get(1))).get(0));
+            }
             case "basetotal": {
                 return String.valueOf(addUp(poke.getStats().toArray()));
             }
@@ -252,6 +265,12 @@ public class Papi extends PlaceholderExpansion{
                 return nickname == null ? poke.getSpecies().getLocalizedName() : nickname;
             case "ability":
                 return poke.getAbility().getLocalizedName();
+            case "formability":
+                return Arrays.stream(poke.getSpecies()
+                        .getForms(s->s.getName().equalsIgnoreCase(args.get(1))).get(0)
+                        .getAbilities().getAll())
+                        .map(ITranslatable::getLocalizedName)
+                        .collect(Collectors.toCollection(ArrayList::new)).toString();
             case "islegendary":
                 return String.valueOf(poke.isLegendary());
             case "isegg":
