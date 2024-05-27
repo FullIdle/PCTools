@@ -112,7 +112,6 @@ public class PCPageGui extends AbstractPreviousInv {
                 gui.setPreviousInv(this.inventory);
                 Inventory temp = this.getPreviousInv();
                 this.setPreviousInv(null);
-                whoClicked.closeInventory();
                 whoClicked.openInventory(gui.getInventory());
                 this.setPreviousInv(temp);
                 return;
@@ -207,10 +206,19 @@ public class PCPageGui extends AbstractPreviousInv {
                 e.setCancelled(true);
                 //鼠标上有宝可梦或者点击的地方没有宝可梦都直接返回
                 if (cursorPoke != null || currentPoke == null) return;
+                //最后一只背包精灵则不打开了
+                if (!Cache.packCanEmpty) {
+                    PokemonStorage storage = currentPoke.getStorage();
+                    if (storage instanceof PlayerPartyStorage) {
+                        ArrayList<Pokemon> list = Lists.newArrayList(storage.getAll());
+                        list.removeIf(Objects::isNull);
+                        if (list.size() < 2) return;
+                    }
+                }
+
                 ConfirmGui confirmGui = new ConfirmGui(currentPoke);
                 Inventory temp = this.getPreviousInv();
                 this.setPreviousInv(null);
-                whoClicked.closeInventory();
                 this.setPreviousInv(temp);
                 confirmGui.setPreviousInv(this.inventory);
                 whoClicked.openInventory(confirmGui.getInventory());
@@ -259,7 +267,6 @@ public class PCPageGui extends AbstractPreviousInv {
     private void changePage(HumanEntity player, int page, ItemStack cursor) {
         Inventory temp = this.getPreviousInv();
         this.setPreviousInv(null);
-        player.closeInventory();
         PCPageGui gui = new PCPageGui(box.pc.getBox(page));
         gui.setPreviousInv(temp);
         Pokemon pokemon = StorageHelper.find(SomeMethod.getFormatItemUUID(cursor), box.pc, party);
