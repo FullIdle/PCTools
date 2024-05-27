@@ -169,7 +169,9 @@ public class CMD implements TabExecutor {
                         collect(Collectors.toList());
             String[] split = arg.split(":");
             if (!(sender instanceof Player)) return null;
-            return Cache.searchProperties.get(split[0]).onTabComplete(((Player) sender), split.length == 2 ? split[1] : "");
+            String key = split[0];
+            return Cache.searchProperties.get(key).onTabComplete(((Player) sender), split.length == 2 ? split[1] : "").
+                    stream().map(s->key+":"+s).collect(Collectors.toList());
         }
         return null;
     }
