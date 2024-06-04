@@ -1,13 +1,12 @@
 package me.figsq.pctools.pctools.api.util;
 
 import com.google.common.collect.Lists;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.pixelmonmod.pixelmon.Pixelmon;
 import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
 import com.pixelmonmod.pixelmon.api.storage.PCBox;
 import com.pixelmonmod.pixelmon.api.storage.PCStorage;
-import com.pixelmonmod.pixelmon.config.PixelmonConfig;
+import com.pixelmonmod.pixelmon.api.storage.PokemonStorage;
+import com.pixelmonmod.pixelmon.api.storage.StoragePosition;
 import com.pixelmonmod.pixelmon.entities.pixelmon.abilities.AbilityBase;
 import com.pixelmonmod.pixelmon.entities.pixelmon.stats.Gender;
 import com.pixelmonmod.pixelmon.enums.EnumNature;
@@ -15,64 +14,36 @@ import com.pixelmonmod.pixelmon.enums.EnumSpecies;
 import com.pixelmonmod.pixelmon.enums.EnumType;
 import com.pixelmonmod.pixelmon.enums.heldItems.EnumHeldItems;
 import com.pixelmonmod.pixelmon.items.ItemHeld;
+import com.pixelmonmod.pixelmon.items.ItemPixelmonSprite;
 import com.pixelmonmod.pixelmon.storage.PlayerPartyStorage;
 import com.pixelmonmod.pixelmon.util.ITranslatable;
 import me.figsq.pctools.pctools.api.ISearchProperty;
-import net.minecraft.server.v1_12_R1.ItemStack;
+import me.figsq.pctools.pctools.api.enums.SpecialType;
+import net.minecraft.server.v1_12_R1.EntityPlayer;
+import net.minecraft.server.v1_12_R1.NBTTagCompound;
+import net.minecraft.server.v1_12_R1.Tuple;
 import org.apache.commons.lang3.tuple.Pair;
 import org.bukkit.Material;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.craftbukkit.v1_12_R1.inventory.CraftItemStack;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
-public class Cache {
-    //cache
-    public static String pCGuiTitle;
-    public static JavaPlugin plugin;
-    public static final ArrayList<Integer> invBackpackSlot = new ArrayList<>();
-    public static final ArrayList<Integer> invPcSlot = new ArrayList<>();
-    public static final Gson gson = new GsonBuilder().setPrettyPrinting().create();
-    public static String normalName;
-    public static String eggName;
-    public static String legendName;
-    public static String uBeastName;
-    public static boolean cancelPC;
-    public static List<String> normalLore;
-    public static List<String> eggLore;
-    public static List<String> legendLore;
-    public static List<String> uBeastLore;
-    public static String[] helpMsg;
-    public static boolean packCanEmpty;
-    public static Double papiIndexOffset;
+public class PokeUtil {
     public static Map<EnumSpecies, Pair<String, List<String>>> specialNAL = new HashMap<>();
     public static Map<String, ISearchProperty> searchProperties = new HashMap<>();
-    public static Map<String,String> globalPapiReplace = new LinkedHashMap<>();
-    public static Map<String, ConfigurationSection> argsPapiReplace = new LinkedHashMap<>();
 
-    public static void init() {
-        //clean
+    public static void init(){
         specialNAL.clear();
-        globalPapiReplace.clear();
-        argsPapiReplace.clear();
 
-        FileConfiguration config = plugin.getConfig();
-        pCGuiTitle = config.getString("title");
-        papiIndexOffset = config.getDouble("papiIndexOffset");
 
-        //name lore
-        normalName = config.getString("item.normal.name");
-        eggName = config.getString("item.egg.name");
-        legendName = config.getString("item.legend.name");
-        uBeastName = config.getString("item.uBeast.name");
-        normalLore = config.getStringList("item.normal.lore");
-        eggLore = config.getStringList("item.egg.lore");
-        legendLore = config.getStringList("item.legend.lore");
-        uBeastLore = config.getStringList("item.uBeast.lore");
+        FileConfiguration config = Cache.plugin.getConfig();
+
         //special name lore
         for (String key : config.getConfigurationSection("item.special").getKeys(false)) {
             Optional<EnumSpecies> optional = EnumSpecies.getFromName(key);
@@ -80,44 +51,88 @@ public class Cache {
                 continue;
             }
             EnumSpecies species = optional.get();
-            specialNAL.put(
+            PokeUtil.specialNAL.put(
                     species,
                     Pair.of(config.getString("item.special." + key + ".name"),
                             config.getStringList("item.special." + key + ".lore"))
             );
         }
+    }
 
-
-        helpMsg = SomeMethod.papi(null, config.getStringList("msg.help").toArray(new String[0]), null);
-        cancelPC = config.getBoolean("cancelPC");
-        packCanEmpty = config.getBoolean("packCanEmpty");
-        //papiReplace
-        {
-            ConfigurationSection global = config.getConfigurationSection("papiReplace.global");
-            for (String key : global.getKeys(false)) {
-                globalPapiReplace.put(key,global.getString(key));
-            }
-            ConfigurationSection args = config.getConfigurationSection("papiReplace.args");
-            for (String key : args.getKeys(false)) {
-                argsPapiReplace.put(key,args.getConfigurationSection(key));
-            }
+    public static ItemStack getFormatPokePhoto(Pokemon pokemon) {
+        if (pokemon == null) {
+            return null;
         }
+        net.minecraft.server.v1_12_R1.ItemStack photo = (net.minecraft.server.v1_12_R1.ItemStack) ((Object) ItemPixelmonSprite.getPhoto(pokemon));
+        NBTTagCompound tag = photo.getTag() == null ? new NBTTagCompound() : photo.getTag();
+        tag.setString("pctoolsUUID", pokemon.getUUID().toString());
+        photo.setTag(tag);
+        Player player = ((EntityPlayer) ((Object) pokemon.getOwnerPlayer()))
+                .getBukkitEntity().getPlayer();
+        ItemStack copy = CraftItemStack.asBukkitCopy(photo);
+        ItemMeta itemMeta = copy.getItemMeta();
+        String name;
+        List<String> lore;
+        Pair<String, List<String>> pair = specialNAL.get(pokemon.getSpecies());
+        if (pair == null){
+            SpecialType type = SpecialType.getType(pokemon);
+            switch (type){
+                case EGG:{
+                    name = Cache.eggName;
+                    lore = Cache.eggLore;
+                    break;
+                }
+                case LEGEND:{
+                    name = Cache.legendName;
+                    lore = Cache.legendLore;
+                    break;
+                }
+                case UBEAST:{
+                    name = Cache.uBeastName;
+                    lore = Cache.uBeastLore;
+                    break;
+                }
+                default:{
+                    name = Cache.normalName;
+                    lore = Cache.normalLore;
+                    break;
+                }
+            }
+        }else{
+            name = pair.getLeft();
+            lore = pair.getRight();
+        }
+
+        StoragePosition ps = pokemon.getPosition();
+        Function<String, String> fun = s -> s.replace("{box}", String.valueOf(((int) (ps.box - Cache.papiIndexOffset))))
+                .replace("{order}", String.valueOf(((int) (ps.order - Cache.papiIndexOffset))));
+        itemMeta.setDisplayName(PapiUtil.papi(player, fun.apply(name)));
+        itemMeta.setLore(PapiUtil.papi(player, lore, fun));
+        copy.setItemMeta(itemMeta);
+        return copy;
+    }
+
+    public static UUID getFormatItemUUID(ItemStack itemStack) {
+        if (itemStack == null) return null;
+
+        net.minecraft.server.v1_12_R1.ItemStack copy = CraftItemStack.asNMSCopy(itemStack);
+        NBTTagCompound nbt = copy.getTag() == null ? new NBTTagCompound() : copy.getTag();
+        if (nbt.hasKey("pctoolsUUID")) {
+            return UUID.fromString(nbt.getString("pctoolsUUID"));
+        }
+        return null;
+    }
+
+    public static Tuple<PokemonStorage, StoragePosition> computeStorageAndPosition(int clickSlot, PlayerPartyStorage partyStorage, PCBox pcBox) {
+        if (Cache.invBackpackSlot.contains(clickSlot))
+            return new Tuple<>(partyStorage, new StoragePosition(-1, Cache.invBackpackSlot.indexOf(clickSlot)));
+        if (Cache.invPcSlot.contains(clickSlot))
+            return new Tuple<>(pcBox, new StoragePosition(pcBox.boxNumber, Cache.invPcSlot.indexOf(clickSlot)));
+        return null;
     }
 
     static {
-        for (int i = 0; i < 6; i++) {
-            invBackpackSlot.add(((i + 1) * 9) - 2);
-        }
-        for (int i = 0; i < PCBox.POKEMON_PER_BOX; i++) {
-            int x = (i + 1) % 6;
-            int row = (i + 1) / 6;
-            int v = x > 0?(row * 9) + (x - 1):((row - 1) * 9) + 5;
-            invPcSlot.add(v);
-        }
-
-        //searchProperty
-        //名
-        searchProperties.put("name", new ISearchProperty() {
+        PokeUtil.searchProperties.put("name", new ISearchProperty() {
             @Override
             public String getName() {
                 return "name";
@@ -145,7 +160,7 @@ public class Cache {
             }
         });
         //性别
-        searchProperties.put("gender", new ISearchProperty() {
+        PokeUtil.searchProperties.put("gender", new ISearchProperty() {
             @Override
             public String getName() {
                 return "gender";
@@ -168,7 +183,7 @@ public class Cache {
             }
         });
         //属性
-        searchProperties.put("type1", new ISearchProperty() {
+        PokeUtil.searchProperties.put("type1", new ISearchProperty() {
             @Override
             public String getName() {
                 return "type1";
@@ -188,7 +203,7 @@ public class Cache {
                 return collect.stream().filter(s->s.startsWith(value)).collect(Collectors.toList());
             }
         });
-        searchProperties.put("type2", new ISearchProperty() {
+        PokeUtil.searchProperties.put("type2", new ISearchProperty() {
             @Override
             public String getName() {
                 return "type2";
@@ -209,7 +224,7 @@ public class Cache {
             }
         });
         //特性
-        searchProperties.put("ability", new ISearchProperty() {
+        PokeUtil.searchProperties.put("ability", new ISearchProperty() {
             @Override
             public String getName() {
                 return "ability";
@@ -228,7 +243,7 @@ public class Cache {
             }
         });
         //性格
-        searchProperties.put("nature", new ISearchProperty() {
+        PokeUtil.searchProperties.put("nature", new ISearchProperty() {
             @Override
             public String getName() {
                 return "nature";
@@ -249,7 +264,7 @@ public class Cache {
             }
         });
         //持有物品
-        searchProperties.put("helditem", new ISearchProperty() {
+        PokeUtil.searchProperties.put("helditem", new ISearchProperty() {
             @Override
             public String getName() {
                 return "helditem";
@@ -258,7 +273,7 @@ public class Cache {
             @Override
             public boolean hasProperty(Pokemon poke, String arg) {
                 if (poke.getHeldItem() == null ||
-                        CraftItemStack.asBukkitCopy((ItemStack) ((Object) poke.getHeldItem()))
+                        CraftItemStack.asBukkitCopy((net.minecraft.server.v1_12_R1.ItemStack) ((Object) poke.getHeldItem()))
                                 .getType().equals(Material.AIR)) {
                     return false;
                 }
@@ -275,7 +290,7 @@ public class Cache {
             }
         });
         //闪光
-        searchProperties.put("shiny", new ISearchProperty() {
+        PokeUtil.searchProperties.put("shiny", new ISearchProperty() {
             @Override
             public String getName() {
                 return "shiny";
@@ -292,7 +307,7 @@ public class Cache {
             }
         });
         //自定义名
-        searchProperties.put("nickname", new ISearchProperty() {
+        PokeUtil.searchProperties.put("nickname", new ISearchProperty() {
             @Override
             public String getName() {
                 return "nickname";

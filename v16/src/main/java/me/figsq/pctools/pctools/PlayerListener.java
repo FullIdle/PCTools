@@ -13,8 +13,6 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.Inventory;
 
-import static me.figsq.pctools.pctools.api.util.Cache.plugin;
-
 public class PlayerListener implements Listener {
     @EventHandler
     public void interactBlock(PlayerInteractEvent e){

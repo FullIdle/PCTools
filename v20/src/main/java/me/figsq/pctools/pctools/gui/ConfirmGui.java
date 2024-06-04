@@ -3,7 +3,8 @@ package me.figsq.pctools.pctools.gui;
 import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
 import lombok.Getter;
 import me.figsq.pctools.pctools.api.util.Cache;
-import me.figsq.pctools.pctools.api.util.SomeMethod;
+import me.figsq.pctools.pctools.api.util.PapiUtil;
+import me.figsq.pctools.pctools.api.util.PokeUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.inventory.Inventory;
@@ -12,20 +13,20 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 @Getter
 public class ConfirmGui extends AbstractPreviousInv {
-    private final Inventory inventory = Bukkit.createInventory(this, 3 * 9, SomeMethod.papi(null, Cache.plugin.getConfig().getString("msg.confirm_gui_title")));
+    private final Inventory inventory = Bukkit.createInventory(this, 3 * 9, PapiUtil.papi(null, Cache.plugin.getConfig().getString("msg.confirm_gui_title")));
     private final Pokemon pokemon;
 
     public ConfirmGui(Pokemon pokemon) {
         {
             this.pokemon = pokemon;
-            ItemStack photo = SomeMethod.getFormatPokePhoto(pokemon);
+            ItemStack photo = PokeUtil.getFormatPokePhoto(pokemon);
             this.inventory.setItem(4, photo);
         }
         {
             //confirm
             ItemStack itemStack = new ItemStack(Material.GREEN_STAINED_GLASS_PANE);
             ItemMeta itemMeta = itemStack.getItemMeta();
-            itemMeta.setDisplayName(SomeMethod.papi(null, Cache.plugin.getConfig().getString("msg.confirm_gui_confirm_button")));
+            itemMeta.setDisplayName(PapiUtil.papi(null, Cache.plugin.getConfig().getString("msg.confirm_gui_confirm_button")));
             itemStack.setItemMeta(itemMeta);
             this.inventory.setItem(21, itemStack);
         }
@@ -33,7 +34,7 @@ public class ConfirmGui extends AbstractPreviousInv {
             //cancel
             ItemStack itemStack = new ItemStack(Material.RED_STAINED_GLASS_PANE);
             ItemMeta itemMeta = itemStack.getItemMeta();
-            itemMeta.setDisplayName(SomeMethod.papi(null, Cache.plugin.getConfig().getString("msg.confirm_gui_cancel_button")));
+            itemMeta.setDisplayName(PapiUtil.papi(null, Cache.plugin.getConfig().getString("msg.confirm_gui_cancel_button")));
             itemStack.setItemMeta(itemMeta);
             this.inventory.setItem(23, itemStack);
         }

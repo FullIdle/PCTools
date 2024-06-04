@@ -6,7 +6,8 @@ import com.pixelmonmod.pixelmon.api.storage.StorageProxy;
 import lombok.Getter;
 import me.figsq.pctools.pctools.api.ItemComparedMap;
 import me.figsq.pctools.pctools.api.util.Cache;
-import me.figsq.pctools.pctools.api.util.SomeMethod;
+import me.figsq.pctools.pctools.api.util.PapiUtil;
+import me.figsq.pctools.pctools.api.util.PokeUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -28,12 +29,12 @@ public class PCResultGui extends AbstractPreviousInv {
     private int nowPage;
 
     public PCResultGui(List<Pokemon> pokemons) {
-        this.inventory = Bukkit.createInventory(this, 6 * 9, SomeMethod.papi(null, Cache.plugin.getConfig().getString("msg.search_gui_title")));
+        this.inventory = Bukkit.createInventory(this, 6 * 9, PapiUtil.papi(null, Cache.plugin.getConfig().getString("msg.search_gui_title")));
         {
             //上一页
             ItemStack itemStack = new ItemStack(Material.PURPLE_STAINED_GLASS_PANE);
             ItemMeta itemMeta = itemStack.getItemMeta();
-            itemMeta.setDisplayName(SomeMethod.papi(null, Cache.plugin.getConfig().getString("msg.search_gui_previous_button")));
+            itemMeta.setDisplayName(PapiUtil.papi(null, Cache.plugin.getConfig().getString("msg.search_gui_previous_button")));
             itemStack.setItemMeta(itemMeta);
             this.inventory.setItem(47, itemStack);
         }
@@ -41,7 +42,7 @@ public class PCResultGui extends AbstractPreviousInv {
             //下一页
             ItemStack itemStack = new ItemStack(Material.PURPLE_STAINED_GLASS_PANE);
             ItemMeta itemMeta = itemStack.getItemMeta();
-            itemMeta.setDisplayName(SomeMethod.papi(null, Cache.plugin.getConfig().getString("msg.search_gui_next_button")));
+            itemMeta.setDisplayName(PapiUtil.papi(null, Cache.plugin.getConfig().getString("msg.search_gui_next_button")));
             itemStack.setItemMeta(itemMeta);
             this.inventory.setItem(51, itemStack);
         }
@@ -49,7 +50,7 @@ public class PCResultGui extends AbstractPreviousInv {
         for (int i = 0; i < pokemons.size(); i += 45) {
             ArrayList<ItemStack> page = new ArrayList<>();
             for (Pokemon pokemon : pokemons.subList(i, Math.min(i + 45, pokemons.size()))) {
-                ItemStack photo = SomeMethod.getFormatPokePhoto(pokemon);
+                ItemStack photo = PokeUtil.getFormatPokePhoto(pokemon);
                 page.add(photo);
                 cache.put(photo, pokemon);
             }

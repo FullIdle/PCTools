@@ -1,10 +1,8 @@
 package me.figsq.pctools.pctools.api.util;
 
 import com.google.common.collect.Lists;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.pixelmonmod.pixelmon.Pixelmon;
 import com.pixelmonmod.pixelmon.api.config.PixelmonConfigProxy;
+import com.pixelmonmod.pixelmon.api.config.StorageConfig;
 import com.pixelmonmod.pixelmon.api.pokemon.Element;
 import com.pixelmonmod.pixelmon.api.pokemon.Nature;
 import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
@@ -13,69 +11,44 @@ import com.pixelmonmod.pixelmon.api.pokemon.species.Pokedex;
 import com.pixelmonmod.pixelmon.api.pokemon.species.Species;
 import com.pixelmonmod.pixelmon.api.pokemon.species.gender.Gender;
 import com.pixelmonmod.pixelmon.api.registries.PixelmonSpecies;
-import com.pixelmonmod.pixelmon.api.storage.PCBox;
-import com.pixelmonmod.pixelmon.api.storage.PCStorage;
-import com.pixelmonmod.pixelmon.api.storage.PlayerPartyStorage;
-import com.pixelmonmod.pixelmon.api.storage.StorageProxy;
+import com.pixelmonmod.pixelmon.api.storage.*;
 import com.pixelmonmod.pixelmon.api.util.ITranslatable;
+import com.pixelmonmod.pixelmon.api.util.helpers.SpriteItemHelper;
 import com.pixelmonmod.pixelmon.enums.heldItems.EnumHeldItems;
 import com.pixelmonmod.pixelmon.items.HeldItem;
+import lombok.SneakyThrows;
 import me.figsq.pctools.pctools.api.ISearchProperty;
-import net.minecraft.server.v1_16_R3.ItemStack;
+import me.figsq.pctools.pctools.api.enums.SpecialType;
+import org.apache.commons.lang3.tuple.Pair;
 import org.bukkit.Material;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.craftbukkit.libs.org.apache.commons.lang3.tuple.Pair;
-import org.bukkit.craftbukkit.v1_16_R3.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_20_R2.inventory.CraftItemStack;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
+import java.lang.reflect.Field;
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
-public class Cache {
-    //cache
-    public static String pCGuiTitle;
-    public static JavaPlugin plugin;
-    public static final ArrayList<Integer> invBackpackSlot = new ArrayList<>();
-    public static final ArrayList<Integer> invPcSlot = new ArrayList<>();
-    public static final Gson gson = new GsonBuilder().setPrettyPrinting().create();
-    public static String normalName;
-    public static String eggName;
-    public static String legendName;
-    public static String uBeastName;
-    public static boolean cancelPC;
-    public static List<String> normalLore;
-    public static List<String> eggLore;
-    public static List<String> legendLore;
-    public static List<String> uBeastLore;
-    public static String[] helpMsg;
-    public static boolean packCanEmpty;
-    public static Double papiIndexOffset;
+public class PokeUtil {
     public static Map<Species, Pair<String, List<String>>> specialNAL = new HashMap<>();
     public static Map<String, ISearchProperty> searchProperties = new HashMap<>();
-    public static Map<String, String> globalPapiReplace = new LinkedHashMap<>();
-    public static Map<String, ConfigurationSection> argsPapiReplace = new LinkedHashMap<>();
+    public static int computerBoxes;
 
-    public static void init() {
-        //clean
+    @SneakyThrows
+    public static void init(){
         specialNAL.clear();
-        globalPapiReplace.clear();
-        argsPapiReplace.clear();
 
-        FileConfiguration config = plugin.getConfig();
-        pCGuiTitle = config.getString("title");
-        papiIndexOffset = config.getDouble("papiIndexOffset");
+        //computerBoxes
+        StorageConfig storage = PixelmonConfigProxy.getStorage();
+        Field field = StorageConfig.class.getDeclaredField("computerBoxes");
+        field.setAccessible(true);
+        computerBoxes = (int) field.get(storage);
 
-        //name lore
-        normalName = config.getString("item.normal.name");
-        eggName = config.getString("item.egg.name");
-        legendName = config.getString("item.legend.name");
-        uBeastName = config.getString("item.uBeast.name");
-        normalLore = config.getStringList("item.normal.lore");
-        eggLore = config.getStringList("item.egg.lore");
-        legendLore = config.getStringList("item.legend.lore");
-        uBeastLore = config.getStringList("item.uBeast.lore");
+        FileConfiguration config = Cache.plugin.getConfig();
+
         //special name lore
         for (String key : config.getConfigurationSection("item.special").getKeys(false)) {
             Optional<Species> optional = PixelmonSpecies.fromName(key).getValue();
@@ -89,40 +62,80 @@ public class Cache {
                             config.getStringList("item.special." + key + ".lore"))
             );
         }
+    }
 
-
-        helpMsg = SomeMethod.papi(null, config.getStringList("msg.help").toArray(new String[0]), null);
-        cancelPC = config.getBoolean("cancelPC");
-        packCanEmpty = config.getBoolean("packCanEmpty");
-        //papiReplace
-        {
-            ConfigurationSection global = config.getConfigurationSection("papiReplace.global");
-            for (String key : global.getKeys(false)) {
-                globalPapiReplace.put(key, global.getString(key));
-            }
-            ConfigurationSection args = config.getConfigurationSection("papiReplace.args");
-            for (String key : args.getKeys(false)) {
-                argsPapiReplace.put(key, args.getConfigurationSection(key));
-            }
+    public static ItemStack getFormatPokePhoto(Pokemon pokemon) {
+        if (pokemon == null) {
+            return null;
         }
+        net.minecraft.world.item.ItemStack photo = SpriteItemHelper.getPhoto(pokemon);
+        net.minecraft.nbt.NBTTagCompound tag = photo.v() == null ? new net.minecraft.nbt.NBTTagCompound() : photo.v();
+        tag.a("pctoolsUUID", pokemon.getUUID().toString());
+        photo.c(tag);
+        Player player = pokemon.getOwnerPlayer().getBukkitEntity().getPlayer();
+        ItemStack copy = CraftItemStack.asBukkitCopy(photo);
+        ItemMeta itemMeta = copy.getItemMeta();
+        String name;
+        List<String> lore;
+        Pair<String, List<String>> pair = specialNAL.get(pokemon.getSpecies());
+        if (pair == null){
+            SpecialType type = SpecialType.getType(pokemon);
+            switch (type){
+                case EGG:{
+                    name = Cache.eggName;
+                    lore = Cache.eggLore;
+                    break;
+                }
+                case LEGEND:{
+                    name = Cache.legendName;
+                    lore = Cache.legendLore;
+                    break;
+                }
+                case UBEAST:{
+                    name = Cache.uBeastName;
+                    lore = Cache.uBeastLore;
+                    break;
+                }
+                default:{
+                    name = Cache.normalName;
+                    lore = Cache.normalLore;
+                    break;
+                }
+            }
+        }else{
+            name = pair.getLeft();
+            lore = pair.getRight();
+        }
+
+        StoragePosition ps = pokemon.getPosition();
+        Function<String, String> fun = s -> s.replace("{box}", String.valueOf(((int) (ps.box - Cache.papiIndexOffset))))
+                .replace("{order}", String.valueOf(((int) (ps.order - Cache.papiIndexOffset))));
+        itemMeta.setDisplayName(PapiUtil.papi(player, fun.apply(name)));
+        itemMeta.setLore(PapiUtil.papi(player, lore, fun));
+        copy.setItemMeta(itemMeta);
+        return copy;
+    }
+
+    public static UUID getFormatItemUUID(ItemStack itemStack) {
+        if (itemStack == null) return null;
+
+        net.minecraft.world.item.ItemStack copy = CraftItemStack.asNMSCopy(itemStack);
+        net.minecraft.nbt.NBTTagCompound nbt = copy.v() == null ? new net.minecraft.nbt.NBTTagCompound() : copy.v();
+        if (nbt.b("pctoolsUUID")) {
+            return UUID.fromString(nbt.l("pctoolsUUID"));
+        }
+        return null;
+    }
+
+    public static net.minecraft.util.Tuple<PokemonStorage, StoragePosition> computeStorageAndPosition(int clickSlot, PlayerPartyStorage partyStorage, PCBox pcBox) {
+        if (Cache.invBackpackSlot.contains(clickSlot))
+            return new net.minecraft.util.Tuple<>(partyStorage, new StoragePosition(-1, Cache.invBackpackSlot.indexOf(clickSlot)));
+        if (Cache.invPcSlot.contains(clickSlot))
+            return new net.minecraft.util.Tuple<>(pcBox, new StoragePosition(pcBox.boxNumber, Cache.invPcSlot.indexOf(clickSlot)));
+        return null;
     }
 
     static {
-        for (int i = 0; i < 6; i++) {
-            invBackpackSlot.add(((i + 1) * 9) - 2);
-        }
-        for (int i = 0; i < PCBox.POKEMON_PER_BOX; i++) {
-            int x = (i + 1) % 6;
-            int row = (i + 1) / 6;
-            if (x > 0) {
-                invPcSlot.add((row * 9) + (x - 1));
-                continue;
-            }
-            invPcSlot.add(((row - 1) * 9) + 5);
-        }
-
-        //searchProperty
-        //名
         searchProperties.put("name", new ISearchProperty() {
             @Override
             public String getName() {
@@ -138,8 +151,8 @@ public class Cache {
             @Override
             public List<String> onTabComplete(Player player, String value) {
                 UUID uniqueId = player.getUniqueId();
-                PlayerPartyStorage party = StorageProxy.getParty(uniqueId);
-                PCStorage pc = StorageProxy.getPCForPlayer(uniqueId);
+                PlayerPartyStorage party = StorageProxy.getPartyNow(uniqueId);
+                PCStorage pc = StorageProxy.getPCForPlayerNow(uniqueId);
                 ArrayList<Pokemon> pokemons = Lists.newArrayList(pc.getAll());
                 Collections.addAll(pokemons, party.getAll());
                 pokemons.removeIf(Objects::isNull);
@@ -263,9 +276,8 @@ public class Cache {
 
             @Override
             public boolean hasProperty(Pokemon poke, String arg) {
-                if (poke.getHeldItem() == null ||
-                        CraftItemStack.asBukkitCopy((ItemStack) ((Object) poke.getHeldItem()))
-                                .getType().equals(Material.AIR)) {
+                if (CraftItemStack.asBukkitCopy(poke.getHeldItem())
+                        .getType().equals(Material.AIR)) {
                     return false;
                 }
                 HeldItem held = poke.getHeldItemAsItemHeld();
@@ -294,7 +306,7 @@ public class Cache {
 
             @Override
             public List<String> onTabComplete(Player player, String value) {
-                return Arrays.asList("false", "true");
+                return Arrays.asList("false","true");
             }
         });
         //自定义名

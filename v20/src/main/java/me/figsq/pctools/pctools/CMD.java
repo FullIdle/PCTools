@@ -6,7 +6,8 @@ import com.pixelmonmod.pixelmon.api.storage.StorageProxy;
 import me.figsq.pctools.pctools.api.ISearchProperty;
 import me.figsq.pctools.pctools.api.enums.Permissions;
 import me.figsq.pctools.pctools.api.util.Cache;
-import me.figsq.pctools.pctools.api.util.SomeMethod;
+import me.figsq.pctools.pctools.api.util.PapiUtil;
+import me.figsq.pctools.pctools.api.util.PokeUtil;
 import me.figsq.pctools.pctools.gui.PCPageGui;
 import me.figsq.pctools.pctools.gui.PCResultGui;
 import org.bukkit.Bukkit;
@@ -42,7 +43,7 @@ public class CMD implements TabExecutor {
                         return false;
                     }
                     Cache.plugin.reloadConfig();
-                    sender.sendMessage(SomeMethod.papi(null, Cache.plugin.getConfig()
+                    sender.sendMessage(PapiUtil.papi(null, Cache.plugin.getConfig()
                             .getString("msg.reloadSuccessful")));
                 }
                 if (arg.equalsIgnoreCase("open")) {
@@ -63,11 +64,11 @@ public class CMD implements TabExecutor {
                         page = args.length >= 2 ? Integer.parseInt(args[1]) :
                                 StorageProxy.getPCForPlayerNow(player.getUniqueId()).getLastBox() + 1;
                         if (page < 1) {
-                            sender.sendMessage(SomeMethod.papi(null, "§cNoPage " + page + " !!!"));
+                            sender.sendMessage(PapiUtil.papi(null, "§cNoPage " + page + " !!!"));
                             return false;
                         }
                     } catch (NumberFormatException e) {
-                        sender.sendMessage(SomeMethod.papi(null, Cache.plugin.getConfig()
+                        sender.sendMessage(PapiUtil.papi(null, Cache.plugin.getConfig()
                                 .getString("msg.nonNumeric")));
                         return false;
                     }
@@ -82,7 +83,7 @@ public class CMD implements TabExecutor {
 
                         other = Bukkit.getPlayer(args[2]);
                         if (other == null) {
-                            sender.sendMessage(SomeMethod.papi(null, Cache.plugin.getConfig()
+                            sender.sendMessage(PapiUtil.papi(null, Cache.plugin.getConfig()
                                     .getString("msg.playerDoesNotExist")));
                             return false;
                         }
@@ -113,11 +114,11 @@ public class CMD implements TabExecutor {
                         String[] split = s.split(":");
                         String k = split[0];
                         String a = split[1];
-                        if (!Cache.searchProperties.containsKey(k)) {
+                        if (!PokeUtil.searchProperties.containsKey(k)) {
                             sender.sendMessage("无效参数: " + s);
                             return false;
                         }
-                        map.put(Cache.searchProperties.get(k), a);
+                        map.put(PokeUtil.searchProperties.get(k), a);
                     }
                     Player player = (Player) sender;
                     if (map.isEmpty()) {
@@ -164,13 +165,13 @@ public class CMD implements TabExecutor {
             }
             String arg = args[args.length - 1];
             if (!arg.contains(":"))
-                return Cache.searchProperties.keySet().stream().
+                return PokeUtil.searchProperties.keySet().stream().
                         filter(s -> s.startsWith(arg) && !list.contains(s)).map(s -> s + ":").
                         collect(Collectors.toList());
             String[] split = arg.split(":");
             if (!(sender instanceof Player)) return null;
             String key = split[0];
-            return Cache.searchProperties.get(key).onTabComplete(((Player) sender), split.length == 2 ? split[1] : "").
+            return PokeUtil.searchProperties.get(key).onTabComplete(((Player) sender), split.length == 2 ? split[1] : "").
                     stream().map(s->key+":"+s).collect(Collectors.toList());
         }
         return null;

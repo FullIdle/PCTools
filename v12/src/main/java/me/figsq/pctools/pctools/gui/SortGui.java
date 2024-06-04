@@ -2,7 +2,7 @@ package me.figsq.pctools.pctools.gui;
 
 import lombok.Getter;
 import me.figsq.pctools.pctools.api.util.Cache;
-import me.figsq.pctools.pctools.api.util.SomeMethod;
+import me.figsq.pctools.pctools.api.util.PapiUtil;
 import me.figsq.pctools.pctools.api.util.TidyPcUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -12,14 +12,14 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 @Getter
 public class SortGui extends AbstractPreviousInv {
-    private final Inventory inventory = Bukkit.createInventory(this,9, SomeMethod.papi(null,Cache.plugin.getConfig().getString("msg.sort_gui_title")));
+    private final Inventory inventory = Bukkit.createInventory(this,9, PapiUtil.papi(null,Cache.plugin.getConfig().getString("msg.sort_gui_title")));
 
     public SortGui(){
         {
             //随机排序
             ItemStack itemStack = new ItemStack(Material.getMaterial("PIXELMON_GS_BALL"));
             ItemMeta itemMeta = itemStack.getItemMeta();
-            itemMeta.setDisplayName(SomeMethod.papi(null,Cache.plugin.getConfig().getString("msg.sort_gui_random_order_button")));
+            itemMeta.setDisplayName(PapiUtil.papi(null,Cache.plugin.getConfig().getString("msg.sort_gui_random_order_button")));
             itemStack.setItemMeta(itemMeta);
             this.inventory.setItem(0,itemStack);
         }
@@ -27,7 +27,7 @@ public class SortGui extends AbstractPreviousInv {
             //种类排序/宝可梦编号排序
             ItemStack itemStack = new ItemStack(Material.getMaterial("PIXELMON_POKE_BALL"));
             ItemMeta itemMeta = itemStack.getItemMeta();
-            itemMeta.setDisplayName(SomeMethod.papi(null,Cache.plugin.getConfig().getString("msg.sort_gui_category_sorting_button")));
+            itemMeta.setDisplayName(PapiUtil.papi(null,Cache.plugin.getConfig().getString("msg.sort_gui_category_sorting_button")));
             itemStack.setItemMeta(itemMeta);
             this.inventory.setItem(1,itemStack);
         }
@@ -35,7 +35,7 @@ public class SortGui extends AbstractPreviousInv {
             //特殊种类排序
             ItemStack itemStack = new ItemStack(Material.getMaterial("PIXELMON_MASTER_BALL"));
             ItemMeta itemMeta = itemStack.getItemMeta();
-            itemMeta.setDisplayName(SomeMethod.papi(null,Cache.plugin.getConfig().getString("msg.sort_gui_quality_sorting_button")));
+            itemMeta.setDisplayName(PapiUtil.papi(null,Cache.plugin.getConfig().getString("msg.sort_gui_quality_sorting_button")));
             itemStack.setItemMeta(itemMeta);
             this.inventory.setItem(2,itemStack);
         }

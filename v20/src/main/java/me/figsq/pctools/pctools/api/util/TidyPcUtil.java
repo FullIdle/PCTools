@@ -3,12 +3,10 @@ package me.figsq.pctools.pctools.api.util;
 import com.google.common.collect.Lists;
 import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
 import com.pixelmonmod.pixelmon.api.pokemon.species.Species;
-import com.pixelmonmod.pixelmon.api.registries.PixelmonSpecies;
 import com.pixelmonmod.pixelmon.api.storage.PCBox;
 import me.figsq.pctools.pctools.api.enums.SpecialType;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class TidyPcUtil{
     /**
