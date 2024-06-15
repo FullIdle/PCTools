@@ -1,6 +1,6 @@
 name: ${name}
-main: ${group}
-version: ${version}
+main: me.figsq.pctools_searchproperty.pokestar.Main
+version: 1.0-SNAPSHOT
 depend:
   - PCTools
   - PokeStar

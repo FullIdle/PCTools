@@ -1,6 +1,6 @@
 name: ${name}
-main: ${group}
-version: ${version}
+main: me.figsq.pctools_searchproperty.poketeams.Main
+version: 1.0-SNAPSHOT
 depend:
   - PCTools
   - PokeTeams
