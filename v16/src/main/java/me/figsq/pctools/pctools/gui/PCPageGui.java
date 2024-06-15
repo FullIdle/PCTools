@@ -7,6 +7,7 @@ import com.pixelmonmod.pixelmon.api.storage.*;
 import com.pixelmonmod.pixelmon.api.util.helpers.NetworkHelper;
 import com.pixelmonmod.pixelmon.comm.packetHandlers.clientStorage.newStorage.pc.ClientSetLastOpenBoxPacket;
 import lombok.Getter;
+import me.figsq.pctools.pctools.api.events.PCPageChangeEvent;
 import me.figsq.pctools.pctools.api.util.*;
 import net.minecraft.util.Tuple;
 import org.bukkit.Bukkit;
@@ -277,8 +278,14 @@ public class PCPageGui extends AbstractPreviousInv {
                 gui.getInventory().setItem(list.get(position.order), null);
             }
         }
-        player.openInventory(gui.getInventory());
-        player.setItemOnCursor(PokeUtil.getFormatPokePhoto(pokemon));
+        cursor = PokeUtil.getFormatPokePhoto(pokemon);
+        PCPageChangeEvent event = new PCPageChangeEvent(this.getInventory(), gui.getInventory(), cursor);
+        Bukkit.getPluginManager().callEvent(event);
+        if (event.isCancelled()) {
+            return;
+        }
+        player.openInventory(event.getTarget());
+        player.setItemOnCursor(event.getCursorItem());
     }
 
     private void initFrame() {

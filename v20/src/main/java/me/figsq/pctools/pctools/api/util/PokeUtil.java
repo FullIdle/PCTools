@@ -69,9 +69,9 @@ public class PokeUtil {
             return null;
         }
         net.minecraft.world.item.ItemStack photo = SpriteItemHelper.getPhoto(pokemon);
-        net.minecraft.nbt.NBTTagCompound tag = photo.v() == null ? new net.minecraft.nbt.NBTTagCompound() : photo.v();
-        tag.a("pctoolsUUID", pokemon.getUUID().toString());
-        photo.c(tag);
+        net.minecraft.nbt.CompoundTag tag = photo.m_41783_() == null ? new net.minecraft.nbt.CompoundTag() : photo.m_41783_();
+        tag.m_128359_("pctoolsUUID", pokemon.getUUID().toString());
+        photo.m_41751_(tag);
         Player player = pokemon.getOwnerPlayer().getBukkitEntity().getPlayer();
         ItemStack copy = CraftItemStack.asBukkitCopy(photo);
         ItemMeta itemMeta = copy.getItemMeta();
@@ -120,9 +120,9 @@ public class PokeUtil {
         if (itemStack == null) return null;
 
         net.minecraft.world.item.ItemStack copy = CraftItemStack.asNMSCopy(itemStack);
-        net.minecraft.nbt.NBTTagCompound nbt = copy.v() == null ? new net.minecraft.nbt.NBTTagCompound() : copy.v();
-        if (nbt.b("pctoolsUUID")) {
-            return UUID.fromString(nbt.l("pctoolsUUID"));
+        net.minecraft.nbt.CompoundTag nbt = copy.m_41783_() == null ? new net.minecraft.nbt.CompoundTag() : copy.m_41783_();
+        if (nbt.m_128403_("pctoolsUUID")) {
+            return UUID.fromString(nbt.m_128461_("pctoolsUUID"));
         }
         return null;
     }

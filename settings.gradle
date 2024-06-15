@@ -5,4 +5,5 @@ include 'v12'
 include 'v20'
 include 'SearchProperty-PokeStar'
 include 'SearchProperty-PokeTeams'
+include 'TaiyiUISub'
 

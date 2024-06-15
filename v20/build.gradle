@@ -5,11 +5,12 @@ version = rootProject.version
 repositories {
     mavenCentral()
     mavenLocal()
+    maven { url 'https://raw.github.com/FullIdle/maven-repository/main/' }
+    maven { url 'https://repo.extendedclip.com/content/repositories/placeholderapi/' }
     maven { url "https://maven.mohistmc.com/" }
 }
 
 dependencies {
-    compileOnly 'org.spigotmc:spigot:1.20.2-R0.1-SNAPSHOT'
     compileOnly 'org.spigotmc:spigot-api:1.20.2-R0.1-SNAPSHOT'
 
     compileOnly 'com.mohistmc:mohistdev:1.20.2'

@@ -1,0 +1,5 @@
+name: ${name}
+main: ${group}
+version: ${version}
+depend:
+  - PCTools

@@ -6,6 +6,7 @@ import com.pixelmonmod.pixelmon.api.storage.*;
 import com.pixelmonmod.pixelmon.api.util.helpers.NetworkHelper;
 import com.pixelmonmod.pixelmon.comm.packetHandlers.clientStorage.newStorage.pc.ClientSetLastOpenBoxPacket;
 import lombok.Getter;
+import me.figsq.pctools.pctools.api.events.PCPageChangeEvent;
 import me.figsq.pctools.pctools.api.util.*;
 import net.minecraft.util.Tuple;
 import org.bukkit.Bukkit;
@@ -125,7 +126,7 @@ public class PCPageGui extends AbstractPreviousInv {
             }
             //点击和鼠标上的宝可梦数据
             Tuple<PokemonStorage, StoragePosition> currentInfo = PokeUtil.computeStorageAndPosition(clickSlot, party, box);
-            Pokemon currentPoke = currentInfo.a().get(currentInfo.b());
+            Pokemon currentPoke = currentInfo.m_14418_().get(currentInfo.m_14419_());
             UUID cursorPokeUuid = PokeUtil.getFormatItemUUID(cursorItem);
             Pokemon cursorPoke = StorageHelper.find(cursorPokeUuid, box.pc, party);
             Tuple<PokemonStorage, StoragePosition> cursorInfo = cursorPoke == null ? null : new Tuple<>(cursorPoke.getStorage(), cursorPoke.getPosition());
@@ -163,33 +164,33 @@ public class PCPageGui extends AbstractPreviousInv {
                 } else {
                     whoClicked.setItemOnCursor(null);
                     //交换逻辑
-                    currentInfo.a().set(currentInfo.b(), null);
-                    cursorInfo.a().set(cursorInfo.b(), null);
-                    currentInfo.a().set(currentInfo.b(), cursorPoke);
-                    cursorInfo.a().set(cursorInfo.b(), currentPoke);
+                    currentInfo.m_14418_().set(currentInfo.m_14419_(), null);
+                    cursorInfo.m_14418_().set(cursorInfo.m_14419_(), null);
+                    currentInfo.m_14418_().set(currentInfo.m_14419_(), cursorPoke);
+                    cursorInfo.m_14418_().set(cursorInfo.m_14419_(), currentPoke);
 
                     /*===================================*/
-                    boolean currentIsParty = currentInfo.a() instanceof PlayerPartyStorage;
-                    boolean cursorIsParty = cursorInfo.a() instanceof PlayerPartyStorage;
+                    boolean currentIsParty = currentInfo.m_14418_() instanceof PlayerPartyStorage;
+                    boolean cursorIsParty = cursorInfo.m_14418_() instanceof PlayerPartyStorage;
                     /*===================================*/
 
                     //物品交换
-                    if (currentInfo.a().equals(cursorInfo.a())) {
+                    if (currentInfo.m_14418_().equals(cursorInfo.m_14418_())) {
                         ArrayList<Integer> target = currentIsParty ? Cache.invBackpackSlot : Cache.invPcSlot;
                         //物品直接交换
-                        inv.setItem(target.get(currentInfo.b().order), PokeUtil.getFormatPokePhoto(cursorPoke));
-                        inv.setItem(target.get(cursorInfo.b().order), PokeUtil.getFormatPokePhoto(currentPoke));
+                        inv.setItem(target.get(currentInfo.m_14419_().order), PokeUtil.getFormatPokePhoto(cursorPoke));
+                        inv.setItem(target.get(cursorInfo.m_14419_().order), PokeUtil.getFormatPokePhoto(currentPoke));
                         return;
                     }
                     //其中一个是背包
                     if (currentIsParty) {
-                        inv.setItem(Cache.invBackpackSlot.get(currentInfo.b().order), PokeUtil.getFormatPokePhoto(cursorPoke));
-                        inv.setItem(Cache.invPcSlot.get(cursorInfo.b().order), PokeUtil.getFormatPokePhoto(currentPoke));
+                        inv.setItem(Cache.invBackpackSlot.get(currentInfo.m_14419_().order), PokeUtil.getFormatPokePhoto(cursorPoke));
+                        inv.setItem(Cache.invPcSlot.get(cursorInfo.m_14419_().order), PokeUtil.getFormatPokePhoto(currentPoke));
                         return;
                     }
                     if (cursorIsParty) {
-                        inv.setItem(Cache.invPcSlot.get(currentInfo.b().order), PokeUtil.getFormatPokePhoto(cursorPoke));
-                        inv.setItem(Cache.invBackpackSlot.get(cursorInfo.b().order), PokeUtil.getFormatPokePhoto(currentPoke));
+                        inv.setItem(Cache.invPcSlot.get(currentInfo.m_14419_().order), PokeUtil.getFormatPokePhoto(cursorPoke));
+                        inv.setItem(Cache.invBackpackSlot.get(cursorInfo.m_14419_().order), PokeUtil.getFormatPokePhoto(currentPoke));
                         return;
                     }
                     //都是pc页,且不同页
@@ -245,18 +246,18 @@ public class PCPageGui extends AbstractPreviousInv {
             if (putIntoPoke.getStorage() instanceof PlayerPartyStorage) {
                 ArrayList<Pokemon> list = Lists.newArrayList(putIntoPoke.getStorage().getAll());
                 list.removeIf(Objects::isNull);
-                if (list.size() < 2 && !(currentInfo.a() instanceof PlayerPartyStorage)) {
+                if (list.size() < 2 && !(currentInfo.m_14418_() instanceof PlayerPartyStorage)) {
                     return false;
                 }
             }
         }
         inv.setItem(clickSlot, null);
 
-        cursorInfo.a().set(cursorInfo.b(), null);
-        currentInfo.a().set(currentInfo.b(), putIntoPoke);
+        cursorInfo.m_14418_().set(cursorInfo.m_14419_(), null);
+        currentInfo.m_14418_().set(currentInfo.m_14419_(), putIntoPoke);
         whoClicked.setItemOnCursor(null);
-        ArrayList<Integer> target_list = currentInfo.a() instanceof PlayerPartyStorage ? Cache.invBackpackSlot : Cache.invPcSlot;
-        inv.setItem(target_list.get(currentInfo.b().order), PokeUtil.getFormatPokePhoto(putIntoPoke));
+        ArrayList<Integer> target_list = currentInfo.m_14418_() instanceof PlayerPartyStorage ? Cache.invBackpackSlot : Cache.invPcSlot;
+        inv.setItem(target_list.get(currentInfo.m_14419_().order), PokeUtil.getFormatPokePhoto(putIntoPoke));
         return true;
     }
 
@@ -275,8 +276,14 @@ public class PCPageGui extends AbstractPreviousInv {
                 gui.getInventory().setItem(list.get(position.order), null);
             }
         }
-        player.openInventory(gui.getInventory());
-        player.setItemOnCursor(PokeUtil.getFormatPokePhoto(pokemon));
+        cursor = PokeUtil.getFormatPokePhoto(pokemon);
+        PCPageChangeEvent event = new PCPageChangeEvent(this.getInventory(), gui.getInventory(), cursor);
+        Bukkit.getPluginManager().callEvent(event);
+        if (event.isCancelled()) {
+            return;
+        }
+        player.openInventory(event.getTarget());
+        player.setItemOnCursor(event.getCursorItem());
     }
 
     private void initFrame() {
