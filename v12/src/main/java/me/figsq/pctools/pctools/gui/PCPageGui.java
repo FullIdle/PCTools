@@ -107,14 +107,16 @@ public class PCPageGui extends AbstractPreviousInv {
             }
             if (clickSlot == 53) {
                 //排序
-                e.setCancelled(true);
-                whoClicked.setItemOnCursor(null);
-                SortGui gui = new SortGui();
-                gui.setPreviousInv(this.inventory);
-                Inventory temp = this.getPreviousInv();
-                this.setPreviousInv(null);
-                whoClicked.openInventory(gui.getInventory());
-                this.setPreviousInv(temp);
+                if (whoClicked.hasPermission("pctools.function.sort")) {
+                    e.setCancelled(true);
+                    whoClicked.setItemOnCursor(null);
+                    SortGui gui = new SortGui();
+                    gui.setPreviousInv(this.inventory);
+                    Inventory temp = this.getPreviousInv();
+                    this.setPreviousInv(null);
+                    whoClicked.openInventory(gui.getInventory());
+                    this.setPreviousInv(temp);
+                }
                 return;
             }
             /*
