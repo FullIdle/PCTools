@@ -13,6 +13,7 @@ import com.pixelmonmod.pixelmon.storage.PlayerPartyStorage;
 import lombok.Getter;
 import me.figsq.pctools.pctools.api.events.PCPageChangeEvent;
 import me.figsq.pctools.pctools.api.util.*;
+import net.minecraft.entity.Entity;
 import net.minecraft.server.v1_12_R1.Tuple;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -49,6 +50,13 @@ public class PCPageGui extends AbstractPreviousInv {
     private void initEventHandler() {
         //打开处理
         this.onOpen(e -> {
+            //精灵实体清除判断
+            for (Pokemon pokemon : party.getAll()) {
+                if (pokemon == null||pokemon.getPixelmonIfExists() == null) continue;
+                pokemon.getPixelmonIfExists().func_70106_y();
+            }
+
+
             //排序按钮
             if (e.getPlayer().hasPermission("pctools.function.sort") && this.inventory.getItem(53).getDurability() != 1) {
                 //设置排序按钮
@@ -169,9 +177,6 @@ public class PCPageGui extends AbstractPreviousInv {
                     putInto(cursorInfo, currentInfo, cursorPoke, whoClicked, inv, clickSlot);
                 } else {
                     whoClicked.setItemOnCursor(null);
-                    //判断精灵实体
-                    if (cursorPoke.getPixelmonIfExists() != null) cursorPoke.getPixelmonIfExists().func_70106_y();
-                    if (currentPoke.getPixelmonIfExists() != null) currentPoke.getPixelmonIfExists().func_70106_y();
                     //交换逻辑
                     currentInfo.a().set(currentInfo.b(), null);
                     cursorInfo.a().set(cursorInfo.b(), null);
@@ -261,7 +266,6 @@ public class PCPageGui extends AbstractPreviousInv {
             }
         }
         inv.setItem(clickSlot, null);
-
         cursorInfo.a().set(cursorInfo.b(), null);
         currentInfo.a().set(currentInfo.b(), putIntoPoke);
         whoClicked.setItemOnCursor(null);

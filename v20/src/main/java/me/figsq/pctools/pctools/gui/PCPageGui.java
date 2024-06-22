@@ -45,6 +45,12 @@ public class PCPageGui extends AbstractPreviousInv {
     private void initEventHandler() {
         //打开处理
         this.onOpen(e -> {
+            //精灵实体清除判断
+            for (Pokemon pokemon : party.getAll()) {
+                if (pokemon == null) continue;
+                pokemon.getPixelmonEntity().ifPresent(Entity::m_146870_);
+            }
+
             //排序按钮
             if (e.getPlayer().hasPermission("pctools.function.sort") && this.inventory.getItem(53).getDurability() != 1) {
                 //设置排序按钮
@@ -166,9 +172,6 @@ public class PCPageGui extends AbstractPreviousInv {
                     putInto(cursorInfo, currentInfo, cursorPoke, whoClicked, inv, clickSlot);
                 } else {
                     whoClicked.setItemOnCursor(null);
-                    //判断精灵实体
-                    cursorPoke.getPixelmonEntity().ifPresent(Entity::m_146870_);
-                    currentPoke.getPixelmonEntity().ifPresent(Entity::m_146870_);
                     //交换逻辑
                     currentInfo.m_14418_().set(currentInfo.m_14419_(), null);
                     cursorInfo.m_14418_().set(cursorInfo.m_14419_(), null);
@@ -258,7 +261,6 @@ public class PCPageGui extends AbstractPreviousInv {
             }
         }
         inv.setItem(clickSlot, null);
-
         cursorInfo.m_14418_().set(cursorInfo.m_14419_(), null);
         currentInfo.m_14418_().set(currentInfo.m_14419_(), putIntoPoke);
         whoClicked.setItemOnCursor(null);

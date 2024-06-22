@@ -14,6 +14,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.util.Tuple;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.craftbukkit.v1_16_R3.entity.CraftEntity;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.Inventory;
@@ -44,6 +45,12 @@ public class PCPageGui extends AbstractPreviousInv {
     private void initEventHandler() {
         //打开处理
         this.onOpen(e -> {
+            //精灵实体清除判断
+            for (Pokemon pokemon : party.getAll()) {
+                if (pokemon == null) continue;
+                pokemon.getPixelmonEntity().ifPresent(Entity::func_70106_y);
+            }
+
             //排序按钮
             if (e.getPlayer().hasPermission("pctools.function.sort") && this.inventory.getItem(53).getDurability() != 1) {
                 //设置排序按钮
@@ -166,9 +173,6 @@ public class PCPageGui extends AbstractPreviousInv {
                     putInto(cursorInfo, currentInfo, cursorPoke, whoClicked, inv, clickSlot);
                 } else {
                     whoClicked.setItemOnCursor(null);
-                    //判断精灵实体
-                    cursorPoke.getPixelmonEntity().ifPresent(Entity::func_70106_y);
-                    currentPoke.getPixelmonEntity().ifPresent(Entity::func_70106_y);
                     //交换逻辑
                     currentInfo.func_76341_a().set(currentInfo.func_76340_b(), null);
                     cursorInfo.func_76341_a().set(cursorInfo.func_76340_b(), null);
@@ -258,7 +262,6 @@ public class PCPageGui extends AbstractPreviousInv {
             }
         }
         inv.setItem(clickSlot, null);
-
         cursorInfo.func_76341_a().set(cursorInfo.func_76340_b(), null);
         currentInfo.func_76341_a().set(currentInfo.func_76340_b(), putIntoPoke);
         whoClicked.setItemOnCursor(null);
