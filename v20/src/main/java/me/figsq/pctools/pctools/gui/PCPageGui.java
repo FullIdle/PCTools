@@ -9,6 +9,7 @@ import lombok.Getter;
 import me.figsq.pctools.pctools.api.events.PCPageChangeEvent;
 import me.figsq.pctools.pctools.api.util.*;
 import net.minecraft.util.Tuple;
+import net.minecraft.world.entity.Entity;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.HumanEntity;
@@ -165,6 +166,9 @@ public class PCPageGui extends AbstractPreviousInv {
                     putInto(cursorInfo, currentInfo, cursorPoke, whoClicked, inv, clickSlot);
                 } else {
                     whoClicked.setItemOnCursor(null);
+                    //判断精灵实体
+                    cursorPoke.getPixelmonEntity().ifPresent(Entity::m_146870_);
+                    currentPoke.getPixelmonEntity().ifPresent(Entity::m_146870_);
                     //交换逻辑
                     currentInfo.m_14418_().set(currentInfo.m_14419_(), null);
                     cursorInfo.m_14418_().set(cursorInfo.m_14419_(), null);

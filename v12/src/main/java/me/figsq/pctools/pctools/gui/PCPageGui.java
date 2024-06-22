@@ -8,6 +8,7 @@ import com.pixelmonmod.pixelmon.api.storage.PokemonStorage;
 import com.pixelmonmod.pixelmon.api.storage.StoragePosition;
 import com.pixelmonmod.pixelmon.comm.packetHandlers.clientStorage.newStorage.pc.ClientSetLastOpenBox;
 import com.pixelmonmod.pixelmon.config.PixelmonConfig;
+import com.pixelmonmod.pixelmon.entities.pixelmon.EntityPixelmon;
 import com.pixelmonmod.pixelmon.storage.PlayerPartyStorage;
 import lombok.Getter;
 import me.figsq.pctools.pctools.api.events.PCPageChangeEvent;
@@ -168,6 +169,9 @@ public class PCPageGui extends AbstractPreviousInv {
                     putInto(cursorInfo, currentInfo, cursorPoke, whoClicked, inv, clickSlot);
                 } else {
                     whoClicked.setItemOnCursor(null);
+                    //判断精灵实体
+                    if (cursorPoke.getPixelmonIfExists() != null) cursorPoke.getPixelmonIfExists().func_70106_y();
+                    if (currentPoke.getPixelmonIfExists() != null) currentPoke.getPixelmonIfExists().func_70106_y();
                     //交换逻辑
                     currentInfo.a().set(currentInfo.b(), null);
                     cursorInfo.a().set(cursorInfo.b(), null);

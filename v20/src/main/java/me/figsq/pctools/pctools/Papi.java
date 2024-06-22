@@ -21,6 +21,7 @@ import com.pixelmonmod.pixelmon.api.util.ITranslatable;
 import com.pixelmonmod.pixelmon.battles.attacks.Attack;
 import lombok.SneakyThrows;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
+import net.minecraft.client.resources.language.I18n;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.server.level.ServerPlayer;
@@ -156,6 +157,9 @@ public class Papi extends PlaceholderExpansion{
         }
 
         switch (arg) {
+            case "description":{
+                return I18n.m_118938_("pixelmon." + poke.getSpecies().getName().toLowerCase() + ".description");
+            }
             case "hypertrained": {
                 BattleStatsType type = BattleStatsType.getStatsEffect(getStatsType(args.get(1).toLowerCase()).name());
                 if (type == null) return "UNKNOWN PARAMETERS";

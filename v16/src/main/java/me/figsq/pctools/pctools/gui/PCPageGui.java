@@ -6,9 +6,11 @@ import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
 import com.pixelmonmod.pixelmon.api.storage.*;
 import com.pixelmonmod.pixelmon.api.util.helpers.NetworkHelper;
 import com.pixelmonmod.pixelmon.comm.packetHandlers.clientStorage.newStorage.pc.ClientSetLastOpenBoxPacket;
+import com.pixelmonmod.pixelmon.entities.pixelmon.PixelmonEntity;
 import lombok.Getter;
 import me.figsq.pctools.pctools.api.events.PCPageChangeEvent;
 import me.figsq.pctools.pctools.api.util.*;
+import net.minecraft.entity.Entity;
 import net.minecraft.util.Tuple;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -18,10 +20,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import java.util.ArrayList;
-import java.util.Objects;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 @Getter
 public class PCPageGui extends AbstractPreviousInv {
@@ -167,6 +166,9 @@ public class PCPageGui extends AbstractPreviousInv {
                     putInto(cursorInfo, currentInfo, cursorPoke, whoClicked, inv, clickSlot);
                 } else {
                     whoClicked.setItemOnCursor(null);
+                    //判断精灵实体
+                    cursorPoke.getPixelmonEntity().ifPresent(Entity::func_70106_y);
+                    currentPoke.getPixelmonEntity().ifPresent(Entity::func_70106_y);
                     //交换逻辑
                     currentInfo.func_76341_a().set(currentInfo.func_76340_b(), null);
                     cursorInfo.func_76341_a().set(cursorInfo.func_76340_b(), null);

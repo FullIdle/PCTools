@@ -16,9 +16,12 @@ import com.pixelmonmod.pixelmon.entities.pixelmon.stats.StatsType;
 import com.pixelmonmod.pixelmon.enums.EnumSpecies;
 import com.pixelmonmod.pixelmon.items.ItemHeld;
 import com.pixelmonmod.pixelmon.items.heldItems.NoItem;
+import com.pixelmonmod.pixelmon.pokedex.Pokedex;
+import com.pixelmonmod.pixelmon.pokedex.PokedexEntry;
 import com.pixelmonmod.pixelmon.storage.PlayerPartyStorage;
 import lombok.SneakyThrows;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.JsonToNBT;
 import net.minecraft.nbt.NBTTagCompound;
@@ -154,6 +157,9 @@ public class Papi extends PlaceholderExpansion {
         }
 
         switch (arg) {
+            case "description":{
+                return I18n.func_135052_a("pixelmon." + poke.getSpecies().getPokemonName().toLowerCase() + ".description");
+            }
             case "hypertrained": {
                 StatsType type = StatsType.getStatsEffect(getStatsType(args.get(1).toLowerCase()).name());
                 if (type == null) return "UNKNOWN PARAMETERS";
