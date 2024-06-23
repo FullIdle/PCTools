@@ -63,9 +63,13 @@ public class Papi extends PlaceholderExpansion {
         ArrayList<String> args = Lists.newArrayList(params.split("_"));
 
         String pokeO = args.get(0);
-        if (pokeO.startsWith("{") && pokeO.endsWith("}")) {
+        if (params.contains("{") && params.contains("}")) {
+            int start = params.indexOf('{');
+            int end = params.lastIndexOf('}') + 1;
             if (pokeO.length() != 2) {
-                poke = Pixelmon.pokemonFactory.create(JsonToNBT.func_180713_a(pokeO));
+                String substring = params.substring(start, end);
+                poke = Pixelmon.pokemonFactory.create(JsonToNBT.func_180713_a(substring));
+                args = Lists.newArrayList(params.replace(substring,"").split("_"));
                 //删一
             }
         } else if (pokeO.startsWith("pokedex:")) {

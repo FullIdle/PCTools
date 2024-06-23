@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.pixelmonmod.pixelmon.Pixelmon;
 import com.pixelmonmod.pixelmon.api.pokemon.Element;
 import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
 import com.pixelmonmod.pixelmon.api.pokemon.PokemonFactory;
@@ -64,9 +65,13 @@ public class Papi extends PlaceholderExpansion{
         ArrayList<String> args = Lists.newArrayList(params.split("_"));
 
         String pokeO = args.get(0);
-        if (pokeO.startsWith("{") && pokeO.endsWith("}")) {
+        if (params.contains("{") && params.contains("}")) {
+            int start = params.indexOf('{');
+            int end = params.lastIndexOf('}') + 1;
             if (pokeO.length() != 2) {
-                poke = PokemonFactory.create(NbtUtils.m_178024_(pokeO));
+                String substring = params.substring(start, end);
+                poke = PokemonFactory.create(NbtUtils.m_178024_(substring));
+                args = Lists.newArrayList(params.replace(substring,"").split("_"));
                 //删一
             }
         } else if (pokeO.startsWith("pokedex:")) {
