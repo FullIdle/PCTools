@@ -4,7 +4,7 @@ plugins {
 }
 
 group = 'me.figsq.pctools.pctools.Main'
-version = '1.7.0-SNAPSHOT'
+version = '1.7.1-SNAPSHOT'
 
 allprojects {
     apply plugin: 'java'
