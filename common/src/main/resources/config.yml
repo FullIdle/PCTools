@@ -48,7 +48,11 @@ papiIndexOffset: 0
 #gender 性别
 #hastag 带有标签 可选参数: spec tag[https://pixelmonmod.com/wiki/Pokemon_spec]
 #uuid 唯一id
-#moveset 技能 可选参数: [1-4]
+#{moveset 技能 可选参数: [1-4]
+# 正常按照moveset_[1-4]直接就是宝可梦的1-4个技能
+# 如果在后面在加参数如moveset_[1-4]_desc就是这个技能的介绍所以
+# 可选子参数:[desc(介绍),id(技能编号[特别注意1.20.2没有这个参数]),type(技能属性),ac(攻击类型),bp(基础上伤害),ppb(基础pp),ppm(最大pp),acc(准确度),mc(翻译是建立联系)]
+#}
 #originalname 原始名[直接用枚举的来做名字] 可能会有所问题
 #localizedname 宝可梦本地名 #简称 译名 (如果你将语言文件汉化了则是中文)
 #nickname 宝可梦设置名

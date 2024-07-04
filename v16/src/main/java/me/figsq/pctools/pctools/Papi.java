@@ -4,7 +4,6 @@ import com.google.common.collect.Lists;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.pixelmonmod.pixelmon.Pixelmon;
 import com.pixelmonmod.pixelmon.api.pokemon.Element;
 import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
 import com.pixelmonmod.pixelmon.api.pokemon.PokemonFactory;
@@ -24,10 +23,10 @@ import com.pixelmonmod.pixelmon.items.HeldItem;
 import com.pixelmonmod.pixelmon.items.heldItems.NoItem;
 import lombok.SneakyThrows;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
-import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.JsonToNBT;
+import net.minecraft.util.text.TranslationTextComponent;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.craftbukkit.v1_16_R3.entity.CraftEntity;
@@ -165,7 +164,7 @@ public class Papi extends PlaceholderExpansion{
 
         switch (arg) {
             case "description":{
-                return I18n.func_135052_a("pixelmon." + poke.getSpecies().getName().toLowerCase() + ".description");
+                return (new TranslationTextComponent("pixelmon." + poke.getSpecies().getName().toLowerCase() + ".description")).getString();
             }
             case "hypertrained": {
                 BattleStatsType type = BattleStatsType.getStatsEffect(getStatsType(args.get(1).toLowerCase()).name());
@@ -263,7 +262,44 @@ public class Papi extends PlaceholderExpansion{
             case "moveset": {
                 int i = Integer.parseInt(args.get(1));
                 Attack attack = poke.getMoveset().attacks[i];
-                return attack == null ? "NONE" : attack.getMove().getLocalizedName();
+
+                if (attack == null) return "NOTE";
+
+                if (args.size() <= 2){
+                    return attack.getMove().getLocalizedName();
+                }
+                //描述
+                String sub_arg = args.get(2).toLowerCase();
+                switch (sub_arg) {
+                    case "id": {
+                        return String.valueOf(attack.savedAttack.getAttackIndex());
+                    }
+                    case "type": {
+                        return attack.savedAttack.getAttackType().name();
+                    }
+                    case "ac": {
+                        return attack.savedAttack.getAttackCategory().name();
+                    }
+                    case "bp": {
+                        return String.valueOf(attack.savedAttack.getBasePower());
+                    }
+                    case "ppb": {
+                        return String.valueOf(attack.savedAttack.getPPBase());
+                    }
+                    case "ppm": {
+                        return String.valueOf(attack.savedAttack.getPPMax());
+                    }
+                    case "acc": {
+                        return String.valueOf(attack.savedAttack.getAccuracy());
+                    }
+                    case "mc": {
+                        return String.valueOf(attack.savedAttack.getMakesContact());
+                    }
+                    case "desc": {
+                        String key = "attack." + attack.getMove().getAttackName().toLowerCase().replace(" ", "_") + args.get(2);
+                        return (new TranslationTextComponent(key)).getString();
+                    }
+                }
             }
             case "originalname":
                 return poke.getSpecies().getName();
