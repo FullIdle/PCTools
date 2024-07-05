@@ -270,25 +270,25 @@ public class Papi extends PlaceholderExpansion{
                         return String.valueOf(attack.savedAttack);
                     }*/
                     case "type": {
-                        return attack.savedAttack.getAttackType().name();
+                        return attack.getMove().getAttackType().name();
                     }
                     case "ac": {
-                        return attack.savedAttack.getAttackCategory().name();
+                        return attack.getMove().getAttackCategory().name();
                     }
                     case "bp": {
-                        return String.valueOf(attack.savedAttack.getBasePower());
+                        return String.valueOf(attack.getMove().getBasePower());
                     }
                     case "ppb": {
-                        return String.valueOf(attack.savedAttack.getPPBase());
+                        return String.valueOf(attack.getMove().getPPBase());
                     }
                     case "ppm": {
-                        return String.valueOf(attack.savedAttack.getPPMax());
+                        return String.valueOf(attack.getMove().getPPMax());
                     }
                     case "acc": {
-                        return String.valueOf(attack.savedAttack.getAccuracy());
+                        return String.valueOf(attack.getMove().getAccuracy());
                     }
                     case "mc": {
-                        return String.valueOf(attack.savedAttack.getMakesContact());
+                        return String.valueOf(attack.getMove().getMakesContact());
                     }
                     case "desc": {
                         String key = "attack." + attack.getMove().getAttackName().toLowerCase().replace(" ", "_") + args.get(2);
