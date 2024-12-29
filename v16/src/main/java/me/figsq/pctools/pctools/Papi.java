@@ -36,7 +36,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static me.figsq.pctools.pctools.api.util.Cache.*;
+import static me.figsq.pctools.pctools.api.Cache.*;
 
 public class Papi extends PlaceholderExpansion{
     @Override

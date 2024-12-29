@@ -5,8 +5,10 @@ version = rootProject.version
 repositories {
     mavenCentral()
     mavenLocal()
-    maven {url 'https://raw.github.com/FullIdle/maven-repository/main/'}
-    maven {url 'https://repo.extendedclip.com/content/repositories/placeholderapi/'}
+    maven {
+        allowInsecureProtocol = true
+        url "http://server.pokemtd.top:31647/snapshots"
+    }
 }
 
 dependencies {

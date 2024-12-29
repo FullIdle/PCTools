@@ -1,6 +1,7 @@
 package me.figsq.pctools.pctools.api.util;
 
 import com.google.common.collect.Lists;
+import com.pixelmonmod.pixelmon.Pixelmon;
 import com.pixelmonmod.pixelmon.api.config.PixelmonConfigProxy;
 import com.pixelmonmod.pixelmon.api.config.StorageConfig;
 import com.pixelmonmod.pixelmon.api.pokemon.Element;
@@ -17,8 +18,9 @@ import com.pixelmonmod.pixelmon.api.util.helpers.SpriteItemHelper;
 import com.pixelmonmod.pixelmon.enums.heldItems.EnumHeldItems;
 import com.pixelmonmod.pixelmon.items.HeldItem;
 import lombok.SneakyThrows;
+import me.figsq.pctools.pctools.api.Cache;
 import me.figsq.pctools.pctools.api.ISearchProperty;
-import me.figsq.pctools.pctools.api.enums.SpecialType;
+import me.figsq.pctools.pctools.api.PapiUtil;
 import org.apache.commons.lang3.tuple.Pair;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -34,7 +36,6 @@ import java.util.stream.Collectors;
 
 public class PokeUtil {
     public static Map<Species, Pair<String, List<String>>> specialNAL = new HashMap<>();
-    public static Map<String, ISearchProperty> searchProperties = new HashMap<>();
     public static int computerBoxes;
 
     @SneakyThrows
@@ -79,29 +80,14 @@ public class PokeUtil {
         List<String> lore;
         Pair<String, List<String>> pair = specialNAL.get(pokemon.getSpecies());
         if (pair == null){
-            SpecialType type = SpecialType.getType(pokemon);
-            switch (type){
-                case EGG:{
-                    name = Cache.eggName;
-                    lore = Cache.eggLore;
-                    break;
-                }
-                case LEGEND:{
-                    name = Cache.legendName;
-                    lore = Cache.legendLore;
-                    break;
-                }
-                case UBEAST:{
-                    name = Cache.uBeastName;
-                    lore = Cache.uBeastLore;
-                    break;
-                }
-                default:{
-                    name = Cache.normalName;
-                    lore = Cache.normalLore;
-                    break;
-                }
-            }
+            name = pokemon.isEgg() ?
+                    Cache.eggName : pokemon.isLegendary() ?
+                    Cache.legendName : pokemon.getSpecies().isUltraBeast() ?
+                    Cache.uBeastName : Cache.normalName;
+            lore = pokemon.isEgg() ?
+                    Cache.eggLore : pokemon.isLegendary() ?
+                    Cache.legendLore : pokemon.getSpecies().isUltraBeast() ?
+                    Cache.uBeastLore : Cache.normalLore;
         }else{
             name = pair.getLeft();
             lore = pair.getRight();
@@ -136,16 +122,17 @@ public class PokeUtil {
     }
 
     static {
-        searchProperties.put("name", new ISearchProperty() {
+        ISearchProperty.addSearchProperty("name", new ISearchProperty() {
             @Override
             public String getName() {
                 return "name";
             }
 
             @Override
-            public boolean hasProperty(Pokemon poke, String arg) {
-                return poke.getLocalizedName().equalsIgnoreCase(arg)
-                        || Pokedex.FULL_POKEDEX.get(poke.getSpecies().getDex()).getName().equalsIgnoreCase(arg);
+            public boolean hasProperty(Object poke, String arg) {
+                Pokemon pokemon = (Pokemon) poke;
+                return pokemon.getLocalizedName().equalsIgnoreCase(arg)
+                        || pokemon.getSpecies().getName().equalsIgnoreCase(arg);
             }
 
             @Override
@@ -164,15 +151,15 @@ public class PokeUtil {
             }
         });
         //性别
-        searchProperties.put("gender", new ISearchProperty() {
+        ISearchProperty.addSearchProperty("gender", new ISearchProperty() {
             @Override
             public String getName() {
                 return "gender";
             }
 
             @Override
-            public boolean hasProperty(Pokemon poke, String arg) {
-                Gender gender = poke.getGender();
+            public boolean hasProperty(Object poke, String arg) {
+                Gender gender = ((Pokemon) poke).getGender();
                 return gender.name().equalsIgnoreCase(arg) ||
                         gender.getLocalizedName().equalsIgnoreCase(arg);
             }
@@ -187,57 +174,58 @@ public class PokeUtil {
             }
         });
         //属性
-        searchProperties.put("type1", new ISearchProperty() {
+        ISearchProperty.addSearchProperty("type1", new ISearchProperty() {
             @Override
             public String getName() {
                 return "type1";
             }
 
             @Override
-            public boolean hasProperty(Pokemon poke, String arg) {
-                Element element = Element.parseOrNull(arg);
-                if (element == null) return false;
-                return poke.getForm().hasType(element);
+            public boolean hasProperty(Object poke, String arg) {
+                return ((Pokemon) poke).getForm().hasType(Element.parseType(arg));
             }
 
             @Override
             public List<String> onTabComplete(Player player, String value) {
                 List<String> collect = Element.getAllTypes().stream().map(Element::getLocalizedName).collect(Collectors.toList());
-                if (value.isEmpty()) return collect;
+                if (value.isEmpty()) {
+                    return collect;
+                }
                 return collect.stream().filter(s -> s.startsWith(value)).collect(Collectors.toList());
             }
         });
-        searchProperties.put("type2", new ISearchProperty() {
+        ISearchProperty.addSearchProperty("type2", new ISearchProperty() {
             @Override
             public String getName() {
                 return "type2";
             }
 
             @Override
-            public boolean hasProperty(Pokemon poke, String arg) {
-                Element element = Element.parseOrNull(arg);
-                if (element == null) return false;
-                return poke.getForm().hasType(element);
+            public boolean hasProperty(Object poke, String arg) {
+                return ((Pokemon) poke).getForm().hasType(Element.parseType(arg));
             }
 
             @Override
             public List<String> onTabComplete(Player player, String value) {
                 List<String> collect = Element.getAllTypes().stream().map(Element::getLocalizedName).collect(Collectors.toList());
-                if (value.isEmpty()) return collect;
+                if (value.isEmpty()) {
+                    return collect;
+                }
                 return collect.stream().filter(s -> s.startsWith(value)).collect(Collectors.toList());
             }
         });
         //特性
-        searchProperties.put("ability", new ISearchProperty() {
+        ISearchProperty.addSearchProperty("ability", new ISearchProperty() {
             @Override
             public String getName() {
                 return "ability";
             }
 
             @Override
-            public boolean hasProperty(Pokemon poke, String arg) {
-                Ability ability = poke.getAbility();
-                return poke.getAbilityName().equalsIgnoreCase(arg) ||
+            public boolean hasProperty(Object poke, String arg) {
+                Pokemon pokemon = (Pokemon) poke;
+                Ability ability = pokemon.getAbility();
+                return pokemon.getAbilityName().equalsIgnoreCase(arg) ||
                         ability.getLocalizedName().equalsIgnoreCase(arg);
             }
 
@@ -247,40 +235,41 @@ public class PokeUtil {
             }
         });
         //性格
-        searchProperties.put("nature", new ISearchProperty() {
+        ISearchProperty.addSearchProperty("nature", new ISearchProperty() {
             @Override
             public String getName() {
                 return "nature";
             }
 
             @Override
-            public boolean hasProperty(Pokemon poke, String arg) {
-                Nature nature = poke.getNature();
+            public boolean hasProperty(Object poke, String arg) {
+                Nature nature = ((Pokemon) poke).getNature();
                 return nature.name().equalsIgnoreCase(arg) ||
                         nature.getLocalizedName().equalsIgnoreCase(arg);
             }
 
             @Override
             public List<String> onTabComplete(Player player, String value) {
-                List<String> collect = Arrays.stream(Nature.values()).map(ITranslatable::getLocalizedName).collect(Collectors.toList());
+                List<String> collect = Arrays.stream(Nature.values()).map(Nature::getLocalizedName).collect(Collectors.toList());
                 if (value.isEmpty()) return collect;
                 return collect.stream().filter(s -> s.startsWith(value)).collect(Collectors.toList());
             }
         });
         //持有物品
-        searchProperties.put("helditem", new ISearchProperty() {
+        ISearchProperty.addSearchProperty("helditem", new ISearchProperty() {
             @Override
             public String getName() {
                 return "helditem";
             }
 
             @Override
-            public boolean hasProperty(Pokemon poke, String arg) {
-                if (CraftItemStack.asBukkitCopy(poke.getHeldItem())
+            public boolean hasProperty(Object poke, String arg) {
+                Pokemon pokemon = (Pokemon) poke;
+                if (CraftItemStack.asBukkitCopy(pokemon.getHeldItem())
                         .getType().equals(Material.AIR)) {
                     return false;
                 }
-                HeldItem held = poke.getHeldItemAsItemHeld();
+                HeldItem held = pokemon.getHeldItemAsItemHeld();
                 return held.getLocalizedName().equalsIgnoreCase(arg) ||
                         held.getHeldItemType().name().equalsIgnoreCase(arg);
             }
@@ -293,32 +282,32 @@ public class PokeUtil {
             }
         });
         //闪光
-        searchProperties.put("shiny", new ISearchProperty() {
+        ISearchProperty.addSearchProperty("shiny", new ISearchProperty() {
             @Override
             public String getName() {
                 return "shiny";
             }
 
             @Override
-            public boolean hasProperty(Pokemon poke, String arg) {
-                return poke.isShiny() == Boolean.parseBoolean(arg);
+            public boolean hasProperty(Object poke, String arg) {
+                return ((Pokemon) poke).isShiny() == Boolean.parseBoolean(arg);
             }
 
             @Override
             public List<String> onTabComplete(Player player, String value) {
-                return Arrays.asList("false","true");
+                return Arrays.asList("false", "true");
             }
         });
         //自定义名
-        searchProperties.put("nickname", new ISearchProperty() {
+        ISearchProperty.addSearchProperty("nickname", new ISearchProperty() {
             @Override
             public String getName() {
                 return "nickname";
             }
 
             @Override
-            public boolean hasProperty(Pokemon poke, String arg) {
-                return poke.getNickname().equalsIgnoreCase(arg);
+            public boolean hasProperty(Object poke, String arg) {
+                return ((Pokemon) poke).getNickname().equalsIgnoreCase(arg);
             }
 
             @Override

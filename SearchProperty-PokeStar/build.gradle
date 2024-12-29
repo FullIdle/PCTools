@@ -4,7 +4,10 @@ group = 'me.figsq.pctools_searchproperty.pokestar.Main'
 repositories {
     mavenCentral()
     mavenLocal()
-    maven {url 'https://raw.github.com/FullIdle/maven-repository/main/'}
+    maven {
+        allowInsecureProtocol = true
+        url "http://server.pokemtd.top:31647/snapshots"
+    }
     maven {url 'https://repo.extendedclip.com/content/repositories/placeholderapi/'}
 }
 

@@ -1,6 +1,6 @@
 package me.figsq.pctools.pctools.api.enums;
 
-import me.figsq.pctools.pctools.api.util.Cache;
+import me.figsq.pctools.pctools.api.Cache;
 
 public enum Permissions{
     RELOAD, OPEN, OPENOTHER, SEARCH;

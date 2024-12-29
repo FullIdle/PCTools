@@ -1,4 +1,4 @@
-package me.figsq.pctools.pctools.api.util;
+package me.figsq.pctools.pctools.api;
 
 import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.OfflinePlayer;

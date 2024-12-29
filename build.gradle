@@ -17,12 +17,15 @@ allprojects {
     repositories {
         mavenCentral()
         mavenLocal()
-        maven { url 'https://raw.github.com/FullIdle/maven-repository/main/' }
+        maven {
+            allowInsecureProtocol = true
+            url "http://server.pokemtd.top:31647/snapshots"
+        }
         maven { url 'https://repo.extendedclip.com/content/repositories/placeholderapi/' }
     }
 
     dependencies {
-        compileOnly 'me.fullidle.ficore:FICore:1.2.2'
+        compileOnly 'me.fullidle.ficore:FICore:1.2.6'
         compileOnly 'me.clip:placeholderapi:2.11.5'
 
         testImplementation 'org.junit.jupiter:junit-jupiter-api:5.9.1'

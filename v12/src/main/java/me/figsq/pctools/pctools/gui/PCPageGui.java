@@ -10,6 +10,9 @@ import com.pixelmonmod.pixelmon.comm.packetHandlers.clientStorage.newStorage.pc.
 import com.pixelmonmod.pixelmon.config.PixelmonConfig;
 import com.pixelmonmod.pixelmon.storage.PlayerPartyStorage;
 import lombok.Getter;
+import me.figsq.pctools.pctools.api.AbstractPreviousInv;
+import me.figsq.pctools.pctools.api.Cache;
+import me.figsq.pctools.pctools.api.PapiUtil;
 import me.figsq.pctools.pctools.api.events.PCPageChangeEvent;
 import me.figsq.pctools.pctools.api.util.*;
 import net.minecraft.server.v1_12_R1.Tuple;

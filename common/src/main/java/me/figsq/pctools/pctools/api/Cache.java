@@ -1,11 +1,10 @@
-package me.figsq.pctools.pctools.api.util;
+package me.figsq.pctools.pctools.api;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
-
 import java.util.*;
 
 public class Cache {
@@ -29,6 +28,7 @@ public class Cache {
     public static Double papiIndexOffset;
     public static Map<String,String> globalPapiReplace = new LinkedHashMap<>();
     public static Map<String, ConfigurationSection> argsPapiReplace = new LinkedHashMap<>();
+    public static Map<String, ISearchProperty> searchProperties = new HashMap<>();
 
     public static void init() {
         //clean

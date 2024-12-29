@@ -2,8 +2,9 @@ package me.figsq.pctools.pctools.gui;
 
 import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
 import lombok.Getter;
-import me.figsq.pctools.pctools.api.util.Cache;
-import me.figsq.pctools.pctools.api.util.PapiUtil;
+import me.figsq.pctools.pctools.api.AbstractPreviousInv;
+import me.figsq.pctools.pctools.api.PapiUtil;
+import me.figsq.pctools.pctools.api.Cache;
 import me.figsq.pctools.pctools.api.util.PokeUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;

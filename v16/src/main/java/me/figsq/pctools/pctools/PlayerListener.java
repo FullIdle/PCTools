@@ -4,7 +4,7 @@ import com.google.common.collect.Lists;
 import com.pixelmonmod.pixelmon.api.storage.PCStorage;
 import com.pixelmonmod.pixelmon.api.storage.StorageProxy;
 import me.figsq.pctools.pctools.api.enums.Permissions;
-import me.figsq.pctools.pctools.api.util.Cache;
+import me.figsq.pctools.pctools.api.Cache;
 import me.figsq.pctools.pctools.gui.PCPageGui;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;

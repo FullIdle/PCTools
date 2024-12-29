@@ -1,6 +1,6 @@
 package me.figsq.pctools.pctools;
 
-import me.figsq.pctools.pctools.api.util.Cache;
+import me.figsq.pctools.pctools.api.Cache;
 import me.figsq.pctools.pctools.api.util.PokeUtil;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.plugin.java.JavaPlugin;

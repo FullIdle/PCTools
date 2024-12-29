@@ -1,4 +1,4 @@
-package me.figsq.pctools.pctools.gui;
+package me.figsq.pctools.pctools.api;
 
 import lombok.Getter;
 import lombok.Setter;

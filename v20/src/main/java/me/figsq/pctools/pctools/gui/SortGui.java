@@ -1,9 +1,10 @@
 package me.figsq.pctools.pctools.gui;
 
 import lombok.Getter;
-import me.figsq.pctools.pctools.api.util.Cache;
-import me.figsq.pctools.pctools.api.util.PapiUtil;
-import me.figsq.pctools.pctools.api.util.TidyPcUtil;
+import me.figsq.pctools.pctools.api.AbstractPreviousInv;
+import me.figsq.pctools.pctools.api.Cache;
+import me.figsq.pctools.pctools.api.PapiUtil;
+import me.figsq.pctools.pctools.api.util.PCSortUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.inventory.Inventory;
@@ -47,13 +48,13 @@ public class SortGui extends AbstractPreviousInv {
                     e.getCurrentItem().getType().equals(Material.AIR)) return;
             PCPageGui gui = (PCPageGui) this.getPreviousInv().getHolder();
             if (slot == 0) {
-                TidyPcUtil.randomSort(gui.getBox());
+                PCSortUtil.randomSort(gui.getBox());
             }
             if (slot == 1) {
-                TidyPcUtil.speciesSort(gui.getBox());
+                PCSortUtil.speciesSort(gui.getBox());
             }
             if (slot == 2) {
-                TidyPcUtil.specialSort(gui.getBox());
+                PCSortUtil.specialSort(gui.getBox());
             }
 
             e.getWhoClicked().closeInventory();

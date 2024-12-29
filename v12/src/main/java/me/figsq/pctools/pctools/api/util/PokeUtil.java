@@ -17,8 +17,9 @@ import com.pixelmonmod.pixelmon.items.ItemHeld;
 import com.pixelmonmod.pixelmon.items.ItemPixelmonSprite;
 import com.pixelmonmod.pixelmon.storage.PlayerPartyStorage;
 import com.pixelmonmod.pixelmon.util.ITranslatable;
+import me.figsq.pctools.pctools.api.Cache;
 import me.figsq.pctools.pctools.api.ISearchProperty;
-import me.figsq.pctools.pctools.api.enums.SpecialType;
+import me.figsq.pctools.pctools.api.PapiUtil;
 import net.minecraft.server.v1_12_R1.EntityPlayer;
 import net.minecraft.server.v1_12_R1.NBTTagCompound;
 import net.minecraft.server.v1_12_R1.Tuple;
@@ -36,7 +37,6 @@ import java.util.stream.Collectors;
 
 public class PokeUtil {
     public static Map<EnumSpecies, Pair<String, List<String>>> specialNAL = new HashMap<>();
-    public static Map<String, ISearchProperty> searchProperties = new HashMap<>();
 
     public static void init(){
         specialNAL.clear();
@@ -75,29 +75,14 @@ public class PokeUtil {
         List<String> lore;
         Pair<String, List<String>> pair = specialNAL.get(pokemon.getSpecies());
         if (pair == null){
-            SpecialType type = SpecialType.getType(pokemon);
-            switch (type){
-                case EGG:{
-                    name = Cache.eggName;
-                    lore = Cache.eggLore;
-                    break;
-                }
-                case LEGEND:{
-                    name = Cache.legendName;
-                    lore = Cache.legendLore;
-                    break;
-                }
-                case UBEAST:{
-                    name = Cache.uBeastName;
-                    lore = Cache.uBeastLore;
-                    break;
-                }
-                default:{
-                    name = Cache.normalName;
-                    lore = Cache.normalLore;
-                    break;
-                }
-            }
+            name = pokemon.isEgg() ?
+                    Cache.eggName : pokemon.isLegendary() ?
+                    Cache.legendName : pokemon.getSpecies().isUltraBeast() ?
+                    Cache.uBeastName : Cache.normalName;
+            lore = pokemon.isEgg() ?
+                    Cache.eggLore : pokemon.isLegendary() ?
+                    Cache.legendLore : pokemon.getSpecies().isUltraBeast() ?
+                    Cache.uBeastLore : Cache.normalLore;
         }else{
             name = pair.getLeft();
             lore = pair.getRight();
@@ -132,16 +117,17 @@ public class PokeUtil {
     }
 
     static {
-        PokeUtil.searchProperties.put("name", new ISearchProperty() {
+        ISearchProperty.addSearchProperty("name", new ISearchProperty() {
             @Override
             public String getName() {
                 return "name";
             }
 
             @Override
-            public boolean hasProperty(Pokemon poke, String arg) {
-                return poke.getLocalizedName().equalsIgnoreCase(arg)
-                        || poke.getSpecies().name.equalsIgnoreCase(arg);
+            public boolean hasProperty(Object poke, String arg) {
+                Pokemon pokemon = (Pokemon) poke;
+                return pokemon.getLocalizedName().equalsIgnoreCase(arg)
+                        || pokemon.getSpecies().name.equalsIgnoreCase(arg);
             }
 
             @Override
@@ -160,15 +146,15 @@ public class PokeUtil {
             }
         });
         //性别
-        PokeUtil.searchProperties.put("gender", new ISearchProperty() {
+        ISearchProperty.addSearchProperty("gender", new ISearchProperty() {
             @Override
             public String getName() {
                 return "gender";
             }
 
             @Override
-            public boolean hasProperty(Pokemon poke, String arg) {
-                Gender gender = poke.getGender();
+            public boolean hasProperty(Object poke, String arg) {
+                Gender gender = ((Pokemon) poke).getGender();
                 return gender.name().equalsIgnoreCase(arg) ||
                         gender.getLocalizedName().equalsIgnoreCase(arg);
             }
@@ -183,15 +169,15 @@ public class PokeUtil {
             }
         });
         //属性
-        PokeUtil.searchProperties.put("type1", new ISearchProperty() {
+        ISearchProperty.addSearchProperty("type1", new ISearchProperty() {
             @Override
             public String getName() {
                 return "type1";
             }
 
             @Override
-            public boolean hasProperty(Pokemon poke, String arg) {
-                EnumType type1 = poke.getBaseStats().getType1();
+            public boolean hasProperty(Object poke, String arg) {
+                EnumType type1 = ((Pokemon) poke).getBaseStats().getType1();
                 return type1.name().equalsIgnoreCase(arg) ||
                         type1.getLocalizedName().equalsIgnoreCase(arg);
             }
@@ -203,15 +189,15 @@ public class PokeUtil {
                 return collect.stream().filter(s->s.startsWith(value)).collect(Collectors.toList());
             }
         });
-        PokeUtil.searchProperties.put("type2", new ISearchProperty() {
+        ISearchProperty.addSearchProperty("type2", new ISearchProperty() {
             @Override
             public String getName() {
                 return "type2";
             }
 
             @Override
-            public boolean hasProperty(Pokemon poke, String arg) {
-                EnumType type2 = poke.getBaseStats().getType2();
+            public boolean hasProperty(Object poke, String arg) {
+                EnumType type2 = ((Pokemon) poke).getBaseStats().getType2();
                 return type2.name().equalsIgnoreCase(arg) ||
                         type2.getLocalizedName().equalsIgnoreCase(arg);
             }
@@ -224,16 +210,17 @@ public class PokeUtil {
             }
         });
         //特性
-        PokeUtil.searchProperties.put("ability", new ISearchProperty() {
+        ISearchProperty.addSearchProperty("ability", new ISearchProperty() {
             @Override
             public String getName() {
                 return "ability";
             }
 
             @Override
-            public boolean hasProperty(Pokemon poke, String arg) {
-                AbilityBase ability = poke.getAbility();
-                return poke.getAbilityName().equalsIgnoreCase(arg) ||
+            public boolean hasProperty(Object poke, String arg) {
+                Pokemon pokemon = (Pokemon) poke;
+                AbilityBase ability = pokemon.getAbility();
+                return pokemon.getAbilityName().equalsIgnoreCase(arg) ||
                         ability.getLocalizedName().equalsIgnoreCase(arg);
             }
 
@@ -243,15 +230,15 @@ public class PokeUtil {
             }
         });
         //性格
-        PokeUtil.searchProperties.put("nature", new ISearchProperty() {
+        ISearchProperty.addSearchProperty("nature", new ISearchProperty() {
             @Override
             public String getName() {
                 return "nature";
             }
 
             @Override
-            public boolean hasProperty(Pokemon poke, String arg) {
-                EnumNature nature = poke.getNature();
+            public boolean hasProperty(Object poke, String arg) {
+                EnumNature nature = ((Pokemon) poke).getNature();
                 return nature.name().equalsIgnoreCase(arg) ||
                         nature.getLocalizedName().equalsIgnoreCase(arg);
             }
@@ -264,20 +251,21 @@ public class PokeUtil {
             }
         });
         //持有物品
-        PokeUtil.searchProperties.put("helditem", new ISearchProperty() {
+        ISearchProperty.addSearchProperty("helditem", new ISearchProperty() {
             @Override
             public String getName() {
                 return "helditem";
             }
 
             @Override
-            public boolean hasProperty(Pokemon poke, String arg) {
-                if (poke.getHeldItem() == null ||
-                        CraftItemStack.asBukkitCopy((net.minecraft.server.v1_12_R1.ItemStack) ((Object) poke.getHeldItem()))
+            public boolean hasProperty(Object poke, String arg) {
+                Pokemon pokemon = (Pokemon) poke;
+                if (pokemon.getHeldItem() == null ||
+                        CraftItemStack.asBukkitCopy((net.minecraft.server.v1_12_R1.ItemStack) ((Object) pokemon.getHeldItem()))
                                 .getType().equals(Material.AIR)) {
                     return false;
                 }
-                ItemHeld held = poke.getHeldItemAsItemHeld();
+                ItemHeld held = pokemon.getHeldItemAsItemHeld();
                 return held.getLocalizedName().equalsIgnoreCase(arg) ||
                         held.getHeldItemType().name().equalsIgnoreCase(arg);
             }
@@ -290,15 +278,15 @@ public class PokeUtil {
             }
         });
         //闪光
-        PokeUtil.searchProperties.put("shiny", new ISearchProperty() {
+        ISearchProperty.addSearchProperty("shiny", new ISearchProperty() {
             @Override
             public String getName() {
                 return "shiny";
             }
 
             @Override
-            public boolean hasProperty(Pokemon poke, String arg) {
-                return poke.isShiny() == Boolean.parseBoolean(arg);
+            public boolean hasProperty(Object poke, String arg) {
+                return ((Pokemon) poke).isShiny() == Boolean.parseBoolean(arg);
             }
 
             @Override
@@ -307,15 +295,15 @@ public class PokeUtil {
             }
         });
         //自定义名
-        PokeUtil.searchProperties.put("nickname", new ISearchProperty() {
+        ISearchProperty.addSearchProperty("nickname", new ISearchProperty() {
             @Override
             public String getName() {
                 return "nickname";
             }
 
             @Override
-            public boolean hasProperty(Pokemon poke, String arg) {
-                return poke.getNickname().equalsIgnoreCase(arg);
+            public boolean hasProperty(Object poke, String arg) {
+                return ((Pokemon) poke).getNickname().equalsIgnoreCase(arg);
             }
 
             @Override

@@ -5,8 +5,8 @@ import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
 import com.pixelmonmod.pixelmon.api.storage.StorageProxy;
 import me.figsq.pctools.pctools.api.ISearchProperty;
 import me.figsq.pctools.pctools.api.enums.Permissions;
-import me.figsq.pctools.pctools.api.util.Cache;
-import me.figsq.pctools.pctools.api.util.PapiUtil;
+import me.figsq.pctools.pctools.api.Cache;
+import me.figsq.pctools.pctools.api.PapiUtil;
 import me.figsq.pctools.pctools.api.util.PokeUtil;
 import me.figsq.pctools.pctools.gui.PCPageGui;
 import me.figsq.pctools.pctools.gui.PCResultGui;
@@ -114,11 +114,11 @@ public class CMD implements TabExecutor {
                         String[] split = s.split(":");
                         String k = split[0];
                         String a = split[1];
-                        if (!PokeUtil.searchProperties.containsKey(k)) {
+                        if (!Cache.searchProperties.containsKey(k)) {
                             sender.sendMessage("无效参数: " + s);
                             return false;
                         }
-                        map.put(PokeUtil.searchProperties.get(k), a);
+                        map.put(Cache.searchProperties.get(k), a);
                     }
                     Player player = (Player) sender;
                     if (map.isEmpty()) {
@@ -165,13 +165,13 @@ public class CMD implements TabExecutor {
             }
             String arg = args[args.length - 1];
             if (!arg.contains(":"))
-                return PokeUtil.searchProperties.keySet().stream().
+                return Cache.searchProperties.keySet().stream().
                         filter(s -> s.startsWith(arg) && !list.contains(s)).map(s -> s + ":").
                         collect(Collectors.toList());
             String[] split = arg.split(":");
             if (!(sender instanceof Player)) return null;
             String key = split[0];
-            return PokeUtil.searchProperties.get(key).onTabComplete(((Player) sender), split.length == 2 ? split[1] : "").
+            return Cache.searchProperties.get(key).onTabComplete(((Player) sender), split.length == 2 ? split[1] : "").
                     stream().map(s->key+":"+s).collect(Collectors.toList());
         }
         return null;
