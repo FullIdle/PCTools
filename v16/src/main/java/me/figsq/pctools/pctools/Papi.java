@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonSyntaxException;
 import com.pixelmonmod.pixelmon.api.pokemon.Element;
 import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
 import com.pixelmonmod.pixelmon.api.pokemon.PokemonFactory;
@@ -23,6 +24,7 @@ import com.pixelmonmod.pixelmon.items.HeldItem;
 import com.pixelmonmod.pixelmon.items.heldItems.NoItem;
 import lombok.SneakyThrows;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
+import me.figsq.pctools.pctools.api.GsonParser;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.JsonToNBT;
@@ -33,6 +35,8 @@ import org.bukkit.craftbukkit.v1_16_R3.entity.CraftEntity;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -224,8 +228,18 @@ public class Papi extends PlaceholderExpansion{
             }
             case "stats":
                 return stats(args.get(1), poke.getStats());
-            case "basestats":
+            case "basestats":{
+                if (args.get(1).equalsIgnoreCase("json")){
+                    String parse;
+                    try {
+                        parse = GsonParser.parse(gson.fromJson(poke.getSpecies().getJson(), JsonObject.class), args.get(2));
+                    } catch (Exception e) {
+                        return "UNKNOWN PARAMETERS";
+                    }
+                    return parse;
+                }
                 return stats(args.get(1), poke.getForm());
+            }
             case "formstats":{
                 return stats(args.get(2),poke.getSpecies()
                         .getForms(s->s.getName().equalsIgnoreCase(args.get(1))).get(0));

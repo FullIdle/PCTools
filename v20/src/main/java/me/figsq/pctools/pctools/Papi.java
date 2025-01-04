@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonSyntaxException;
 import com.pixelmonmod.pixelmon.api.pokemon.Element;
 import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
 import com.pixelmonmod.pixelmon.api.pokemon.PokemonFactory;
@@ -21,6 +22,7 @@ import com.pixelmonmod.pixelmon.api.util.ITranslatable;
 import com.pixelmonmod.pixelmon.battles.attacks.Attack;
 import lombok.SneakyThrows;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
+import me.figsq.pctools.pctools.api.GsonParser;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.network.chat.Component;
@@ -226,8 +228,18 @@ public class Papi extends PlaceholderExpansion{
                 return stats(args.get(2),poke.getSpecies()
                         .getForms(s->s.getName().equalsIgnoreCase(args.get(1))).get(0));
             }
-            case "basestats":
+            case "basestats":{
+                if (args.get(1).equalsIgnoreCase("json")){
+                    String parse;
+                    try {
+                        parse = GsonParser.parse(gson.fromJson(poke.getSpecies().getJson(), JsonObject.class), args.get(2));
+                    } catch (Exception e) {
+                        return "UNKNOWN PARAMETERS";
+                    }
+                    return parse;
+                }
                 return stats(args.get(1), poke.getForm());
+            }
             case "basetotal": {
                 return String.valueOf(addUp(poke.getStats().toArray()));
             }

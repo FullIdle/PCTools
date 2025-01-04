@@ -1,9 +1,7 @@
 package me.figsq.pctools.pctools;
 
 import com.google.common.collect.Lists;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
+import com.google.gson.*;
 import com.pixelmonmod.pixelmon.Pixelmon;
 import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
 import com.pixelmonmod.pixelmon.api.storage.PCStorage;
@@ -19,6 +17,7 @@ import com.pixelmonmod.pixelmon.items.heldItems.NoItem;
 import com.pixelmonmod.pixelmon.storage.PlayerPartyStorage;
 import lombok.SneakyThrows;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
+import me.figsq.pctools.pctools.api.GsonParser;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.JsonToNBT;
 import net.minecraft.nbt.NBTTagCompound;
@@ -29,6 +28,8 @@ import org.bukkit.craftbukkit.v1_12_R1.entity.CraftEntity;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.util.*;
 
 import static me.figsq.pctools.pctools.api.Cache.*;
@@ -208,8 +209,29 @@ public class Papi extends PlaceholderExpansion {
             }
             case "stats":
                 return stats(args.get(1), poke.getStats());
-            case "basestats":
+            case "basestats":{
+                if (args.get(1).equalsIgnoreCase("json")){
+                    try (Reader reader = new InputStreamReader
+                            (
+                                    BaseStats.class.getResourceAsStream
+                                    (
+                                            "/assets/pixelmon/stats/" + poke.getSpecies().getNationalPokedexNumber() + ".json"
+                                    )
+                            )
+                    ){
+                        String parse;
+                        try {
+                            parse = GsonParser.parse(gson.fromJson(reader, JsonObject.class), args.get(2));
+                        } catch (Exception e) {
+                            return "UNKNOWN PARAMETERS";
+                        }
+                        return parse;
+                    } catch (Exception e) {
+                        throw new RuntimeException(e);
+                    }
+                }
                 return stats(args.get(1), poke.getBaseStats());
+            }
             case "formstats": {
                 return stats(args.get(2), poke.getBaseStats().forms.get(Integer.parseInt(args.get(1))));
             }

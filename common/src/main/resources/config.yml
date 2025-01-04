@@ -73,7 +73,7 @@ papiIndexOffset: 0
 #eggsteps 现周期走了多少步 [默认256时减少一个周期/或许可以再配置中修改那步数可能就不一样了]
 #eggcycles 剩余多少周期孵化
 #basetotal 总种族值
-#basestats 种族值 可选参数: 同ivs
+#basestats 种族值 可选参数: 包含ivs,json json后面可选参数[更具stats精灵文件的路径来] 实例 %pctools_[boxs]_[order]_basestats_json_evolutions.0.to.name%
 #formstats 形态种族值 可选参数: {args1}_{args2} args1: 同formtypes args2: 同ivs
 #stats 能力值 可选参数: 同ivs
 #statstotal 总能力值
