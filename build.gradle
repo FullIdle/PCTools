@@ -21,12 +21,18 @@ allprojects {
             allowInsecureProtocol = true
             url "http://server.pokemtd.top:31647/snapshots"
         }
-        maven { url 'https://repo.extendedclip.com/content/repositories/placeholderapi/' }
+        maven {
+            url = 'https://repo.extendedclip.com/releases/'
+        }
+        maven { url 'https://jitpack.io' }
     }
 
     dependencies {
         compileOnly 'me.fullidle.ficore:FICore:1.2.6'
-        compileOnly 'me.clip:placeholderapi:2.11.5'
+        compileOnly 'me.clip:placeholderapi:2.11.6'
+
+        /*PinIn 拼音模糊搜索*/
+        implementation 'com.github.Towdium:PinIn:1.6.0'
 
         testImplementation 'org.junit.jupiter:junit-jupiter-api:5.9.1'
         testImplementation 'org.junit.jupiter:junit-jupiter-params:5.9.1'

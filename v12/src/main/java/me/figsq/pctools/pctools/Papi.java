@@ -160,6 +160,19 @@ public class Papi extends PlaceholderExpansion {
         }
 
         switch (arg) {
+            case "assets": {
+                String assetsPath = args.get(1).startsWith("/") ? args.get(1) : "/" + args.get(1);
+                String jsonPath = args.get(2);
+                System.out.println(assetsPath);
+                System.out.println(jsonPath);
+                try (
+                        InputStreamReader reader = new InputStreamReader(Pixelmon.class.getResourceAsStream(assetsPath));
+                        ) {
+                    return GsonParser.parse(gson.fromJson(reader,JsonObject.class),jsonPath);
+                } catch (Exception e) {
+                    return "UNKNOWN PARAMETERS";
+                }
+            }
             case "description": {
                 return I18n.func_74838_a("pixelmon." + poke.getSpecies().getPokemonName().toLowerCase() + ".description");
             }

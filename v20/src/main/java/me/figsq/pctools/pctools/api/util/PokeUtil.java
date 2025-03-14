@@ -1,14 +1,12 @@
 package me.figsq.pctools.pctools.api.util;
 
 import com.google.common.collect.Lists;
-import com.pixelmonmod.pixelmon.Pixelmon;
 import com.pixelmonmod.pixelmon.api.config.PixelmonConfigProxy;
 import com.pixelmonmod.pixelmon.api.config.StorageConfig;
 import com.pixelmonmod.pixelmon.api.pokemon.Element;
 import com.pixelmonmod.pixelmon.api.pokemon.Nature;
 import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
 import com.pixelmonmod.pixelmon.api.pokemon.ability.Ability;
-import com.pixelmonmod.pixelmon.api.pokemon.species.Pokedex;
 import com.pixelmonmod.pixelmon.api.pokemon.species.Species;
 import com.pixelmonmod.pixelmon.api.pokemon.species.gender.Gender;
 import com.pixelmonmod.pixelmon.api.registries.PixelmonSpecies;
@@ -120,6 +118,11 @@ public class PokeUtil {
             return new net.minecraft.util.Tuple<>(pcBox, new StoragePosition(pcBox.boxNumber, Cache.invPcSlot.indexOf(clickSlot)));
         return null;
     }
+
+
+
+
+
 
     static {
         ISearchProperty.addSearchProperty("name", new ISearchProperty() {
