@@ -314,7 +314,7 @@ public class Papi extends PlaceholderExpansion{
                 return poke.getLocalizedName();
             case "nickname":
                 String nickname = poke.getNickname();
-                return nickname == null ? poke.getSpecies().getLocalizedName() : nickname;
+                return nickname == null || nickname.replace(" ","").isEmpty() ? poke.getSpecies().getLocalizedName() : nickname;
             case "ability":
                 return poke.getAbility().getLocalizedName();
             case "formability":

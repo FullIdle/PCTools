@@ -16,6 +16,8 @@ import com.pixelmonmod.pixelmon.items.HeldItem;
 import me.figsq.pctools.pctools.api.Cache;
 import me.figsq.pctools.pctools.api.ISearchProperty;
 import me.figsq.pctools.pctools.api.PapiUtil;
+import me.towdium.pinin.Keyboard;
+import me.towdium.pinin.PinIn;
 import net.minecraft.server.v1_16_R3.EntityPlayer;
 import net.minecraft.server.v1_16_R3.NBTTagCompound;
 import org.bukkit.Material;
@@ -111,7 +113,20 @@ public class PokeUtil {
         return null;
     }
 
+    public static final PinIn pinIn;
+
     static {
+        pinIn = new PinIn();
+        pinIn.config().fCh2C(true).commit();
+        pinIn.config().fZh2Z(true).commit();
+        pinIn.config().fSh2S(true).commit();
+        pinIn.config().fAng2An(true).commit();
+        pinIn.config().fEng2En(true).commit();
+        pinIn.config().fIng2In(true).commit();
+        pinIn.config().accelerate(true).commit();
+        pinIn.config().keyboard(Keyboard.QUANPIN).commit();
+
+        //searchProperty
         ISearchProperty.addSearchProperty("name", new ISearchProperty() {
             @Override
             public String getName() {
@@ -121,8 +136,12 @@ public class PokeUtil {
             @Override
             public boolean hasProperty(Object poke, String arg) {
                 Pokemon pokemon = (Pokemon) poke;
-                return pokemon.getLocalizedName().equalsIgnoreCase(arg)
-                        || pokemon.getSpecies().getName().equalsIgnoreCase(arg);
+                String localizedName = pokemon.getLocalizedName();
+                String name = pokemon.getSpecies().getName();
+                return localizedName.equalsIgnoreCase(arg)
+                        || name.equalsIgnoreCase(arg)
+                        || pinIn.contains(name, arg)
+                        || pinIn.contains(localizedName, arg);
             }
 
             @Override

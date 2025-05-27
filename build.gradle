@@ -28,7 +28,7 @@ allprojects {
     }
 
     dependencies {
-        compileOnly 'me.fullidle.ficore:FICore:1.2.6'
+        compileOnly 'me.fullidle.ficore.ficore:FICore:1.2.9'
         compileOnly 'me.clip:placeholderapi:2.11.6'
 
         /*PinIn 拼音模糊搜索*/

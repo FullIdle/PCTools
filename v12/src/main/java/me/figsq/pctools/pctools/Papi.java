@@ -1,7 +1,9 @@
 package me.figsq.pctools.pctools;
 
 import com.google.common.collect.Lists;
-import com.google.gson.*;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.pixelmonmod.pixelmon.Pixelmon;
 import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
 import com.pixelmonmod.pixelmon.api.storage.PCStorage;
@@ -167,8 +169,8 @@ public class Papi extends PlaceholderExpansion {
                 System.out.println(jsonPath);
                 try (
                         InputStreamReader reader = new InputStreamReader(Pixelmon.class.getResourceAsStream(assetsPath));
-                        ) {
-                    return GsonParser.parse(gson.fromJson(reader,JsonObject.class),jsonPath);
+                ) {
+                    return GsonParser.parse(gson.fromJson(reader, JsonObject.class), jsonPath);
                 } catch (Exception e) {
                     return "UNKNOWN PARAMETERS";
                 }
@@ -222,16 +224,16 @@ public class Papi extends PlaceholderExpansion {
             }
             case "stats":
                 return stats(args.get(1), poke.getStats());
-            case "basestats":{
-                if (args.get(1).equalsIgnoreCase("json")){
+            case "basestats": {
+                if (args.get(1).equalsIgnoreCase("json")) {
                     try (Reader reader = new InputStreamReader
                             (
                                     BaseStats.class.getResourceAsStream
-                                    (
-                                            "/assets/pixelmon/stats/" + poke.getSpecies().getNationalPokedexNumber() + ".json"
-                                    )
+                                            (
+                                                    "/assets/pixelmon/stats/" + poke.getSpecies().getNationalPokedexNumber() + ".json"
+                                            )
                             )
-                    ){
+                    ) {
                         String parse;
                         try {
                             parse = GsonParser.parse(gson.fromJson(reader, JsonObject.class), args.get(2));
@@ -325,7 +327,7 @@ public class Papi extends PlaceholderExpansion {
                 return poke.getLocalizedName();
             case "nickname":
                 String nickname = poke.getNickname();
-                return nickname == null ? poke.getSpecies().name : nickname;
+                return nickname == null || nickname.replace(" ","").isEmpty() ? poke.getLocalizedName() : nickname;
             case "ability":
                 return poke.getAbility().getLocalizedName();
             case "formability":

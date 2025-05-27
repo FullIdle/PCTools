@@ -20,6 +20,8 @@ import com.pixelmonmod.pixelmon.util.ITranslatable;
 import me.figsq.pctools.pctools.api.Cache;
 import me.figsq.pctools.pctools.api.ISearchProperty;
 import me.figsq.pctools.pctools.api.PapiUtil;
+import me.towdium.pinin.Keyboard;
+import me.towdium.pinin.PinIn;
 import net.minecraft.server.v1_12_R1.EntityPlayer;
 import net.minecraft.server.v1_12_R1.NBTTagCompound;
 import net.minecraft.server.v1_12_R1.Tuple;
@@ -38,7 +40,7 @@ import java.util.stream.Collectors;
 public class PokeUtil {
     public static Map<EnumSpecies, Pair<String, List<String>>> specialNAL = new HashMap<>();
 
-    public static void init(){
+    public static void init() {
         specialNAL.clear();
 
 
@@ -74,7 +76,7 @@ public class PokeUtil {
         String name;
         List<String> lore;
         Pair<String, List<String>> pair = specialNAL.get(pokemon.getSpecies());
-        if (pair == null){
+        if (pair == null) {
             name = pokemon.isEgg() ?
                     Cache.eggName : pokemon.isLegendary() ?
                     Cache.legendName : pokemon.getSpecies().isUltraBeast() ?
@@ -83,7 +85,7 @@ public class PokeUtil {
                     Cache.eggLore : pokemon.isLegendary() ?
                     Cache.legendLore : pokemon.getSpecies().isUltraBeast() ?
                     Cache.uBeastLore : Cache.normalLore;
-        }else{
+        } else {
             name = pair.getLeft();
             lore = pair.getRight();
         }
@@ -116,7 +118,20 @@ public class PokeUtil {
         return null;
     }
 
+    public static final PinIn pinIn;
+
     static {
+        pinIn = new PinIn();
+        pinIn.config().fCh2C(true).commit();
+        pinIn.config().fZh2Z(true).commit();
+        pinIn.config().fSh2S(true).commit();
+        pinIn.config().fAng2An(true).commit();
+        pinIn.config().fEng2En(true).commit();
+        pinIn.config().fIng2In(true).commit();
+        pinIn.config().accelerate(true).commit();
+        pinIn.config().keyboard(Keyboard.QUANPIN).commit();
+
+        //searchProperty
         ISearchProperty.addSearchProperty("name", new ISearchProperty() {
             @Override
             public String getName() {
@@ -126,23 +141,27 @@ public class PokeUtil {
             @Override
             public boolean hasProperty(Object poke, String arg) {
                 Pokemon pokemon = (Pokemon) poke;
-                return pokemon.getLocalizedName().equalsIgnoreCase(arg)
-                        || pokemon.getSpecies().name.equalsIgnoreCase(arg);
+                String name = pokemon.getSpecies().name;
+                String localizedName = pokemon.getLocalizedName();
+                return localizedName.equalsIgnoreCase(arg)
+                        || name.equalsIgnoreCase(arg)
+                        || pinIn.contains(name, arg)
+                        || pinIn.contains(localizedName, arg);
             }
 
             @Override
-            public List<String> onTabComplete(Player player,String value) {
+            public List<String> onTabComplete(Player player, String value) {
                 UUID uniqueId = player.getUniqueId();
                 PlayerPartyStorage party = Pixelmon.storageManager.getParty(uniqueId);
                 PCStorage pc = Pixelmon.storageManager.getPCForPlayer(uniqueId);
                 ArrayList<Pokemon> pokemons = Lists.newArrayList(pc.getAll());
-                Collections.addAll(pokemons,party.getAll());
+                Collections.addAll(pokemons, party.getAll());
                 pokemons.removeIf(Objects::isNull);
                 List<String> collect = pokemons.stream().map(ITranslatable::getLocalizedName).collect(Collectors.toList());
                 if (value.isEmpty()) {
                     return collect;
                 }
-                return collect.stream().filter(s->s.startsWith(value)).collect(Collectors.toList());
+                return collect.stream().filter(s -> s.startsWith(value)).collect(Collectors.toList());
             }
         });
         //性别
@@ -165,7 +184,7 @@ public class PokeUtil {
                 if (value.isEmpty()) {
                     return collect;
                 }
-                return collect.stream().filter(s->s.startsWith(value)).collect(Collectors.toList());
+                return collect.stream().filter(s -> s.startsWith(value)).collect(Collectors.toList());
             }
         });
         //属性
@@ -186,7 +205,7 @@ public class PokeUtil {
             public List<String> onTabComplete(Player player, String value) {
                 List<String> collect = EnumType.getAllTypes().stream().map(EnumType::getLocalizedName).collect(Collectors.toList());
                 if (value.isEmpty()) return collect;
-                return collect.stream().filter(s->s.startsWith(value)).collect(Collectors.toList());
+                return collect.stream().filter(s -> s.startsWith(value)).collect(Collectors.toList());
             }
         });
         ISearchProperty.addSearchProperty("type2", new ISearchProperty() {
@@ -206,7 +225,7 @@ public class PokeUtil {
             public List<String> onTabComplete(Player player, String value) {
                 List<String> collect = EnumType.getAllTypes().stream().map(EnumType::getLocalizedName).collect(Collectors.toList());
                 if (value.isEmpty()) return collect;
-                return collect.stream().filter(s->s.startsWith(value)).collect(Collectors.toList());
+                return collect.stream().filter(s -> s.startsWith(value)).collect(Collectors.toList());
             }
         });
         //特性
@@ -247,7 +266,7 @@ public class PokeUtil {
             public List<String> onTabComplete(Player player, String value) {
                 List<String> collect = Arrays.stream(EnumNature.values()).map(EnumNature::getLocalizedName).collect(Collectors.toList());
                 if (value.isEmpty()) return collect;
-                return collect.stream().filter(s->s.startsWith(value)).collect(Collectors.toList());
+                return collect.stream().filter(s -> s.startsWith(value)).collect(Collectors.toList());
             }
         });
         //持有物品
@@ -274,7 +293,7 @@ public class PokeUtil {
             public List<String> onTabComplete(Player player, String value) {
                 List<String> collect = Arrays.stream(EnumHeldItems.values()).map(EnumHeldItems::name).collect(Collectors.toList());
                 if (value.isEmpty()) return collect;
-                return collect.stream().filter(s->s.startsWith(value)).collect(Collectors.toList());
+                return collect.stream().filter(s -> s.startsWith(value)).collect(Collectors.toList());
             }
         });
         //闪光
@@ -291,7 +310,7 @@ public class PokeUtil {
 
             @Override
             public List<String> onTabComplete(Player player, String value) {
-                return Arrays.asList("false","true");
+                return Arrays.asList("false", "true");
             }
         });
         //自定义名
