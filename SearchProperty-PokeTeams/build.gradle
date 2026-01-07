@@ -1,23 +1,6 @@
 version = '1.0-SNAPSHOT'
 group = 'me.figsq.pctools_searchproperty.poketeams.Main'
 
-repositories {
-    mavenCentral()
-    mavenLocal()
-    maven {
-        allowInsecureProtocol = true
-        url "http://server.pokemtd.top:31647/snapshots"
-    }
-}
-
 dependencies {
-    compileOnly 'org.spigotmc:spigot:1.12.2-R0.1-SNAPSHOT'
-    compileOnly 'org.spigotmc:spigot-api:1.12.2-R0.1-SNAPSHOT'
-
-    compileOnly 'me.forge.forgedev:ForgeDev:1.12.2'
-    compileOnly 'com.pixelmonmod.pixelmon:Pixelmon:1.12.2-8.4.3'
-
-    compileOnly project(path:':v12')
-
     compileOnly fileTree("libs")
 }

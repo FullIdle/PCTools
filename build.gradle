@@ -1,13 +1,17 @@
 plugins {
     id 'java'
-    id 'com.github.johnrengelman.shadow' version '8.1.1'
 }
 
-group = 'me.figsq.pctools.pctools.Main'
-version = '1.7.2-SNAPSHOT'
+group = 'me.figsq.pctools.pctools'
+version = '1.7.3-SNAPSHOT'
+
+def pluginProject = project(':plugin')
 
 allprojects {
     apply plugin: 'java'
+
+    group = rootProject.group
+    version = rootProject.version
 
     java {
         sourceCompatibility = 1.8
@@ -19,30 +23,30 @@ allprojects {
         mavenLocal()
         maven {
             allowInsecureProtocol = true
-            url "http://server.pokemtd.top:31647/snapshots"
+            url "http://localhost:31647/snapshots"
         }
         maven {
             url = 'https://repo.extendedclip.com/releases/'
         }
         maven { url 'https://jitpack.io' }
+        maven {
+            name = "CodeMC"
+            url = uri("https://repo.codemc.io/repository/maven-public/")
+        }
     }
 
     dependencies {
-        compileOnly 'me.fullidle.ficore.ficore:FICore:1.2.9'
+        compileOnly 'org.spigotmc:spigot-api:1.12.2-R0.1-SNAPSHOT'
+        compileOnly 'me.fullidle.ficore.ficore:FICore:1.3.8-SNAPSHOT'
         compileOnly 'me.clip:placeholderapi:2.11.6'
+        compileOnly("de.tr7zw:item-nbt-api-plugin:2.15.2")
 
-        /*PinIn 拼音模糊搜索*/
-        implementation 'com.github.Towdium:PinIn:1.6.0'
+        if (project != pluginProject) {
+            implementation pluginProject
+        }
 
-        testImplementation 'org.junit.jupiter:junit-jupiter-api:5.9.1'
-        testImplementation 'org.junit.jupiter:junit-jupiter-params:5.9.1'
-        testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.9.1'
-        compileOnly 'org.projectlombok:lombok:1.18.28'
-        annotationProcessor 'org.projectlombok:lombok:1.18.28'
-    }
-
-    test {
-        useJUnitPlatform()
+        compileOnly 'org.projectlombok:lombok:1.18.34'
+        annotationProcessor 'org.projectlombok:lombok:1.18.34'
     }
 
     tasks.withType(JavaCompile) {
@@ -54,20 +58,3 @@ allprojects {
         expand project.properties
     }
 }
-
-/*
-repositories {
-    mavenCentral()
-    mavenLocal()
-    maven {url 'https://raw.github.com/FullIdle/maven-repository/main/'}
-    maven {url 'https://repo.extendedclip.com/content/repositories/placeholderapi/'}
-}
-
-dependencies {
-    compileOnly 'org.spigotmc:spigot:1.12.2-R0.1-SNAPSHOT'
-    compileOnly 'org.spigotmc:spigot-api:1.12.2-R0.1-SNAPSHOT'
-
-    compileOnly project(path:':common')
-    compileOnly project(path:':v12')
-    compileOnly project(path:':v16')
-}*/

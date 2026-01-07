@@ -1,8 +1,7 @@
 rootProject.name = 'PCTools'
-include 'common'
-include 'v16'
-include 'v12'
-include 'v20'
+includeBuild("D:\\IdeaProjects\\FICore")
+
+include 'plugin'
 include 'SearchProperty-PokeStar'
 include 'SearchProperty-PokeTeams'
 include 'TaiyiUISub'

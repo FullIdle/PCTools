@@ -4,18 +4,39 @@
   <component name="GradleSettings">
     <option name="linkedExternalProjectsSettings">
       <GradleProjectSettings>
+        <compositeConfiguration>
+          <compositeBuild compositeDefinitionSource="SCRIPT">
+            <builds>
+              <build path="$PROJECT_DIR$/../FICore" name="FICore">
+                <projects>
+                  <project path="$PROJECT_DIR$/../FICore" />
+                  <project path="$PROJECT_DIR$/../FICore/common" />
+                  <project path="$PROJECT_DIR$/../FICore/v1_12" />
+                  <project path="$PROJECT_DIR$/../FICore/v1_16" />
+                  <project path="$PROJECT_DIR$/../FICore/v1_21" />
+                  <project path="$PROJECT_DIR$/../FICore/v1_21/Cob" />
+                  <project path="$PROJECT_DIR$/../FICore/v1_21/Reforged" />
+                </projects>
+              </build>
+            </builds>
+          </compositeBuild>
+        </compositeConfiguration>
         <option name="externalProjectPath" value="$PROJECT_DIR$" />
         <option name="gradleHome" value="" />
         <option name="modules">
           <set>
+            <option value="$PROJECT_DIR$/../FICore" />
+            <option value="$PROJECT_DIR$/../FICore/common" />
+            <option value="$PROJECT_DIR$/../FICore/v1_12" />
+            <option value="$PROJECT_DIR$/../FICore/v1_16" />
+            <option value="$PROJECT_DIR$/../FICore/v1_21" />
+            <option value="$PROJECT_DIR$/../FICore/v1_21/Cob" />
+            <option value="$PROJECT_DIR$/../FICore/v1_21/Reforged" />
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/SearchProperty-PokeStar" />
             <option value="$PROJECT_DIR$/SearchProperty-PokeTeams" />
             <option value="$PROJECT_DIR$/TaiyiUISub" />
-            <option value="$PROJECT_DIR$/common" />
-            <option value="$PROJECT_DIR$/v12" />
-            <option value="$PROJECT_DIR$/v16" />
-            <option value="$PROJECT_DIR$/v20" />
+            <option value="$PROJECT_DIR$/plugin" />
           </set>
         </option>
         <option name="resolveExternalAnnotations" value="true" />

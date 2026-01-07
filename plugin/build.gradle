@@ -1,0 +1,23 @@
+configurations {
+    pack {
+        canBeConsumed = false
+        canBeResolved = true
+    }
+    compileClasspath.extendsFrom pack
+    runtimeClasspath.extendsFrom pack
+    developmentNeoForge.extendsFrom pack
+}
+
+dependencies {
+    pack 'com.github.Towdium:PinIn:1.6.0'
+}
+
+jar {
+    archiveFileName = "${rootProject.name}-${version}.jar"
+
+    from(configurations.pack.collect {
+        it.isDirectory() ? it : zipTree(it)
+    })
+    exclude 'META-INF/*.SF', 'META-INF/*.DSA', 'META-INF/*.RSA'
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+}
