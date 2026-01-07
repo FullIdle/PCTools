@@ -10,8 +10,8 @@ import me.fullidle.ficore.ficore.common.api.pokemon.storage.StoragePos;
 import me.fullidle.ficore.ficore.common.api.pokemon.wrapper.IPokeStorageWrapper;
 import me.fullidle.ficore.ficore.common.api.pokemon.wrapper.IPokemonWrapper;
 import me.fullidle.ficore.ficore.common.api.pokemon.wrapper.ISpeciesWrapper;
-import me.towdium.pinin.Keyboard;
-import me.towdium.pinin.PinIn;
+/*import me.towdium.pinin.Keyboard;
+import me.towdium.pinin.PinIn;*/
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
@@ -104,10 +104,12 @@ public class PokeUtil {
         return null;
     }
 
+/*
     public static final PinIn pinIn;
+*/
 
     static {
-        pinIn = new PinIn();
+/*        pinIn = new PinIn();
         pinIn.config().fCh2C(true).commit();
         pinIn.config().fZh2Z(true).commit();
         pinIn.config().fSh2S(true).commit();
@@ -115,7 +117,7 @@ public class PokeUtil {
         pinIn.config().fEng2En(true).commit();
         pinIn.config().fIng2In(true).commit();
         pinIn.config().accelerate(true).commit();
-        pinIn.config().keyboard(Keyboard.QUANPIN).commit();
+        pinIn.config().keyboard(Keyboard.QUANPIN).commit();*/
 
         //searchProperty
         ISearchProperty.addSearchProperty("name", new ISearchProperty() {
@@ -129,9 +131,9 @@ public class PokeUtil {
                 val name = poke.getSpecies().getName();
                 val localizedName = poke.getTranslatedName();
                 return localizedName.equalsIgnoreCase(arg)
-                        || name.equalsIgnoreCase(arg)
-                        || pinIn.contains(name, arg)
-                        || pinIn.contains(localizedName, arg);
+                        || name.equalsIgnoreCase(arg);
+/*                        || pinIn.contains(name, arg)
+                        || pinIn.contains(localizedName, arg);*/
             }
 
             @Override
