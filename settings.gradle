@@ -1,6 +1,4 @@
 rootProject.name = 'PCTools'
-includeBuild("D:\\IdeaProjects\\FICore")
-
 include 'plugin'
 include 'SearchProperty-PokeStar'
 include 'SearchProperty-PokeTeams'
